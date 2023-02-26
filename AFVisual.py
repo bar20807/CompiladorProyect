@@ -72,4 +72,4 @@ class AFVisual(object):
             i += 1       
 
     def output_graph(self):
-        self.visual_graph.render(directory='Resultados',view=True)
+        self.visual_graph.render(directory='Pre-laboratorio A',view=True)

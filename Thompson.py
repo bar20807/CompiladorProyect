@@ -21,43 +21,57 @@ class AFN(object):
 
 class Thompson(AFN):
 
-    def __init__(self, regex=None) -> None:
+    def __init__(self, regex=None):
+        # Llama al constructor de la clase base (Automata) y pasa como parámetro la expresión regular.
         super().__init__(regex)
+        # Obtiene la raíz del árbol sintáctico de la expresión regular.
         self.root = self.regex.get_root()
+        #Crea los estados del autómata.
         self.create_states()
-        first, last = self.build_helper(self.root)
+        # Crea los estados y transiciones del autómata basado en el árbol sintáctico de la expresión regular.
+        first, last = self.compile(self.root)
+        # Agrega el primer estado del autómata al conjunto de estados iniciales.
         self.initial_states.add(first)
+        # Agrega el último estado del autómata al conjunto de estados de aceptación.
         self.acceptance_states.add(last)
-        
+
     def create_states(self):
+        # Crea el estado inicial del autómata.
         self.build_matrix_entry(0)
+        # Crea el estado de aceptación del autómata.
         self.build_matrix_entry(1)
-        self.create_transition(0, 1, 'ε')
-    
+        # Crea una transición epsilon entre el estado inicial y el estado de aceptación del autómata.
+        self.create_transition(0, 1, 'ε') 
+
     def get_symbol_index(self, symbol):
-        for i in range(len(self.alphabet)):
-            if self.alphabet[i] == symbol:
-                return i
+        # Si el símbolo se encuentra en el alfabeto del autómata
+        if symbol in self.alphabet:
+            # Devolvemos su índice en el alfabeto.
+            return self.alphabet.index(symbol) 
+        else:
+            # Si no se encuentra, se devuelve None.
+            return None
 
-    def build_helper(self, node):
-        if node:
-            if node.value == '*':
-                child = self.build_helper(node.left_child)
-                return self.create_kleene(child)
-            elif node.value == '+':
-                child = self.build_helper(node.left_child)
-                return self.create_positive_closure(child)
-            elif node.value in '|.':
-                left = self.build_helper(node.left_child)
-                right = self.build_helper(node.right_child)
-                if node.value == '|':
-                    return self.create_or(left, right)
-                else:
-                    return self.create_concatenation(left, right)
-            else:
-                return self.create_unit(node)
+
+    def compile(self, node):
+        if not node:
+            return None
+
+        left = self.compile(node.left_child)
+        right = self.compile(node.right_child)
+
+        if node.value == '*':
+            return self.kleen_(left)
+        elif node.value == '+':
+            return self.positive_kleen(left)
+        elif node.value == '|':
+            return self.Or_(left, right)
+        elif node.value == '.':
+            return self.Conca_(left, right)
+        else:
+            return self.create_unit(node)
     
-    def create_positive_closure(self, child):
+    def positive_kleen(self, child):
         first = self.count
         self.count += 1
         last = self.count
@@ -67,13 +81,13 @@ class Thompson(AFN):
         self.build_matrix_entry(last)
 
         self.create_transition(first, child[0], 'ε')
-        self.create_transition(child[1], child[0], 'ε')
         self.create_transition(child[1], last, 'ε')
+        self.create_transition(child[1], child[0], 'ε')
+        self.create_transition(last, first, 'ε')
 
         return first, last
 
-
-    def create_kleene(self, child):
+    def kleen_(self, child):
         first = self.count
         self.count += 1
         last = self.count
@@ -82,14 +96,14 @@ class Thompson(AFN):
         self.build_matrix_entry(first)
         self.build_matrix_entry(last)
 
-        self.create_transition(first, child[0], 'ε')
         self.create_transition(first, last, 'ε')
-        self.create_transition(child[1], child[0], 'ε')
+        self.create_transition(first, child[0], 'ε')
         self.create_transition(child[1], last, 'ε')
-        
+        self.create_transition(child[1], child[0], 'ε')
+
         return first, last
     
-    def create_or(self, left, right):
+    def Or_(self, left, right):
         first = self.count
         self.count += 1
         last = self.count
@@ -105,9 +119,8 @@ class Thompson(AFN):
 
         return first, last
 
-    def create_concatenation(self, left, right):
+    def Conca_(self, left, right):
         self.replace_transitions(right[0], left[1])
-
         return left[0], right[1]
     
     def replace_transitions(self, old_state, new_state):

@@ -13,11 +13,12 @@
 """
 
 
+
 from Node import *
 from graphviz import Digraph
 
 class RegextoTree:
-    def __init__(self, postfix):
+    def __init__(self, postfix=None):
         self.postfix = postfix
         self.stack = []
         self.root = None
@@ -51,6 +52,22 @@ class RegextoTree:
         self.root = self.stack.pop()
         return self.root
     
+    def set_root(self, node):
+        self.root = node
+
+    def postorder(self):
+        return self.postorder_helper(self.root).replace('?', 'ε|')
+        
+    def postorder_helper(self, node):
+        res = ""
+        if node:
+            if node.value in '?*+':
+                res += self.postorder_helper(node.left_child)
+            elif node.value in '|.':
+                res += self.postorder_helper(node.left_child)
+                res += self.postorder_helper(node.right_child)
+            return res + node.value
+    
     def generate_dot(self):
         dot = Digraph(comment='RegEx to Tree')
         id = 0
@@ -66,8 +83,9 @@ class RegextoTree:
             if node.right:
                 dot.edge(str(id), str(id*2+2))
                 self._generate_dot(dot, node.right, id*2+2)
-                
+    
     def save_dot_png(self, filename):
         dot = self.generate_dot()
         dot.format = 'png'
         dot.render(filename, view=True)
+    

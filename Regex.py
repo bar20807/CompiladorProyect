@@ -9,7 +9,7 @@
 
 import re
 from Node import Node
-from AST import AST
+from RegextoTree import *
 from RegexErrorChecker import RegexErrorChecker
 
 class Regex(object):
@@ -31,7 +31,7 @@ class Regex(object):
         
         whitespace = r"\s+"
         self.expression = re.sub(whitespace, "", self.expression)
-        self.AST = AST()
+        self.AST = RegextoTree()
         self.create_alphabet()
         self.add_concatenation_symbol()
         self.idempotency()
