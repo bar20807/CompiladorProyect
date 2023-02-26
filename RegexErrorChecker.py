@@ -1,3 +1,12 @@
+"""
+    José Rodrigo Barrera García
+    Universidad del Valle de Guatemala
+    Diseño de Lenguajes
+    20807
+    Laboratorio A 
+"""
+
+
 class RegexErrorChecker(object):
     def __init__(self, expression) -> None:
         self.error_logs = []

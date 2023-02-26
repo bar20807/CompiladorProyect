@@ -1,5 +1,13 @@
-class Node(object):
+"""
+    José Rodrigo Barrera García
+    Universidad del Valle de Guatemala
+    Diseño de Lenguajes
+    20807
+    Laboratorio A 
+"""
 
+
+class Node(object):
     def __init__(self, value) -> None:
         self.value = value
         self.right_child = None

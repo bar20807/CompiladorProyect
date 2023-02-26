@@ -1,3 +1,12 @@
+"""
+    José Rodrigo Barrera García
+    Universidad del Valle de Guatemala
+    Diseño de Lenguajes
+    20807
+    Laboratorio A 
+"""
+
+
 from AFVisual import AFVisual
 
 class AFN(object):

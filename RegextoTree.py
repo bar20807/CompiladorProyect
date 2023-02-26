@@ -1,7 +1,17 @@
 """
     Este archivo se encargará de convertir mediante la clase Node, la expresión 
-    regular brindada a un árbol.
+    regular brindada a un árbol sintáctico.
+    
 """
+
+"""
+    José Rodrigo Barrera García
+    Universidad del Valle de Guatemala
+    Diseño de Lenguajes
+    20807
+    Laboratorio A 
+"""
+
 
 from Node import *
 from graphviz import Digraph
