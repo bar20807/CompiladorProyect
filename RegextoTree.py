@@ -28,26 +28,26 @@ class RegextoTree:
             if i == '.':
                 node = Node()
                 node.value = i
-                node.right = self.stack.pop()
-                node.left = self.stack.pop()
+                node.right_child = self.stack.pop()
+                node.left_child = self.stack.pop()
                 self.stack.append(node)
             elif i == '|':
                 node = Node()
                 node.value = i
-                node.right = self.stack.pop()
-                node.left = self.stack.pop()
+                node.right_child = self.stack.pop()
+                node.left_child = self.stack.pop()
                 self.stack.append(node)
             elif i == '*':
                 node = Node()
                 node.value = i
-                node.left = self.stack.pop()
-                node.right = None
+                node.left_child = self.stack.pop()
+                node.right_child = None
                 self.stack.append(node)
             else:
                 node = Node()
                 node.value = i
-                node.left = None
-                node.right = None
+                node.left_child = None
+                node.right_child = None
                 self.stack.append(node)
         self.root = self.stack.pop()
         return self.root
@@ -77,12 +77,12 @@ class RegextoTree:
     def _generate_dot(self, dot, node, id):
         if node:
             dot.node(str(id), str(node.value))
-            if node.left:
+            if node.left_child:
                 dot.edge(str(id), str(id*2+1))
-                self._generate_dot(dot, node.left, id*2+1)
-            if node.right:
+                self._generate_dot(dot, node.left_child, id*2+1)
+            if node.right_child:
                 dot.edge(str(id), str(id*2+2))
-                self._generate_dot(dot, node.right, id*2+2)
+                self._generate_dot(dot, node.right_child, id*2+2)
     
     def save_dot_png(self, filename):
         dot = self.generate_dot()

@@ -8,7 +8,7 @@
 
 
 class Node(object):
-    def __init__(self, value=None) -> None:
+    def __init__(self, value=None):
         self.value = value
         self.right_child = None
         self.left_child = None

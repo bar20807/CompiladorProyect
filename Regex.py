@@ -86,13 +86,6 @@ class Regex(object):
                 has_error = True
             else:
                 o1 = stack.pop()
-                '''
-                if operator == '+':
-                    new_node.value = '.'
-                    new_node.set_left_child(o1)
-                    kleene_node = Node('*')
-                    kleene_node.set_left_child(o1)
-                    new_node.set_right_child(kleene_node)'''
                 if operator == '?':
                     new_node.value = '|'
                     new_node.set_left_child(o1)

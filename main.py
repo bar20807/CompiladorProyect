@@ -23,7 +23,7 @@ while it != 4:
         save = postfix
         regex = Regex(postfix)
         afn = Thompson(regex)
-        afn.output_image()
+        afn.output_image('AFNTest3')
     elif it == 2:
         break
     elif it == 3:
@@ -31,5 +31,7 @@ while it != 4:
         tree = RegextoTree(postfix)
         tree.convert()
         tree.save_dot_png('TreeTest.png')
+    elif it == 4:
+        print("¡Hasta luego!")
     else:
         print("¡Opción inválida!")
