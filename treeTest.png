@@ -1,4 +1,0 @@
-// RegEx to Tree
-digraph {
-	0 [label=c]
-}

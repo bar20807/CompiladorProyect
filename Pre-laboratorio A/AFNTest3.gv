@@ -32,16 +32,10 @@ digraph AFNTest3 {
 	2 -> 1 [label="ε"]
 	2 -> 4 [label="ε"]
 	10
-	12
+	12 [shape=doublecircle]
 	10 -> 12 [label=c]
 	6
 	6 -> 8 [label="ε"]
 	6 -> 5 [label="ε"]
-	12
-	14
-	12 -> 14 [label=a]
-	14
-	16 [shape=doublecircle]
-	14 -> 16 [label=c]
-	16 [shape=doublecircle]
+	12 [shape=doublecircle]
 }

@@ -52,24 +52,34 @@ class Thompson(AFN):
             # Si no se encuentra, se devuelve None.
             return None
 
-
+    """
+        Función que recorre el árbol generado a partir de una expresión regular y aplica diferentes operaciones según el tipo de nodo que se esté procesando. 
+        En cada paso de la recursión, el método se mueve hacia abajo en el árbol, procesando los subárboles izquierdo y derecho del nodo actual.
+    """
     def compile(self, node):
+        # Si el nodo es nulo, no hay nada que compilar, así que se retorna None.
         if not node:
             return None
-
+        # Se compilan los hijos izquierdo y derecho del nodo actual.
         left = self.compile(node.left_child)
         right = self.compile(node.right_child)
-
+        # Dependiendo del valor del nodo actual, se selecciona la operación a realizar.
         if node.value == '*':
+            # Se aplica el operador de cerradura de Kleene al hijo izquierdo.
             return self.kleen_(left)
         elif node.value == '+':
+            # Se aplica el operador de cerradura de Kleene positiva al hijo izquierdo.
             return self.positive_kleen(left)
         elif node.value == '|':
-            return self.Or_(left, right)
+            # Se aplica el operador OR al hijo izquierdo y derecho.
+            return self.Or_(left, right)  
         elif node.value == '.':
+            # Se aplica el operador de concatenación al hijo izquierdo y derecho.
             return self.Conca_(left, right)
         else:
+            # Se crea un nodo con valor unitario.
             return self.create_unit(node)
+
     
     def positive_kleen(self, child):
         first = self.count
@@ -183,6 +193,11 @@ class Thompson(AFN):
         #Se manda a llamar que creará la transición desde la primera a la última posición y con qué simbolo se realizó
         self.create_transition(first, last, symbol)
         return first, last
+    
+    """
+        Método que crea una transición entre dos estados con un símbolo.
+    
+    """
     
     def create_transition(self, initial_states, acceptance_states, symbol):
         symbol_index = self.get_symbol_index(symbol)

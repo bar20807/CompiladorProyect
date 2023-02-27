@@ -7,11 +7,23 @@
 """
 
 
-from Regex import Regex
+
 from Thompson import *
 from RegextoTree import RegextoTree
 
 print('\n¡ADVERTENCIA! Deberá ingresar las expresiones regulares sin "." en la concatenación, el programa los agregará.')
+
+"""
+
+    Expresiones regulares dadas en el pre-laboratorio:
+    ●ab∗ab∗
+    ●0? (1? )? 0 ∗
+    ●(a*|b*)c
+    ●(b|b)*abb(a|b)*
+    ●(a|ε)b(a+)c?
+    ●(a|b)*a(a|b)(a|b)
+    
+"""
 
 #Hacemos un menú para la interación
 it= 0
@@ -21,16 +33,13 @@ while it != 4:
     if it == 1:
         postfix = input("Ingrese su expresión regular: ")
         save = postfix
-        regex = Regex(postfix)
+        regex = RegextoTree(postfix)
         afn = Thompson(regex)
-        afn.output_image('AFNTest3')
+        afn.output_image('AFNTest6')
     elif it == 2:
         break
     elif it == 3:
-        postfix = input("Ingrese su expresión regular: ")
-        tree = RegextoTree(postfix)
-        tree.convert()
-        tree.save_dot_png('TreeTest.png')
+        pass
     elif it == 4:
         print("¡Hasta luego!")
     else:
