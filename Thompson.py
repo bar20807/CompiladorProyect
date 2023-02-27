@@ -98,14 +98,18 @@ class Thompson(AFN):
         entry = [set() for element in self.alphabet]
         self.transitions[last] = entry
         
-        
+        #Se hace la transición de un estado a otro mediante el símbolo al menos 1 vez
+        #Se crea dicha transición
+        """print("Valores de child[0]: " + str(child[0]))
+        print("Valores de child[1]: " + str(child[1]))"""
         
         self.create_transition(first, child[0], 'ε')
         self.create_transition(child[1], last, 'ε')
         self.create_transition(child[1], child[0], 'ε')
-        self.create_transition(last, first, 'ε')
+        self.create_transition(first, last, 'ε')
 
         return first, last
+
 
 
     def kleen_(self, child):
@@ -166,14 +170,6 @@ class Thompson(AFN):
         # Eliminamos el estado del diccionario de transiciones
         self.transitions.pop(right[0])
         return left[0], right[1]
-    
-    def replace_transitions(self, old_state, new_state):
-        new_state_transitions = self.transitions[new_state]
-        
-        for i in range(len(self.transitions[old_state])):
-            new_state_transitions[i] = new_state_transitions[i].union(self.transitions[old_state][i])
-        
-        self.transitions.pop(old_state)
 
     def create_unit(self, node):
         symbol = node.value
