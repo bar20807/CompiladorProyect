@@ -35,7 +35,7 @@ while it != 4:
         save = postfix
         regex = RegextoTree(postfix)
         afn = Thompson(regex)
-        afn.output_image('AFNTest6')
+        afn.output_image('AFNTest7')
     elif it == 2:
         break
     elif it == 3:

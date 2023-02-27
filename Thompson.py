@@ -97,7 +97,9 @@ class Thompson(AFN):
         self.transitions[first] = entry
         entry = [set() for element in self.alphabet]
         self.transitions[last] = entry
-
+        
+        
+        
         self.create_transition(first, child[0], 'ε')
         self.create_transition(child[1], last, 'ε')
         self.create_transition(child[1], child[0], 'ε')
@@ -204,32 +206,49 @@ class Thompson(AFN):
         self.transitions[initial_states][symbol_index].add(acceptance_states)
 
     def output_image(self, path=None):
+        # Si no se especifica una ruta, se establece una por defecto.
         if not path:
             path = "AFN"
+        # Se crea un objeto visual_graph de la clase Digraph de graphviz en formato PNG y con una orientación izquierda-derecha.
         visual_graph = graphviz.Digraph(format='png', graph_attr={'rankdir':'LR'}, name=path)
+        # Se agrega un nodo falso al gráfico para conectar los nodos iniciales.
         visual_graph.node('fake', style='invisible')
+        # Se crea una cola (queue) con los estados iniciales del autómata.
         queue = deque(self.initial_states)
+        # Se crea un conjunto (visited) para almacenar los estados ya visitados.
         visited = set(self.initial_states)
+        # Mientras la cola no esté vacía.
         while queue:
+            # Se obtiene y elimina el primer elemento de la cola.
             state = queue.popleft()
+            # Si el estado es uno de los estados finales del autómata, se agrega un nodo doblecírculo al gráfico.
             if state in self.acceptance_states:
                 visual_graph.node(str(state), shape="doublecircle")
+            # Si el estado es uno de los estados iniciales del autómata, se agrega una arista al nodo falso y se agrega una etiqueta "root".
             elif state in self.initial_states:
                 visual_graph.edge("fake", str(state), style="bold")
                 visual_graph.node(str(state), root="true")
+            # Si el estado no es ni un estado final ni un estado inicial, se agrega un nodo normal al gráfico.
             else:
                 visual_graph.node(str(state))
+            # Se obtienen las transiciones del estado actual.
             transitions = self.transitions[state]
+            # Para cada transición:
             for i, transition in enumerate(transitions):
                 if not transition:
                     continue
+                # Para cada elemento de la transición:
                 for element in transition:
+                    # Si el elemento no ha sido visitado, se agrega al gráfico y se marca como visitado.
                     if element not in visited:
                         visited.add(element)
-                        queue.append(element)
                         if element in self.acceptance_states:
                             visual_graph.node(str(element), shape="doublecircle")
                         else:
                             visual_graph.node(str(element))
+                        # Se agrega el elemento a la cola.
+                        queue.append(element)
+                    # Se agrega una arista del estado actual al elemento, etiquetada con el símbolo del alfabeto correspondiente.
                     visual_graph.edge(str(state), str(element), label=str(self.alphabet[i]))
+        # Se guarda el gráfico en un directorio específico y se muestra en la pantalla.
         visual_graph.render(directory='Pre-laboratorio A',view=True)
