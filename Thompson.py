@@ -98,8 +98,6 @@ class Thompson(AFN):
         entry = [set() for element in self.alphabet]
         self.transitions[last] = entry
         
-        #Se hace la transición de un estado a otro mediante el símbolo al menos 1 vez
-        #Se crea dicha transición
         """print("Valores de child[0]: " + str(child[0]))
         print("Valores de child[1]: " + str(child[1]))"""
         

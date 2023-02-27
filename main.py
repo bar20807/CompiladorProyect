@@ -6,8 +6,6 @@
     Laboratorio A 
 """
 
-
-
 from Thompson import *
 from RegextoTree import RegextoTree
 
@@ -35,7 +33,7 @@ while it != 4:
         save = postfix
         regex = RegextoTree(postfix)
         afn = Thompson(regex)
-        afn.output_image('AFNTest7')
+        afn.output_image('AFNTest8')
     elif it == 2:
         break
     elif it == 3:
