@@ -1,0 +1,33 @@
+digraph AFNTest9 {
+	graph [rankdir=LR]
+	fake [style=invisible]
+	fake -> 9 [style=bold]
+	9 [root=true]
+	10 [shape=doublecircle]
+	9 -> 10 [label="ε"]
+	7
+	9 -> 7 [label="ε"]
+	10 [shape=doublecircle]
+	7
+	1
+	7 -> 1 [label="ε"]
+	3
+	7 -> 3 [label="ε"]
+	1
+	2
+	1 -> 2 [label=a]
+	3
+	4
+	3 -> 4 [label=b]
+	2
+	8
+	2 -> 8 [label="ε"]
+	4
+	6
+	4 -> 6 [label=b]
+	8
+	8 -> 10 [label="ε"]
+	8 -> 7 [label="ε"]
+	6
+	6 -> 8 [label="ε"]
+}
