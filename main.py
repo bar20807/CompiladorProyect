@@ -23,8 +23,18 @@ print('\n¡ADVERTENCIA! Deberá ingresar las expresiones regulares sin "." en la
     
 """
 
+postfix = input("Ingrese su expresión regular: ")
+cadena = input("Ingrese la cadena que desea evaluar: ")
+regex = RegextoTree(postfix)
+print("to_postfix: " + regex.to_postfix())
+afn = Thompson(regex)
+result = afn.simulate(cadena)
+print("La expresión ", cadena, " ha sido ", result, " por el AFN ")
+afn.output_image('AFNTest9')
+
+
 #Hacemos un menú para la interación
-it= 0
+"""it= 0
 while it != 4: 
     print("Por favor, ingrese una de la siguientes tres opciones: " + "\n1) Obtener AFN de la expresión regular: " + "\n2) Obtener el AFD de la expresión regular: " + "\n3) Generar el árbol sintáctico del regex"+ "\n4) Salir")
     it = int(input("\nIngrese una de las opciones: "))
@@ -32,6 +42,7 @@ while it != 4:
         postfix = input("Ingrese su expresión regular: ")
         save = postfix
         regex = RegextoTree(postfix)
+        print("to_postfix: " + regex.to_postfix())
         afn = Thompson(regex)
         afn.output_image('AFNTest8')
     elif it == 2:
@@ -41,4 +52,4 @@ while it != 4:
     elif it == 4:
         print("¡Hasta luego!")
     else:
-        print("¡Opción inválida!")
+        print("¡Opción inválida!")"""

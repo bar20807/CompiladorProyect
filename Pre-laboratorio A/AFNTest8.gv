@@ -1,26 +1,68 @@
 digraph AFNTest8 {
 	graph [rankdir=LR]
 	fake [style=invisible]
-	fake -> 5 [style=bold]
-	5 [root=true]
+	fake -> 27 [style=bold]
+	27 [root=true]
 	1
-	5 -> 1 [label="ε"]
-	3
-	5 -> 3 [label="ε"]
+	27 -> 1 [label="ε"]
+	21
+	27 -> 21 [label="ε"]
 	1
 	2
 	1 -> 2 [label=a]
+	21
+	22
+	21 -> 22 [label=b]
+	2
+	15
+	2 -> 15 [label="ε"]
+	7
+	2 -> 7 [label="ε"]
+	22
+	24
+	22 -> 24 [label=a]
+	15
+	16
+	15 -> 16 [label="ε"]
+	13
+	15 -> 13 [label="ε"]
+	7
+	3
+	7 -> 3 [label="ε"]
+	5
+	7 -> 5 [label="ε"]
+	24
+	26
+	24 -> 26 [label=a]
+	16
+	18
+	16 -> 18 [label="ε"]
+	13
+	14
+	13 -> 14 [label=c]
 	3
 	4
-	3 -> 4 [label="ε"]
-	2
+	3 -> 4 [label=a]
+	5
 	6
-	2 -> 6 [label="ε"]
+	5 -> 6 [label="ε"]
+	26
+	28 [shape=doublecircle]
+	26 -> 28 [label="ε"]
+	18
+	20
+	18 -> 20 [label=b]
+	14
+	14 -> 16 [label="ε"]
+	14 -> 13 [label="ε"]
 	4
-	4 -> 6 [label="ε"]
-	6
 	8
-	6 -> 8 [label=b]
+	4 -> 8 [label="ε"]
+	6
+	6 -> 8 [label="ε"]
+	28 [shape=doublecircle]
+	20
+	20 -> 28 [label="ε"]
 	8
 	9
 	8 -> 9 [label="ε"]
@@ -28,25 +70,10 @@ digraph AFNTest8 {
 	8 -> 12 [label="ε"]
 	9
 	10
-	9 -> 10 [label=a]
+	9 -> 10 [label=b]
 	12
-	13
-	12 -> 13 [label="ε"]
-	15
-	12 -> 15 [label="ε"]
+	12 -> 18 [label="ε"]
 	10
 	10 -> 9 [label="ε"]
 	10 -> 12 [label="ε"]
-	13
-	14
-	13 -> 14 [label=c]
-	15
-	16
-	15 -> 16 [label="ε"]
-	14
-	18 [shape=doublecircle]
-	14 -> 18 [label="ε"]
-	16
-	16 -> 18 [label="ε"]
-	18 [shape=doublecircle]
 }

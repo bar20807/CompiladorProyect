@@ -6,9 +6,8 @@
     Laboratorio A 
 """
 
-
 class RegexErrorChecker(object):
-    def __init__(self, expression, alphabet):
+    def __init__(self, expression='', alphabet=''):
         self.error_logs = []
         self.binary = '.|'
         self.unary = '?*+'
@@ -136,4 +135,26 @@ class RegexErrorChecker(object):
                 error_list = ''.join(f'{i+1}. {error}\n' for i, error in enumerate(self.error_logs))
                 # Se retorna una cadena indicando la cantidad de errores encontrados y la lista de errores.
                 return f"Se encontraron {error_count} errores en la expresión:\n{error_list}"
+    
+    def check_alphabet_errors(self, string, alphabet):
+        """
+        Esta función verifica si una cadena de entrada contiene símbolos que no pertenecen al alfabeto del autómata.
+        Si se encuentran errores, se devuelve una lista con los detalles de los errores.
+        Si no hay errores, se devuelve una lista vacía.
+        """
+        self.errors = []
+        for i in range(len(string)):
+            if string[i] not in alphabet and string[i] != 'ε':
+                error = f"El simbolo {string[i]} no pertenece al alfabeto del AFN.\n"
+                self.errors.append(error)
+        if self.errors:
+            raise Exception(self.to_string())
+
+
+    def to_string(self):
+        res = '\n'
+        for error in self.errors:
+            res += error
+
+        return res
 

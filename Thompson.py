@@ -10,6 +10,8 @@
 
 import graphviz
 from collections import deque
+from RegexErrorChecker import RegexErrorChecker
+
 
 class AFN(object):
     def __init__(self, regex = None):
@@ -36,6 +38,10 @@ class Thompson(AFN):
         self.initial_states.add(first)
         # Agrega el último estado del autómata al conjunto de estados de aceptación.
         self.acceptance_states.add(last)
+        # Variable que se encarga de verificar los errores
+        self.error_checker = RegexErrorChecker()
+        # Variable que se encarga de hacer las transiciones externas
+        self.external_transitions = None
 
     def create_states(self):
         self.transitions[0] = [set() for _ in self.alphabet]
@@ -198,6 +204,69 @@ class Thompson(AFN):
     def create_transition(self, initial_states, acceptance_states, symbol):
         symbol_index = self.get_symbol_index(symbol)
         self.transitions[initial_states][symbol_index].add(acceptance_states)
+        
+    """
+        Función que se encargará de hacer la simulación del afn
+        
+    """
+    def simulate(self, string):
+        self.error_checker.check_alphabet_errors(string, self.alphabet)
+        s = self.e_closure(self.initial_states)
+        string = 'ε' if not string else string
+        for element in string:
+            if element != 'ε':
+                s = self.e_closure(self.move(s, element))
+        if s.intersection(self.acceptance_states):
+            return "aceptada"
+        return "rechazada"
+
+    
+    """
+        Función que se encarga de realizar el e-closure
+    
+    """
+    
+    def e_closure(self, states):
+        transitions = self.external_transitions.copy() if self.external_transitions else self.transitions.copy()
+        stack = []
+        for state in states:
+            stack.append(state)
+        
+        result = states.copy()
+
+        while stack:
+            t = stack.pop()
+            transition = transitions[t]
+            index = self.get_symbol_index('ε')
+            states_reached = transition[index]
+            for element in states_reached:
+                if element not in result:
+                    result.add(element)
+                    stack.append(element)
+        return result
+    
+    """
+        Función que se encarga de realizar el move
+    
+    """
+    
+    def move(self, states, symbol):
+        """
+        Esta función calcula el conjunto de estados alcanzables desde un conjunto de estados dados con un símbolo de entrada.
+
+        Parámetros:
+        - states: conjunto de estados a partir del cual se realizará la transición.
+        - symbol: símbolo de entrada para realizar la transición.
+        """
+        result = set()
+        transitions = self.external_transitions.copy() if self.external_transitions else self.transitions.copy()
+        for state in states:
+            index = self.get_symbol_index(symbol)
+            transition = transitions[state]
+            states_reached = transition[index]
+            for element in states_reached:
+                result.add(element)
+        return result
 
     def output_image(self, path=None):
         # Si no se especifica una ruta, se establece una por defecto.
