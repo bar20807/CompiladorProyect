@@ -210,15 +210,23 @@ class Thompson(AFN):
         
     """
     def simulate(self, string):
+        # Verifica si la cadena de entrada contiene algún símbolo que no pertenezca al alfabeto del autómata
         self.error_checker.check_alphabet_errors(string, self.alphabet)
+        # Obtiene el conjunto de estados alcanzables por transiciones epsilon a partir de los estados iniciales
         s = self.e_closure(self.initial_states)
+        # Si la cadena de entrada está vacía, se asume que el símbolo de entrada es epsilon
         string = 'ε' if not string else string
+        # Se procesa la cadena de entrada símbolo por símbolo, calculando los estados alcanzables por transiciones
+        # del símbolo actual a partir de los estados alcanzables por transiciones del símbolo anterior
         for element in string:
             if element != 'ε':
                 s = self.e_closure(self.move(s, element))
+        # Se verifica si el conjunto de estados alcanzados por la cadena de entrada contiene algún estado de aceptación.
+        # Si lo hace, se acepta la cadena, en caso contrario, se rechaza.
         if s.intersection(self.acceptance_states):
             return "aceptada"
         return "rechazada"
+
 
     
     """
@@ -227,23 +235,34 @@ class Thompson(AFN):
     """
     
     def e_closure(self, states):
+        # Creamos una copia de los estados para no modificar el original
+        # Si no hay transiciones externas, usamos las transiciones internas
         transitions = self.external_transitions.copy() if self.external_transitions else self.transitions.copy()
+        # Creamos una pila y agregamos los estados iniciales a la pila
         stack = []
         for state in states:
             stack.append(state)
-        
+        # Inicializamos el conjunto de estados resultante con los estados iniciales
         result = states.copy()
-
+        # Realizamos un bucle mientras la pila no esté vacía
         while stack:
+            # Sacamos un estado de la pila
             t = stack.pop()
+            # Obtenemos las transiciones del estado actual
             transition = transitions[t]
+            # Obtenemos el índice del símbolo "ε" en el alfabeto
             index = self.get_symbol_index('ε')
+            # Obtenemos los estados alcanzados por la transición "ε"
             states_reached = transition[index]
+            # Iteramos sobre los estados alcanzados por la transición "ε"
             for element in states_reached:
+                # Si el estado no está en el conjunto de estados resultante, lo agregamos y lo ponemos en la pila
                 if element not in result:
                     result.add(element)
                     stack.append(element)
+        # Devolvemos el conjunto de estados resultante
         return result
+
     
     """
         Función que se encarga de realizar el move
@@ -258,15 +277,32 @@ class Thompson(AFN):
         - states: conjunto de estados a partir del cual se realizará la transición.
         - symbol: símbolo de entrada para realizar la transición.
         """
+        # Inicializamos el conjunto de estados resultantes vacío.
         result = set()
+        #Obtenemos las transiciones externas o internas del autómata, según corresponda.
         transitions = self.external_transitions.copy() if self.external_transitions else self.transitions.copy()
+        #Recorremos los estados del conjunto de estados de entrada.
         for state in states:
+            #Obtenemos el índice del símbolo en la tabla de transiciones.  
             index = self.get_symbol_index(symbol)
+            #Obtenemos la transición correspondiente al estado actual. 
             transition = transitions[state]
+            #Obtenemos el conjunto de estados alcanzables con el símbolo actual.
             states_reached = transition[index]
+            #Recorremos los estados alcanzables.
             for element in states_reached:
+                #Agregamos cada estado alcanzable al conjunto de estados resultantes.
                 result.add(element)
+        #Devolvemos el conjunto de estados alcanzables.
         return result
+
+    """
+        Función que se encargar de pasar el AFN a AFD
+    
+    """
+    
+    def convert_to_DFA(self):
+        pass
 
     def output_image(self, path=None):
         # Si no se especifica una ruta, se establece una por defecto.
