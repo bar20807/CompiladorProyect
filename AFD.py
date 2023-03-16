@@ -73,6 +73,14 @@ class AFD_construction(FA):
         self.set_external_transitions(self.transitions)
 
 
+    """
+        Función que se encarga de crear el AFD directo a partir de su expresión regular
+    """
+    
+    def afd_direct_(self, regex):
+        pass
+        
+    
     
     def create_special_alphabet(self):
         self.special_alphabet = [element for element in self.alphabet]

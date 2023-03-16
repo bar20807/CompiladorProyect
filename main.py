@@ -24,6 +24,17 @@ print('\n¡ADVERTENCIA! Deberá ingresar las expresiones regulares sin "." en la
     
 """
 
+"""
+    Expresiones regulares dadas en el pre-laboratorio b: 
+    '(a*|b*)c'
+    '(b|b)*abb(a|b)*'
+    '(a|ε)b(a+)c?'
+    '(a|b)*a(a|b)(a|b)'
+    'b*ab?'
+    'b+abc+'
+    'ab*ab*'
+"""
+
 postfix = input("Ingrese su expresión regular: ")
 cadena = input("Ingrese la cadena que desea evaluar: ")
 regex = RegextoTree(postfix)
@@ -31,11 +42,11 @@ print("to_postfix: " + regex.to_postfix())
 afn = Thompson(regex)
 result = afn.simulate(cadena)
 print("La expresión ", cadena, " ha sido ", result, " por el AFN ")
-afn.output_image('AFNTest9')
+afn.output_image('AFN#2PreLabB')
 
 #Construción de AFD a partir del AFN
 dfa = afn.to_dfa()
-dfa.output_image('AFN_to_DFA')
+dfa.output_image('AFNtoAFD#2PreLabB')
 
 
 #Hacemos un menú para la interación

@@ -295,7 +295,7 @@ class Thompson(FA):
     
     def to_dfa(self):
         afd = AFD_construction()
-        afd.build_from_NFA(self)
+        afd.afd_(self)
         return afd
 
     def output_image(self, path=None):
@@ -344,4 +344,4 @@ class Thompson(FA):
                     # Se agrega una arista del estado actual al elemento, etiquetada con el símbolo del alfabeto correspondiente.
                     visual_graph.edge(str(state), str(element), label=str(self.alphabet[i]))
         # Se guarda el gráfico en un directorio específico y se muestra en la pantalla.
-        visual_graph.render(directory='Pre-laboratorio A',view=True)
+        visual_graph.render(directory='Pre-laboratorio B',view=True)
