@@ -9,17 +9,22 @@ class AFD_construction(FA):
         self.dead_state = None
         self.temp_transitions = None
 
-    def build_from_NFA(self, NFA):
+    """
+        
+        Función que se encarga de hacer la construcción del AFD por medio de subconjuntos
+    
+    """
+    def afd_(self, AFN):
         # Copia algunos atributos del NFA original
-        self.regex = NFA.regex
-        self.alphabet = NFA.alphabet
-        self.external_transitions = NFA.transitions
+        self.regex = AFN.regex
+        self.alphabet = AFN.alphabet
+        self.external_transitions = AFN.transitions
         # Crea el alfabeto especial y establece el contador de estados
         self.create_special_alphabet()
         count_states = 1
         # Crea un diccionario para los estados del DFA y establece el primer estado
         D_states = {}
-        first_state = frozenset(self.e_closure(NFA.initial_states))
+        first_state = frozenset(self.e_closure(AFN.initial_states))
         D_states[first_state] = count_states
         # Crea la entrada para el primer estado en la tabla de transiciones del DFA
         entry = [set() for element in self.special_alphabet]
@@ -35,7 +40,7 @@ class AFD_construction(FA):
             T = unmarked_states.pop()
             # Verifica si es un estado de aceptación y lo agrega de ser necesario
             for element in T:
-                if element in NFA.acceptance_states:
+                if element in AFN.acceptance_states:
                     self.acceptance_states.add(D_states[T])
             # Para cada símbolo en el alfabeto especial
             for symbol in self.special_alphabet:
