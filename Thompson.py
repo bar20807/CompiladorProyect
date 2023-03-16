@@ -11,19 +11,10 @@
 import graphviz
 from collections import deque
 from RegexErrorChecker import RegexErrorChecker
-
-
-class AFN(object):
-    def __init__(self, regex = None):
-            self.regex = regex
-            self.alphabet = regex.alphabet
-            self.count = 1
-            self.transitions = {}
-            self.initial_states = set()
-            self.acceptance_states = set()
-            self.current_nodes = set()
+from AFD import AFD_construction
+from FA import FA
         
-class Thompson(AFN):
+class Thompson(FA):
 
     def __init__(self, regex=None):
         # Llama al constructor de la clase base (Automata) y pasa como parámetro la expresión regular.
@@ -297,12 +288,15 @@ class Thompson(AFN):
         return result
 
     """
-        Función que se encargar de pasar el AFN a AFD
+        
+        Función que se encarga de pasar el AFN a AFD
     
     """
     
-    def convert_to_DFA(self):
-        pass
+    def to_dfa(self):
+        afd = AFD_construction()
+        afd.build_from_NFA(self)
+        return afd
 
     def output_image(self, path=None):
         # Si no se especifica una ruta, se establece una por defecto.

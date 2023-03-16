@@ -8,6 +8,7 @@
 
 from Thompson import *
 from RegextoTree import RegextoTree
+from AFD import AFD_construction
 
 print('\n¡ADVERTENCIA! Deberá ingresar las expresiones regulares sin "." en la concatenación, el programa los agregará.')
 
@@ -31,6 +32,10 @@ afn = Thompson(regex)
 result = afn.simulate(cadena)
 print("La expresión ", cadena, " ha sido ", result, " por el AFN ")
 afn.output_image('AFNTest9')
+
+#Construción de AFD a partir del AFN
+dfa = afn.to_dfa()
+dfa.output_image('AFN_to_DFA')
 
 
 #Hacemos un menú para la interación
