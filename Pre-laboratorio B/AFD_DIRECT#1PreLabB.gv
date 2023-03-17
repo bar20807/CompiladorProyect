@@ -1,4 +1,4 @@
-digraph "AFNtoAFD#1PreLabB" {
+digraph "AFD_DIRECT#1PreLabB" {
 	graph [rankdir=LR]
 	fake [style=invisible]
 	fake -> 1 [style=bold]

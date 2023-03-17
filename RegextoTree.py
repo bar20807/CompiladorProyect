@@ -11,13 +11,12 @@
     20807
     Laboratorio A 
 """
-
 from Node import *
 import re
 from RegexErrorChecker import RegexErrorChecker
 
 class RegextoTree(object):
-    def __init__(self, expression):
+    def __init__(self, expression = None):
         self.alphabet = ['ε']
         self.operators = {'.', '|', '*', '+', '?'}
         self.binarios = {'|'}

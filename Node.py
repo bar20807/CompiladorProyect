@@ -12,6 +12,10 @@ class Node(object):
         self.value = value
         self.right_child = None
         self.left_child = None
+        self.nullable = False
+        self.first_pos = set()
+        self.last_pos = set()
+        self.number = None
         
     def set_right_child(self, node):
         self.right_child = node

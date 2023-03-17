@@ -2,12 +2,15 @@ from RegextoTree import *
 import graphviz
 from collections import deque
 from FA import FA
+from TreeReading import TreeReading
 
 class AFD_construction(FA):
     def __init__(self, regex=None) -> None:
         super().__init__(regex)
         self.dead_state = None
         self.temp_transitions = None
+        if regex: 
+            self.afd_direct_()
 
     """
         
@@ -70,15 +73,54 @@ class AFD_construction(FA):
         
         # Elimina los estados de muerte y actualiza la tabla de transiciones del DFA
         self.delete_dead_state()
-        self.set_external_transitions(self.transitions)
+        self.external_transitions = self.transitions
 
 
     """
         Función que se encarga de crear el AFD directo a partir de su expresión regular
     """
     
-    def afd_direct_(self, regex):
-        pass
+    def afd_direct_(self):
+        count = 1
+        tree = TreeReading(self.regex)
+        table = tree.get_followpos_table()
+        first_state = frozenset(tree.root.first_pos)
+        self.create_special_alphabet()
+        states = {first_state: count}
+        unmarked_states = [first_state]
+        entry = [set() for element in self.special_alphabet]
+        self.transitions[count] = entry
+        count += 1
+        pos_augmented = tree.get_last_pos()
+        self.initial_states.add(states[first_state])
+        if pos_augmented in first_state:
+            self.acceptance_states.add(states[first_state])
+
+        while unmarked_states:
+            S = unmarked_states.pop()
+            for symbol in self.special_alphabet:
+                U = set()
+                for state in S:
+                    if (state, symbol) in table:
+                        U = U.union(table[(state, symbol)])
+                            
+                U = frozenset(U)
+                if U not in states:
+                    states[U] = count
+                    if not U:
+                        self.dead_state = count
+                    entry = [set() for element in self.special_alphabet]
+                    self.transitions[count] = entry
+                    unmarked_states.append(U)
+                    count += 1
+                self.create_transition(states[S], states[U], symbol)
+                if pos_augmented in U:
+                    self.acceptance_states.add(states[U])
+
+        self.alphabet = self.special_alphabet
+        self.temp_transitions = self.transitions
+        self.delete_dead_state()
+        self.external_transitions = self.transitions
         
     
     
@@ -101,28 +143,25 @@ class AFD_construction(FA):
     
     """
     def delete_dead_state(self):
-        # Creamos un nuevo diccionario para almacenar las nuevas transiciones
-        new_transitions = {}
-        # Iteramos sobre las transiciones originales del autómata
-        for state, state_transitions in self.transitions.items():
-            # Verificamos si el estado actual es el estado muerto
-            if state != self.dead_state:
-                # Creamos una nueva lista para almacenar las transiciones sin el estado muerto
-                new_state_transitions = []
-                # Iteramos sobre las transiciones del estado actual
-                for transition in state_transitions:
-                    # Verificamos si la transición actual incluye el estado muerto
-                    if self.dead_state not in transition:
-                        # Si no incluye el estado muerto, agregamos la transición a la lista de transiciones sin el estado muerto
-                        new_state_transitions.append(transition)
-                # Agregamos la lista de transiciones sin el estado muerto al nuevo diccionario de transiciones
-                new_transitions[state] = new_state_transitions
-        # Asignamos el nuevo diccionario de transiciones al atributo 'transitions' del autómata
-        self.transitions = new_transitions
-
-    
-    def set_external_transitions(self, transitions):
-        self.external_transitions = transitions
+        # Copia el diccionario de transiciones para no modificar el original
+        transitions = self.transitions.copy()
+        for transition in self.transitions:
+            # Si la transición actual es el estado muerto, se elimina del diccionario
+            if transition == self.dead_state:
+                transitions.pop(transition)
+            else:
+                new_element = []
+                # Se itera sobre los elementos de la transición actual
+                for element in self.transitions[transition]:
+                    # Si el estado muerto está en el elemento actual, se reemplaza por un conjunto vacío
+                    if self.dead_state in element:
+                        new_element.append(set())
+                    else:
+                        new_element.append(element)
+                # Se actualiza el valor de la transición actual en el diccionario
+                transitions[transition] = new_element
+        # Se actualiza el diccionario de transiciones del objeto actual con el diccionario actualizado
+        self.transitions = transitions
 
     """
         Función que se encarga de devolver el index del símbolo del alfabeto
