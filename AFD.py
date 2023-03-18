@@ -5,7 +5,7 @@ from FA import FA
 from TreeReading import TreeReading
 
 class AFD_construction(FA):
-    def __init__(self, regex=None) -> None:
+    def __init__(self, regex=None):
         super().__init__(regex)
         self.dead_state = None
         self.temp_transitions = None
@@ -65,8 +65,8 @@ class AFD_construction(FA):
                     entry = [set() for element in self.special_alphabet]
                     self.transitions[D_states[U]] = entry
                 # Crea una transición entre el estado actual y el estado resultante con el símbolo actual
-                self.create_transition(D_states[T], D_states[U], symbol) 
-            
+                self.transitions[D_states[T]][self.special_alphabet.index(symbol)].add(D_states[U])
+                
         # Actualiza el alfabeto del DFA y guarda las transiciones originales en una variable temporal
         self.alphabet = self.special_alphabet
         self.temp_transitions = self.transitions
@@ -76,51 +76,80 @@ class AFD_construction(FA):
         self.external_transitions = self.transitions
 
 
+
     """
         Función que se encarga de crear el AFD directo a partir de su expresión regular
     """
     
     def afd_direct_(self):
+        # Contador de estados
         count = 1
+        # Se crea el árbol de lectura a partir de la expresión regular
         tree = TreeReading(self.regex)
+        # Se obtiene la tabla de followpos del árbol de lectura
         table = tree.get_followpos_table()
+        # Se establece el primer estado del DFA
         first_state = frozenset(tree.root.first_pos)
+        # Se crea el alfabeto especial
         self.create_special_alphabet()
+        # Diccionario de estados del DFA
         states = {first_state: count}
+        # Lista de estados no marcados
         unmarked_states = [first_state]
+        # Entrada para el primer estado en la tabla de transiciones del DFA
         entry = [set() for element in self.special_alphabet]
         self.transitions[count] = entry
+        # Se aumenta el contador de estados
         count += 1
+        # Se obtiene el último followpos
         pos_augmented = tree.get_last_pos()
+        # Se agrega el primer estado como estado inicial del DFA
         self.initial_states.add(states[first_state])
+        # Si el último followpos está en el primer estado, se agrega como estado de aceptación
         if pos_augmented in first_state:
             self.acceptance_states.add(states[first_state])
 
+        # Se itera hasta que no hayan más estados no marcados
         while unmarked_states:
+            # Se obtiene un estado no marcado
             S = unmarked_states.pop()
+            # Se itera por cada símbolo del alfabeto especial
             for symbol in self.special_alphabet:
+                # Se obtiene el conjunto U de followpos de S y el símbolo actual
                 U = set()
                 for state in S:
                     if (state, symbol) in table:
                         U = U.union(table[(state, symbol)])
-                            
                 U = frozenset(U)
+                # Si U no ha sido agregado a los estados del DFA
                 if U not in states:
+                    # Se agrega U como nuevo estado del DFA
                     states[U] = count
+                    # Si U es un estado vacío, se establece como estado de muerte del DFA
                     if not U:
                         self.dead_state = count
+                    # Se crea una nueva entrada en la tabla de transiciones del DFA para U
                     entry = [set() for element in self.special_alphabet]
                     self.transitions[count] = entry
+                    # Se agrega U a la lista de estados no marcados
                     unmarked_states.append(U)
+                    # Se aumenta el contador de estados
                     count += 1
+                # Se crea una transición de S a U con el símbolo actual
                 self.create_transition(states[S], states[U], symbol)
+                # Si U contiene el último followpos, se agrega como estado de aceptación
                 if pos_augmented in U:
                     self.acceptance_states.add(states[U])
 
+        # Se establece el alfabeto del DFA como el alfabeto especial
         self.alphabet = self.special_alphabet
+        # Se guarda la tabla de transiciones temporalmente
         self.temp_transitions = self.transitions
+        # Se elimina el estado de muerte del DFA
         self.delete_dead_state()
+        # Se establece la tabla de transiciones del DFA como la tabla externa
         self.external_transitions = self.transitions
+
         
     
     
