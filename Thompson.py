@@ -200,13 +200,16 @@ class Thompson(FA):
         Función que se encargará de hacer la simulación del afn
         
     """
-    def simulate(self, string):
+    def simulate_afn(self, string):
         # Verifica si la cadena de entrada contiene algún símbolo que no pertenezca al alfabeto del autómata
         self.error_checker.check_alphabet_errors(string, self.alphabet)
         # Obtiene el conjunto de estados alcanzables por transiciones epsilon a partir de los estados iniciales
         s = self.e_closure(self.initial_states)
         # Si la cadena de entrada está vacía, se asume que el símbolo de entrada es epsilon
-        string = 'ε' if not string else string
+        if not string: 
+            string = 'ε'
+        else:
+            string
         # Se procesa la cadena de entrada símbolo por símbolo, calculando los estados alcanzables por transiciones
         # del símbolo actual a partir de los estados alcanzables por transiciones del símbolo anterior
         for element in string:
@@ -217,8 +220,6 @@ class Thompson(FA):
         if s.intersection(self.acceptance_states):
             return "aceptada"
         return "rechazada"
-
-
     
     """
         Función que se encarga de realizar el e-closure

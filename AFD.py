@@ -11,6 +11,8 @@ class AFD_construction(FA):
         self.temp_transitions = None
         if regex: 
             self.afd_direct_()
+        # Variable que se encarga de verificar los errores
+        self.error_checker = RegexErrorChecker()
 
     """
         
@@ -149,8 +151,6 @@ class AFD_construction(FA):
         self.delete_dead_state()
         # Se establece la tabla de transiciones del DFA como la tabla externa
         self.external_transitions = self.transitions
-
-        
     
     
     def create_special_alphabet(self):
@@ -191,7 +191,38 @@ class AFD_construction(FA):
                 transitions[transition] = new_element
         # Se actualiza el diccionario de transiciones del objeto actual con el diccionario actualizado
         self.transitions = transitions
+        
+    """
+        Función que se encarga de hacer la minimización
+    """
+    def minimize_function(self):
+        pass
+        
+    """
+        Función que se encarga de hacer la simulación del AFD
+    
+    """
+    def simulate_afd(self, string):
+        # Verifica que los caracteres del string pertenezcan al alfabeto
+        for element in string:
+            if element not in self.alphabet:
+                return "rechazada"
+        # Inicia en el estado inicial
+        s = self.initial_states
+        # Si el string está vacío, se mueve con una transición vacía
+        if not string:
+            s = self.move(s, 'ε')
+        else:
+            # Se mueve a través de cada elemento del string
+            for element in string:
+                s = self.move(s, element)
+        # Si el estado actual está en los estados de aceptación, se acepta el string
+        if s.intersection(self.acceptance_states):
+            return "aceptada"
+        # Si no, se rechaza el string
+        return "rechazada"
 
+    
     """
         Función que se encarga de devolver el index del símbolo del alfabeto
     

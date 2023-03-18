@@ -40,7 +40,7 @@ cadena = input("Ingrese la cadena que desea evaluar: ")
 regex = RegextoTree(postfix)
 print("to_postfix: " + regex.to_postfix())
 afn = Thompson(regex)
-result = afn.simulate(cadena)
+result = afn.simulate_afn(cadena)
 print("La expresión ", cadena, " ha sido ", result, " por el AFN ")
 afn.output_image('AFN#1PreLabB')
 
@@ -51,6 +51,10 @@ dfa.output_image('AFNtoAFD#1PreLabB')
 #Construcción de AFD directamente
 dfa_direct = AFD_construction(regex)
 dfa_direct.output_image('AFD_DIRECT#1PreLabB')
+
+#Evaluación de la cadena en el AFD
+result = dfa_direct.simulate_afd(cadena)
+print("La expresión ", cadena, " ha sido ", result, " por el AFD directo")
 
 #Hacemos un menú para la interación
 """it= 0
