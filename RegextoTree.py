@@ -21,18 +21,8 @@ class RegextoTree(object):
         self.operators = {'.', '|', '*', '+', '?'}
         self.binarios = {'|'}
         self.error_checker = RegexErrorChecker(expression, self.alphabet)
+        self.expression = self.control_expression(expression)
         self.expression = expression.strip()
-
-        if '.' in self.expression:
-            error = "ERROR EN LA EXPRESIÓN REGULAR. NO LA PUEDES COLOCAR CON EL OPERADOR '.' DE LA CONCATENACIÓN."
-            self.error_checker.add_error(error)
-
-        if not self.expression:
-            error = "EXPRESIÓN VACÍA"
-            self.error_checker.add_error(error)
-
-        whitespace = r"\s+"
-        self.expression = re.sub(whitespace, "", self.expression)
         self.create_alphabet()
         self.add_concatenation_symbol()
         self.idempotency()
@@ -201,8 +191,21 @@ class RegextoTree(object):
             # Se saca el último nodo del stack de nodos y se usa como raíz del árbol de sintaxis abstracta
             root = output_stack.pop()
             #Se asigna la raíz al árbol de la clase. 
-            self.set_root(root)  
+            self.set_root(root)
+    
+    #Función de control
+    def control_expression(self, expression):
+        if '.' in expression:
+            error = "ERROR EN LA EXPRESIÓN REGULAR. NO LA PUEDES COLOCAR CON EL OPERADOR '.' DE LA CONCATENACIÓN."
+            self.error_checker.add_error(error)
 
+        if not expression:
+            error = "EXPRESIÓN VACÍA"
+            self.error_checker.add_error(error)
+
+        whitespace = r"\s+"
+        return re.sub(whitespace, "", expression)
+        
     def to_postfix(self):
         return self.postorder()
         
