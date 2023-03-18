@@ -38,7 +38,8 @@ print('\n¡ADVERTENCIA! Deberá ingresar las expresiones regulares sin "." en la
 postfix = input("Ingrese su expresión regular: ")
 cadena = input("Ingrese la cadena que desea evaluar: ")
 regex = RegextoTree(postfix)
-print("to_postfix: " + regex.to_postfix())
+
+#Creación del AFN a partir de su expresión regular. 
 afn = Thompson(regex)
 result = afn.simulate_afn(cadena)
 print("La expresión ", cadena, " ha sido ", result, " por el AFN ")
@@ -52,7 +53,7 @@ dfa.output_image('AFNtoAFD#1PreLabB')
 dfa_direct = AFD_construction(regex)
 dfa_direct.output_image('AFD_DIRECT#1PreLabB')
 
-#Evaluación de la cadena en el AFD
+#Evaluación de la cadena en el AFD directo
 result = dfa_direct.simulate_afd(cadena)
 print("La expresión ", cadena, " ha sido ", result, " por el AFD directo")
 

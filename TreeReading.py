@@ -119,6 +119,7 @@ class TreeReading():
     
     def build_helper(self):
         # Obtiene el último elemento de la pila
+        #print("to_postfix afd directo: " + str(self.stack))
         current = self.stack.pop()
         # Crea un nodo con el valor obtenido de la pila
         node = Node(current)
