@@ -57,6 +57,13 @@ dfa_direct.output_image('AFD_DIRECT#1PreLabB')
 result = dfa_direct.simulate_afd(cadena)
 print("La expresión ", cadena, " ha sido ", result, " por el AFD directo")
 
+#Minimizamos el AFD obtenido del AFN
+dfa.minimize_function()
+result = dfa.simulate_afd(cadena)
+print("La expresión ", cadena, " ha sido ", result, " por el AFD minimizado del AFN")
+dfa.output_image('AFNtoAFD_MIN#1PreLabB')
+
+
 #Hacemos un menú para la interación
 """it= 0
 while it != 4: 

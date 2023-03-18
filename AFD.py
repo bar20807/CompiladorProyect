@@ -196,7 +196,15 @@ class AFD_construction(FA):
         Función que se encarga de hacer la minimización
     """
     def minimize_function(self):
-        pass
+        transitions = self.temp_transitions
+        #Obtenemos los estados
+        states = {state for state in transitions}
+        acceptance = frozenset({state for state in states if state in self.acceptance_states})
+        non_acceptance = frozenset(states - acceptance)
+        partition = {acceptance, non_acceptance}
+        
+        
+
         
     """
         Función que se encarga de hacer la simulación del AFD
