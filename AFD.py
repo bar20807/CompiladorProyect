@@ -153,6 +153,7 @@ class AFD_construction(FA):
         self.external_transitions = self.transitions
     
     
+    
     def create_special_alphabet(self):
         self.special_alphabet = [element for element in self.alphabet]
         self.special_alphabet.remove('ε')
@@ -196,16 +197,206 @@ class AFD_construction(FA):
         Función que se encarga de hacer la minimización
     """
     def minimize_function(self):
-        transitions = self.temp_transitions
-        #Obtenemos los estados
-        states = {state for state in transitions}
+        #Obtenemos los estados del DFA
+        states = self.get_states(self.temp_transitions)
+        # Dividimos los estados en dos conjuntos: aceptación y no aceptación
         acceptance = frozenset({state for state in states if state in self.acceptance_states})
         non_acceptance = frozenset(states - acceptance)
         partition = {acceptance, non_acceptance}
-        
-        
+        #Aplicamos el algoritmo de Hopcroft para obtener grupos de estados equivalentes
+        final_partition = self.hopcroft(partition)
+        #Obtenemos los representantes de cada grupo y construir una tabla de representantes
+        representatives, table = self.representatives(final_partition)
+        #Construimos el DFA mínimo a partir de la tabla de representantes
+        transitions = {}
+        for element in representatives:
+            if element not in transitions:
+                transitions[element] = [set() for element in self.alphabet]
+            for symbol in self.alphabet:
+                index = self.get_symbol_index(symbol)
+                state = self.temp_transitions[element][index]
+                transition_representative = self.get_transition_representative(state, table)
+                transitions[element][index].add(transition_representative)
+        #Eliminamos los estados muertos y actualizar las transiciones
+        self.transitions = transitions
+        self.delete_dead_state()
+        self.external_transitions = self.transitions
 
+    
+    """
+        El algoritmo de Hopcroft es un algoritmo de particionamiento que busca agrupar los estados del DFA en grupos de estados equivalentes. Para ello, 
+        el algoritmo considera cada símbolo de entrada y agrupa los estados que producen la misma salida para ese símbolo en un mismo grupo. 
+        Este proceso se repite hasta que no se puedan formar más grupos.
+    """
+    def hopcroft(self, partition):
+        # Copiar la partición recibida para evitar modificarla directamente
+        partition_new = list(partition.copy())
+        # Para cada grupo en la partición
+        for group in partition:
+            # Si el grupo no está vacío
+            if group:
+                # Crear un nuevo grupo a partir del actual
+                new_group = self.create_new_partition(group, partition)
+                
+                # Remover el grupo actual de la partición
+                partition_new.remove(group)
+                
+                # Agregar el nuevo grupo a la partición
+                for element in new_group:
+                    partition_new.append(element)
+        # Convertir la partición en un conjunto para compararla
+        partition_new = set(partition_new)
+        # Si la partición nueva es igual a la anterior, entonces se ha llegado a la partición final
+        if partition_new == partition:
+            return partition
+        # De lo contrario, continuar iterando con la partición nueva
+        else:
+            return self.hopcroft(partition_new)
+
+    """
+        Función que se encarga de crear un nuevo grupo de particiones a partir de un grupo existente.
+
+    """
+    def create_new_partition(self, group, partition):
+        # Se convierte la partición a una lista para facilitar la iteración
+        groups = list(partition)
+        # También se convierte el grupo actual a una lista
+        group_list = list(group)
+        # Se itera por cada símbolo del alfabeto
+        for symbol in self.alphabet:
+            # Se crea una lista vacía para guardar las etiquetas de cada elemento del grupo actual
+            group_tag = []
+            # Se itera por cada elemento del grupo actual
+            for element in group_list:
+                # Se obtiene la etiqueta correspondiente al elemento actual para el símbolo actual
+                group_tag.append(self.get_group(element, groups, symbol))
+            # Si las etiquetas son distintas, se crea una nueva partición y se retorna
+            if not self.check_equal(group_tag):
+                return self.create_partition(group_list, group_tag)
+        # Si las etiquetas son iguales para todos los símbolos, no es necesario crear una nueva partición
+        return {group}
+    
+    #Función que se encarga de obtener los estados    
+    def get_states(self, transitions):
+        return {state for state in transitions}
+    
+    """
+        Función que se encarga de buscar el grupo al que pertenece el estado resultante 
+        de transicionar desde el estado element con el símbolo symbol. 
+    
+    """
+    def get_group(self, element, groups, symbol):
+        # Se obtiene el índice del símbolo en el alfabeto
+        index = self.get_symbol_index_special(symbol)
+        # Se obtiene la transición del elemento actual usando el símbolo dado
+        transition = list(self.temp_transitions[element][index])[0]
+        # Se busca en los grupos de la partición el grupo que contenga la transición del elemento
+        for group in groups:
+            if transition in group:
+                # Se devuelve el grupo como una lista
+                return list(group)
+    """
+        Función que se encarga de comparar todos los elementos de la lista tag para determinar si son iguales.
+    
+    """        
+    def check_equal(self, tag):
+        """
+        Esta función comprueba si todos los elementos de una lista son iguales.
         
+        Args:
+            tag (list): Lista de elementos a comparar.
+        
+        Returns:
+            bool: Devuelve True si todos los elementos de la lista son iguales, False en caso contrario.
+        """
+        # Asignamos el primer elemento de la lista a la variable last.
+        last = tag[0]
+        # Recorremos la lista. 
+        for element in tag:
+             # Si algún elemento de la lista es diferente a last
+            if element != last:
+                #devolvemos False.
+                return False
+            # Si los elementos son iguales, asignamos el valor actual a last.
+            last = element 
+        # Si llegamos al final de la lista sin encontrar elementos diferentes, devolvemos True.
+        return True 
+
+    """
+        Función que se encarga de crear una nueva partición a partir de un grupo y sus etiquetas.
+    
+    """
+    def create_partition(self, group, group_tag):
+        # Diccionario auxiliar para agrupar elementos con la misma etiqueta
+        group_dict_helper = {}
+        
+        # Para cada etiqueta del grupo
+        for i in range(len(group_tag)):
+            tag = tuple(group_tag[i])
+            element = group[i]
+            
+            # Si la etiqueta ya existe en el diccionario, se agrega el elemento a su conjunto
+            if tag in group_dict_helper:
+                group_dict_helper[tag].add(element)
+            # Si no existe, se crea una nueva entrada en el diccionario con el elemento como único miembro del conjunto
+            else:
+                group_dict_helper[tag] = {element}
+
+        # Crear una nueva partición a partir del diccionario auxiliar
+        new_partition = set()
+        for key in group_dict_helper:
+            # Convierte cada conjunto de elementos con la misma etiqueta en un frozenset (conjunto inmutable)
+            new_partition.add(frozenset(group_dict_helper[key]))
+
+        return new_partition
+
+    """
+        Este método toma como entrada un particionamiento de estados de un autómata, y devuelve dos cosas: una lista con los representantes de cada grupo, 
+        y una tabla que asocia cada grupo con su respectivo representante.
+    
+    """
+    def representatives(self, partition):
+        # Se inicializan las variables necesarias
+        table = {}
+        representatives = []
+        initial = list(self.initial_states)[0] # Se toma el estado inicial del autómata
+        # Se itera sobre los grupos del particionamiento
+        for element in partition:
+            # Se verifica que el grupo no esté vacío
+            if element:
+                representative = None
+                # Si el grupo tiene el estado muerto, este es el representante del grupo
+                if self.dead_state in element:
+                    representative = self.dead_state
+                # Si el grupo tiene el estado inicial, este es el representante del grupo
+                if initial in element:
+                    representative = initial
+                # Si no, se elige un estado arbitrario como representante del grupo
+                else:
+                    representative = list(element)[0]
+                # Se guarda la relación entre el grupo y su representante en una tabla
+                table[element] = representative
+                # Se guarda el representante en una lista
+                representatives.append(representative)
+        # Se devuelven los representantes y la tabla de relación entre grupos y representantes
+        return representatives, table
+
+    """
+        Función que se encarga de obtener el representante de un grupo de estados.
+    """
+    def get_transition_representative(self, element, table):
+        # Obtenemos el primer elemento del grupo de estados "element"
+        element = list(element)[0]
+        # Buscamos en la tabla de representantes
+        for key in table:
+            # Si el estado "element" se encuentra en el grupo "key"
+            if element in key:
+                # Retornamos el representante de ese grupo
+                return table[key]
+
+    
+    
+    
     """
         Función que se encarga de hacer la simulación del AFD
     
