@@ -1,0 +1,36 @@
+digraph "AFD_DIRECT_MIN#5PreLabB" {
+	graph [rankdir=LR]
+	fake [style=invisible]
+	fake -> 1 [style=bold]
+	1 [root=true]
+	2
+	1 -> 2 [label=a]
+	1 -> 1 [label=b]
+	2
+	3
+	2 -> 3 [label=a]
+	4
+	2 -> 4 [label=b]
+	3
+	7 [shape=doublecircle]
+	3 -> 7 [label=a]
+	8 [shape=doublecircle]
+	3 -> 8 [label=b]
+	4
+	5 [shape=doublecircle]
+	4 -> 5 [label=a]
+	6 [shape=doublecircle]
+	4 -> 6 [label=b]
+	7 [shape=doublecircle]
+	7 -> 7 [label=a]
+	7 -> 8 [label=b]
+	8 [shape=doublecircle]
+	8 -> 5 [label=a]
+	8 -> 6 [label=b]
+	5 [shape=doublecircle]
+	5 -> 3 [label=a]
+	5 -> 4 [label=b]
+	6 [shape=doublecircle]
+	6 -> 2 [label=a]
+	6 -> 1 [label=b]
+}

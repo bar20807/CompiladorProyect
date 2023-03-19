@@ -1,0 +1,63 @@
+digraph "AFN#4PreLabB" {
+	graph [rankdir=LR]
+	fake [style=invisible]
+	fake -> 7 [style=bold]
+	7 [root=true]
+	8
+	7 -> 8 [label="ε"]
+	5
+	7 -> 5 [label="ε"]
+	8
+	10
+	8 -> 10 [label=a]
+	5
+	1
+	5 -> 1 [label="ε"]
+	3
+	5 -> 3 [label="ε"]
+	10
+	12
+	10 -> 12 [label=b]
+	1
+	2
+	1 -> 2 [label=b]
+	3
+	4
+	3 -> 4 [label=b]
+	12
+	14
+	12 -> 14 [label=b]
+	2
+	6
+	2 -> 6 [label="ε"]
+	4
+	4 -> 6 [label="ε"]
+	14
+	19
+	14 -> 19 [label="ε"]
+	22 [shape=doublecircle]
+	14 -> 22 [label="ε"]
+	6
+	6 -> 8 [label="ε"]
+	6 -> 5 [label="ε"]
+	19
+	17
+	19 -> 17 [label="ε"]
+	15
+	19 -> 15 [label="ε"]
+	22 [shape=doublecircle]
+	17
+	18
+	17 -> 18 [label=b]
+	15
+	16
+	15 -> 16 [label=a]
+	18
+	20
+	18 -> 20 [label="ε"]
+	16
+	16 -> 20 [label="ε"]
+	20
+	20 -> 19 [label="ε"]
+	20 -> 22 [label="ε"]
+}

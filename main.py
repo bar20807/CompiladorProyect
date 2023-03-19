@@ -26,13 +26,12 @@ print('\n¡ADVERTENCIA! Deberá ingresar las expresiones regulares sin "." en la
 
 """
     Expresiones regulares dadas en el pre-laboratorio b: 
-    '(a*|b*)c'
-    '(b|b)*abb(a|b)*'
-    '(a|ε)b(a+)c?'
-    '(a|b)*a(a|b)(a|b)'
-    'b*ab?'
-    'b+abc+'
-    'ab*ab*'
+    ● ab ∗ ab ∗
+    ● 0? (1? )? 0 ∗
+    ● (a*|b*)c
+    ● (b|b)*abb(a|b)*
+    ● (a|ε)b(a+)c?
+    ● (a|b)*a(a|b)(a|b)
 """
 
 postfix = input("Ingrese su expresión regular: ")
@@ -43,15 +42,15 @@ regex = RegextoTree(postfix)
 afn = Thompson(regex)
 result = afn.simulate_afn(cadena)
 print("La expresión ", cadena, " ha sido ", result, " por el AFN ")
-afn.output_image('AFN#1PreLabB')
+afn.output_image('AFN#6PreLabB')
 
 #Construción de AFD a partir del AFN
 dfa = afn.to_dfa()
-dfa.output_image('AFNtoAFD#1PreLabB')
+dfa.output_image('AFNtoAFD#6PreLabB')
 
 #Construcción de AFD directamente
 dfa_direct = AFD_construction(regex)
-dfa_direct.output_image('AFD_DIRECT#1PreLabB')
+dfa_direct.output_image('AFD_DIRECT#6PreLabB')
 
 #Evaluación de la cadena en el AFD directo
 result = dfa_direct.simulate_afd(cadena)
@@ -61,13 +60,13 @@ print("La expresión ", cadena, " ha sido ", result, " por el AFD directo")
 dfa.minimize_function()
 result = dfa.simulate_afd(cadena)
 print("La expresión ", cadena, " ha sido ", result, " por el AFD minimizado del AFN")
-dfa.output_image('AFNtoAFD_MIN#1PreLabB')
+dfa.output_image('AFNtoAFD_MIN#6PreLabB')
 
 #Minimizamos el AFD directo
 dfa_direct.minimize_function()
 result = dfa_direct.simulate_afd(cadena)
 print("La expresión ", cadena, " ha sido ", result, " por el AFD directo minimizado")
-dfa_direct.output_image('AFD_DIRECT_MIN#1PreLabB')
+dfa_direct.output_image('AFD_DIRECT_MIN#6PreLabB')
 
 
 #Hacemos un menú para la interación

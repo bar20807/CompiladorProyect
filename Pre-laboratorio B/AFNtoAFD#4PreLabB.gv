@@ -1,0 +1,30 @@
+digraph "AFNtoAFD#4PreLabB" {
+	graph [rankdir=LR]
+	fake [style=invisible]
+	fake -> 1 [style=bold]
+	1 [root=true]
+	2
+	1 -> 2 [label=b]
+	3
+	1 -> 3 [label=a]
+	2
+	2 -> 2 [label=b]
+	2 -> 3 [label=a]
+	3
+	4
+	3 -> 4 [label=b]
+	4
+	6 [shape=doublecircle]
+	4 -> 6 [label=b]
+	6 [shape=doublecircle]
+	7 [shape=doublecircle]
+	6 -> 7 [label=b]
+	8 [shape=doublecircle]
+	6 -> 8 [label=a]
+	7 [shape=doublecircle]
+	7 -> 7 [label=b]
+	7 -> 8 [label=a]
+	8 [shape=doublecircle]
+	8 -> 7 [label=b]
+	8 -> 8 [label=a]
+}
