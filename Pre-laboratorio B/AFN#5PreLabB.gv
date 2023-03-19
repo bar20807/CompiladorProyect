@@ -1,65 +1,52 @@
 digraph "AFN#5PreLabB" {
 	graph [rankdir=LR]
 	fake [style=invisible]
-	fake -> 7 [style=bold]
-	7 [root=true]
-	8
-	7 -> 8 [label="ε"]
-	5
-	7 -> 5 [label="ε"]
-	8
-	10
-	8 -> 10 [label=a]
-	5
+	fake -> 5 [style=bold]
+	5 [root=true]
 	1
 	5 -> 1 [label="ε"]
 	3
 	5 -> 3 [label="ε"]
-	10
-	11
-	10 -> 11 [label="ε"]
-	13
-	10 -> 13 [label="ε"]
 	1
 	2
 	1 -> 2 [label=a]
 	3
 	4
-	3 -> 4 [label=b]
-	11
-	12
-	11 -> 12 [label=a]
-	13
-	14
-	13 -> 14 [label=b]
+	3 -> 4 [label="ε"]
 	2
 	6
 	2 -> 6 [label="ε"]
 	4
 	4 -> 6 [label="ε"]
-	12
-	16
-	12 -> 16 [label="ε"]
-	14
-	14 -> 16 [label="ε"]
 	6
-	6 -> 8 [label="ε"]
-	6 -> 5 [label="ε"]
+	8
+	6 -> 8 [label=b]
+	8
+	9
+	8 -> 9 [label="ε"]
+	12
+	8 -> 12 [label="ε"]
+	9
+	10
+	9 -> 10 [label=a]
+	12
+	13
+	12 -> 13 [label="ε"]
+	15
+	12 -> 15 [label="ε"]
+	10
+	10 -> 9 [label="ε"]
+	10 -> 12 [label="ε"]
+	13
+	14
+	13 -> 14 [label=c]
+	15
 	16
-	17
-	16 -> 17 [label="ε"]
-	19
-	16 -> 19 [label="ε"]
-	17
-	18
-	17 -> 18 [label=a]
-	19
-	20
-	19 -> 20 [label=b]
-	18
-	22 [shape=doublecircle]
-	18 -> 22 [label="ε"]
-	20
-	20 -> 22 [label="ε"]
-	22 [shape=doublecircle]
+	15 -> 16 [label="ε"]
+	14
+	18 [shape=doublecircle]
+	14 -> 18 [label="ε"]
+	16
+	16 -> 18 [label="ε"]
+	18 [shape=doublecircle]
 }
