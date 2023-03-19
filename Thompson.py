@@ -21,24 +21,17 @@ class Thompson(FA):
         super().__init__(regex)
         # Obtiene la raíz del árbol sintáctico de la expresión regular.
         self.root = self.regex.get_root()
-        #Crea los estados del autómata.
-        self.create_states()
-        # Crea los estados y transiciones del autómata basado en el árbol sintáctico de la expresión regular.
-        first, last = self.compile(self.root)
-        # Agrega el primer estado del autómata al conjunto de estados iniciales.
-        self.initial_states.add(first)
-        # Agrega el último estado del autómata al conjunto de estados de aceptación.
-        self.acceptance_states.add(last)
-        # Variable que se encarga de verificar los errores
+        self.build_afn()
         self.error_checker = RegexErrorChecker()
         # Variable que se encarga de hacer las transiciones externas
-        self.external_transitions = None
-
-    def create_states(self):
-        self.transitions[0] = [set() for _ in self.alphabet]
-        self.transitions[1] = [set() for _ in self.alphabet]
-        # Crea una transición epsilon entre el estado inicial y el estado de aceptación del autómata.
-        self.create_transition(0, 1, 'ε') 
+    """
+        Función que se encarga de llamar a las otras funciones necesarias para la construcción del AFN
+    
+    """
+    def build_afn(self):
+        first, last = self.compile(self.root)
+        self.initial_states.add(first)
+        self.acceptance_states.add(last)
 
     def get_symbol_index(self, symbol):
         # Si el símbolo se encuentra en el alfabeto del autómata

@@ -1,0 +1,36 @@
+digraph "AFNtoAFD_MIN#9PreLabB" {
+	graph [rankdir=LR]
+	fake [style=invisible]
+	fake -> 1 [style=bold]
+	1 [root=true]
+	2
+	1 -> 2 [label=0]
+	1 -> 1 [label=1]
+	2
+	4
+	2 -> 4 [label=0]
+	5
+	2 -> 5 [label=1]
+	4
+	8 [shape=doublecircle]
+	4 -> 8 [label=0]
+	9 [shape=doublecircle]
+	4 -> 9 [label=1]
+	5
+	6 [shape=doublecircle]
+	5 -> 6 [label=0]
+	7 [shape=doublecircle]
+	5 -> 7 [label=1]
+	8 [shape=doublecircle]
+	8 -> 8 [label=0]
+	8 -> 9 [label=1]
+	9 [shape=doublecircle]
+	9 -> 6 [label=0]
+	9 -> 7 [label=1]
+	6 [shape=doublecircle]
+	6 -> 4 [label=0]
+	6 -> 5 [label=1]
+	7 [shape=doublecircle]
+	7 -> 2 [label=0]
+	7 -> 1 [label=1]
+}

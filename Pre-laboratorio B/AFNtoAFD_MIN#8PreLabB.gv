@@ -1,0 +1,8 @@
+digraph "AFNtoAFD_MIN#8PreLabB" {
+	graph [rankdir=LR]
+	fake [style=invisible]
+	1 [shape=doublecircle]
+	1 -> 1 [label="ε"]
+	1 -> 1 [label=0]
+	1 -> 1 [label=1]
+}

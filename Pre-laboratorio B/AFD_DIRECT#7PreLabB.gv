@@ -1,0 +1,15 @@
+digraph "AFD_DIRECT#7PreLabB" {
+	graph [rankdir=LR]
+	fake [style=invisible]
+	fake -> 1 [style=bold]
+	1 [root=true]
+	2
+	1 -> 2 [label=0]
+	2
+	4 [shape=doublecircle]
+	2 -> 4 [label=0]
+	2 -> 2 [label=1]
+	4 [shape=doublecircle]
+	4 -> 4 [label=0]
+	4 -> 2 [label=1]
+}
