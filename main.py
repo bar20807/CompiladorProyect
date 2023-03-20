@@ -42,15 +42,15 @@ regex = RegextoTree(postfix)
 afn = Thompson(regex)
 result = afn.simulate_afn(cadena)
 print("La expresión ", cadena, " ha sido ", result, " por el AFN ")
-afn.output_image('AFN#10PreLabB')
+afn.output_image('AFN#11PreLabB')
 
 #Construción de AFD a partir del AFN
 dfa = afn.to_dfa()
-dfa.output_image('AFNtoAFD#10PreLabB')
+dfa.output_image('AFNtoAFD#11PreLabB')
 
 #Construcción de AFD directamente
 dfa_direct = AFD_construction(regex)
-dfa_direct.output_image('AFD_DIRECT#10PreLabB')
+dfa_direct.output_image('AFD_DIRECT#11PreLabB')
 
 #Evaluación de la cadena en el AFD directo
 result = dfa_direct.simulate_afd(cadena)
@@ -60,13 +60,13 @@ print("La expresión ", cadena, " ha sido ", result, " por el AFD directo")
 dfa.minimize_function()
 result = dfa.simulate_afd(cadena)
 print("La expresión ", cadena, " ha sido ", result, " por el AFD minimizado del AFN")
-dfa.output_image('AFNtoAFD_MIN#10PreLabB')
+dfa.output_image('AFNtoAFD_MIN#11PreLabB')
 
 #Minimizamos el AFD directo
 dfa_direct.minimize_function()
 result = dfa_direct.simulate_afd(cadena)
 print("La expresión ", cadena, " ha sido ", result, " por el AFD directo minimizado")
-dfa_direct.output_image('AFD_DIRECT_MIN#10PreLabB')
+dfa_direct.output_image('AFD_DIRECT_MIN#11PreLabB')
 
 
 #Hacemos un menú para la interación
