@@ -19,7 +19,6 @@ print('\n¡ADVERTENCIA! Deberá ingresar las expresiones regulares sin "." en la
     ●0? (1? )? 0 ∗
     ●(a*|b*)c
     ●(b|b)*abb(a|b)*
-    ●(a|ε)b(a+)c?
     ●(a|b)*a(a|b)(a|b)
     
 """
@@ -30,11 +29,10 @@ print('\n¡ADVERTENCIA! Deberá ingresar las expresiones regulares sin "." en la
     ● 0? (1? )? 0 ∗
     ● (a*|b*)c
     ● (b|b)*abb(a|b)*
-    ● (a|ε)b(a+)c?
     ● (a|b)*a(a|b)(a|b)
 """
 
-postfix = input("Ingrese su expresión regular: ")
+"""postfix = input("Ingrese su expresión regular: ")
 cadena = input("Ingrese la cadena que desea evaluar: ")
 regex = RegextoTree(postfix)
 
@@ -67,7 +65,7 @@ dfa_direct.minimize_function()
 result = dfa_direct.simulate_afd(cadena)
 print("La expresión ", cadena, " ha sido ", result, " por el AFD directo minimizado")
 dfa_direct.output_image('AFD_DIRECT_MIN#11PreLabB')
-
+"""
 
 #Hacemos un menú para la interación
 """it= 0
