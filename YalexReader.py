@@ -94,8 +94,8 @@ class YALexGenerator:
         # Leemos nuestra lista de expresiones regulares especiales
         for special_regex in special_regular_expressions:
             print("Expresión regular especial: ", special_regex)
-            converted_regex = self.convert_special_regex(special_regex)
-            print("Expresión convertida: ", converted_regex)
+            new_expression_result = self.convert_special_regex(special_regex)
+            print("Nueva expresión con los ors agregados: ", new_expression_result)
             
         
     # Definimos una función para convertir cada expresión regular especial
