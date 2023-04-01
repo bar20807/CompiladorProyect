@@ -30,8 +30,6 @@ class YALexGenerator:
                     file_content_without_comments.append(line_without_comment)
             # Devolver el contenido limpio
             return file_content_without_comments
-
-
     
     #Función que se encarga de detectar las definiciones regulares con base a la lista del archivo creada
     def detect_regular_definitions(self):
@@ -148,16 +146,7 @@ class YALexGenerator:
                 if j < len(expression):
                     special_regular_expressions.append(expression[i+1:j])        
         return special_regular_expressions if special_regular_expressions else None
-
-
-
-
-
-
-
-
-
-            
+ 
     def build_expression_tree(self, content):
         # Implementar construcción del árbol de expresión a partir de la especificación en lenguaje YALex
         pass
