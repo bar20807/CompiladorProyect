@@ -67,7 +67,6 @@ class YALexGenerator:
                 second_value = rule.split("|")[1].split("{")[0].strip()
                 #print("Este es el segundo valor: ", second_value)
                 self.rules_tokens_list.append(second_value.strip("'"))
-                
             else:
                 first_value= rule.split("{")[0].split("{")[0].strip()
                 #print("Este es el primer valor: ", first_value)
@@ -88,7 +87,6 @@ class YALexGenerator:
             if new_special_regex:
                 special_regular_expressions.extend(new_special_regex)
         print("Special regular expressions found: ", special_regular_expressions)
-        #Leemos nuestra lista de expresiones regulares especiales:
         # Leemos nuestra lista de expresiones regulares especiales
         for special_regex in special_regular_expressions:
             print("Expresión regular especial: ", special_regex)
