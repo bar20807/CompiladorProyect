@@ -23,7 +23,6 @@ class Thompson(FA):
         self.root = self.regex.get_root()
         self.build_afn()
         self.error_checker = RegexErrorChecker()
-        # Variable que se encarga de hacer las transiciones externas
     """
         Función que se encarga de llamar a las otras funciones necesarias para la construcción del AFN
     

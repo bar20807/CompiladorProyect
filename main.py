@@ -9,6 +9,7 @@
 from Thompson import *
 from RegextoTree import RegextoTree
 from AFD import AFD_construction
+from YalexReader import YALexGenerator
 
 print('\n¡ADVERTENCIA! Deberá ingresar las expresiones regulares sin "." en la concatenación, el programa los agregará.')
 
@@ -31,6 +32,18 @@ print('\n¡ADVERTENCIA! Deberá ingresar las expresiones regulares sin "." en la
     ● (b|b)*abb(a|b)*
     ● (a|b)*a(a|b)(a|b)
 """
+
+"""
+    Laboratorio C
+    
+"""
+yal = YALexGenerator("./Archivos Yal/slr-1.yal")
+#print(yal.read_yal_file_())
+#print("Lista del archivo: ", yal.file_list)
+#print("Valor: ",yal.detect_rule_tokens_expression())
+#print("detected: ", yal.detect_regular_definitions())
+#Expresión regular formada desde el yalex
+print(yal.build_regular_expression())
 
 """postfix = input("Ingrese su expresión regular: ")
 cadena = input("Ingrese la cadena que desea evaluar: ")
