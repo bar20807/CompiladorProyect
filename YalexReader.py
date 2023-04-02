@@ -82,8 +82,9 @@ class YALexGenerator:
         # Primero recorremos el diccionario de las definiciones regulares
         for def_regular in self.values_dict:
             expression = self.values_dict[def_regular]
-            # print("Expresión a analizar: ", expression)
+            #print("Expresión a analizar: ", expression)
             new_special_regex = self.find_special_regex(expression)
+            #print("Valor de new_special_regex: ", new_special_regex)
             if new_special_regex:
                 special_regular_expressions.extend(new_special_regex)
         print("Special regular expressions found: ", special_regular_expressions)
@@ -92,18 +93,35 @@ class YALexGenerator:
             print("Expresión regular especial: ", special_regex)
             new_expression_result = self.convert_special_regex(special_regex)
             print("Nueva expresión con los ors agregados: ", new_expression_result)
-            
-        
-    # Definimos una función para convertir cada expresión regular especial
+
+    #Función que convierte las expresiones regulares especiales a regex
     def convert_special_regex(self, special_regex):
-        new_expression = ""  # aquí almacenaremos la expresión regular convertida
+        converted_regex = ''
+        # Se busca el primer caracter '"' en la expresión regular.
+        # Esto indica que la expresión regular es una cadena de caracteres
+        # y no un conjunto de caracteres.
         if "\"" in special_regex:
-            # Si la expresión regular incluye comillas dobles, significa que es un gran string
-            # por lo que debemos extraer su contenido y tratarlo como una lista de caracteres
-            chars = special_regex.split("\"")[1]
-            for char in chars:
-                # Para cada caracter, lo agregamos a la expresión regular y lo separamos con un OR
-                new_expression += f"'{char}'|"
+            # Se divide la cadena original en subcadenas utilizando '"' como separador.
+            substrings = special_regex.split('"')
+            # Se toma la subcadena que está después del primer '"' y antes del siguiente '"'.
+            exp = substrings[1]
+            # Se reemplazan todas las comillas simples por una cadena vacía.
+            exp = ''.join(exp.split("'"))
+            # Se imprime la expresión especial encontrada.
+            print("Expresion especial: ", exp)
+            # Inicio del bucle for que recorre cada carácter en la expresión regular
+            for char in exp:
+                # Si el carácter no es una barra invertida "\"...
+                if char != "\\":
+                    # Se añade el carácter actual y un "|" al final de la cadena
+                    converted_regex += char
+                    converted_regex += "|"
+                # Si el carácter es una barra invertida "\"...
+                else:
+                    # Se añade el carácter actual ("\") a la cadena
+                    converted_regex += char
+            # Se retorna la expresión regular convertida.
+            return converted_regex[:-1]
         elif "\'" in special_regex:
             # Si la expresión regular incluye comillas simples, significa que es una lista de caracteres
             # que pueden estar separados por ORs o ser una secuencia de caracteres ASCII
@@ -111,22 +129,19 @@ class YALexGenerator:
             if "-" in special_regex and special_regex == "'A'-'Z''a'-'z'":
                 # Si la secuencia de caracteres es 'A'-'Z''a'-'z', construimos la lista de caracteres apropiada
                 for ascii_val in range(ord('a'), ord('z')+1):
-                    new_expression += f"{chr(ascii_val)}|"
+                    converted_regex += f"{chr(ascii_val)}|"
                 for ascii_val in range(ord('A'), ord('Z')+1):
-                    new_expression += f"{chr(ascii_val)}|"
-            elif "-" in special_regex:
-                # Si hay un guión, entonces es una secuencia de caracteres ASCII
-                start_ascii = ord(chars[0])
-                end_ascii = ord(chars[1])
-                for ascii_val in range(start_ascii, end_ascii + 1):
-                    # Para cada valor ASCII en el rango, lo convertimos a su respectivo caracter y lo agregamos a la expresión regular
-                    new_expression += f"{chr(ascii_val)}|"
+                    converted_regex += f"{chr(ascii_val)}|"
+            #Ahora hacemos el caso para los números
+            elif "-" in special_regex and special_regex == "'0'-'9'":
+                for ascii_val in range(ord('0'), ord('9')+1):
+                    converted_regex += f"{chr(ascii_val)}|"
             else:
                 # Si no hay guión, entonces son caracteres separados por ORs
                 for char in chars:
-                    new_expression += f"'{char}'|"
-        # Quitamos el último OR y devolvemos la expresión regular resultante
-        return new_expression[:-1]
+                    converted_regex += f"'{char}'|"
+            return converted_regex[:-1]
+
 
     # Función que encuentra las expresiones regulares especiales en una expresión regular
     def find_special_regex(self, expression):

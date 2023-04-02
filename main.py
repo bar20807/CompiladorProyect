@@ -37,7 +37,7 @@ print('\n¡ADVERTENCIA! Deberá ingresar las expresiones regulares sin "." en la
     Laboratorio C
     
 """
-yal = YALexGenerator("./Archivos Yal/slr-1.yal")
+yal = YALexGenerator("./Archivos Yal/slr-3.yal")
 #print(yal.read_yal_file_())
 #print("Lista del archivo: ", yal.file_list)
 #print("Valor: ",yal.detect_rule_tokens_expression())
