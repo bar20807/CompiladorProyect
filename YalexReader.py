@@ -87,12 +87,15 @@ class YALexGenerator:
             #print("Valor de new_special_regex: ", new_special_regex)
             if new_special_regex:
                 special_regular_expressions.extend(new_special_regex)
-        print("Special regular expressions found: ", special_regular_expressions)
-        # Leemos nuestra lista de expresiones regulares especiales
-        for special_regex in special_regular_expressions:
-            print("Expresión regular especial: ", special_regex)
-            new_expression_result = self.convert_special_regex(special_regex)
-            print("Nueva expresión con los ors agregados: ", new_expression_result)
+            print("Special regular expressions found: ", special_regular_expressions)
+            # Leemos nuestra lista de expresiones regulares especiales
+            for special_regex in special_regular_expressions:
+                print("Expresión regular especial: ", special_regex)
+                new_expression_result = self.convert_special_regex(special_regex)
+                print("Nueva expresión con los ors agregados: ", new_expression_result)
+                self.values_dict[def_regular] = self.values_dict[def_regular].replace(special_regex, new_expression_result)
+            self.values_dict[def_regular] = self.values_dict[def_regular].replace("[", "(").replace("]", ")")
+        print("Nuevos valores del diccionario: ", self.values_dict)
 
     #Función que convierte las expresiones regulares especiales a regex
     def convert_special_regex(self, special_regex):
