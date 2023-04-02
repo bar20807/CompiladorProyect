@@ -159,20 +159,5 @@ class YALexGenerator:
                 if j < len(expression):
                     special_regular_expressions.append(expression[i+1:j])        
         return special_regular_expressions if special_regular_expressions else None
- 
-    def build_expression_tree(self, content):
-        # Implementar construcción del árbol de expresión a partir de la especificación en lenguaje YALex
-        pass
-    
-    def validate_specification(self):
-        # Implementar verificación de la especificación en lenguaje YALex para detectar errores sintácticos o semánticos
-        pass
-    
-    def generate_lexer(self):
-        # Implementar generación de analizador léxico funcional a partir de la especificación de los tokens
-        pass
-    
-    def get_token_tree(self):
-        return self.token_tree
 
     
