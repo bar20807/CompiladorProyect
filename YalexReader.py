@@ -11,10 +11,7 @@ class YALexGenerator:
     def __init__(self, file_path):
         self.file_path = file_path
         self.values_dict = {}
-        self.rules_tokens_list = []
-        self.rule_tokens_index = 0
-        self.rule_tokens_line = ''
-        
+        self.rule_tokens_line = ''    
         
     def read_yal_file_(self):
         # Abrir el archivo para lectura
@@ -35,6 +32,7 @@ class YALexGenerator:
         #Primero, detectamos todas las expresiones que empiezan con let, en donde, las dividiremos en dos partes
         #La primera parte consiste en el nombre que recibe dicha definición (ejemplo: let delim) siendo este el lado izquierdo,
         # y dejando para el lado derecho su valor (ejemplo: [' ''\t''\n'])
+        rule_tokens_index = 0
         for values in self.read_yal_file_():
             if values.startswith('let') or values.startswith('Let'):
                 #Quitamos el signo = de la expresión
@@ -49,17 +47,20 @@ class YALexGenerator:
                 #print("Nombre de nuestra regla: ", left_value_name)
                 #print("Valor del nombre: ", right_value_)
                 #Imprimimos el diccionario resultante
+                #print("Diccionario resultante: ", self.values_dict)
             #Ahora miramos donde se encuentran las rule tokens
             split = values.split(" ")
             if "rule" in split and "tokens" in split:
-                self.rule_tokens_index = self.read_yal_file_().index(values)
-        print("Diccionario resultante: ", self.values_dict)
+                rule_tokens_index = self.read_yal_file_().index(values)
+        #print("Diccionario resultante: ", self.values_dict)
         #print("Índice de rule tokens: ", self.rule_tokens_index)
-        return self.rule_tokens_index
+        return rule_tokens_index
     
     def detect_rule_tokens_expression(self):
         # Obtenemos la línea donde se encuentran las rule tokens
         self.rule_tokens_line = self.read_yal_file_()[self.detect_regular_definitions()+1:]
+        #Rule tokens_list
+        self.rules_tokens_list = []
         # Primero se guardará el primer valor de nuestra rule token
         for rule in self.rule_tokens_line:
             if "|" in rule:
@@ -72,6 +73,7 @@ class YALexGenerator:
             else:
                 first_value= rule.split("{")[0].split("{")[0].strip()
                 self.rules_tokens_list.append(first_value)
+        print("Lista de rule tokens: ", self.rules_tokens_list)
         return self.rules_tokens_list
 
     # Función que se encargará de armar la expresión regular
@@ -91,19 +93,21 @@ class YALexGenerator:
                 special_regular_expressions.extend(new_special_regex)
             # Leemos nuestra lista de expresiones regulares especiales
             for special_regex in special_regular_expressions:
-                print("Expresión regular especial: ", special_regex)
+                #print("Expresión regular especial: ", special_regex)
                 new_expression_result = self.convert_special_regex(special_regex)
                 self.values_dict[def_regular] = self.values_dict[def_regular].replace(special_regex, new_expression_result)
             self.values_dict[def_regular] = self.values_dict[def_regular].replace("[", "(").replace("]", ")")
         print("Nuevos valores del diccionario: ", self.values_dict)
-        print("Rule Tokens: ", rule_tokens)
+        #print("Rule Tokens: ", rule_tokens)
         #Con los valores que ya tenemos construimos nuestra expresión regular
         for rule in rule_tokens:
             print("Este es el rule_token_tomado: ", rule)
             self.regular_expression_result += rule
             self.regular_expression_result += "|"
             print("Valores de la expresión: ", self.regular_expression_result)
-        self.regular_expression_result = self.regular_expression_result[:-1]
+        #Eliminamos el or innecesario
+        if self.regular_expression_result[-1] == "|":
+            self.regular_expression_result = self.regular_expression_result[:-1]
         print("Expresión regular inicial: ", self.regular_expression_result)
         # Inicializamos los valores de los tokens de la clave-valor y del iterador
         key_value_token = ""
@@ -145,7 +149,7 @@ class YALexGenerator:
 
     #Función que convierte las expresiones regulares especiales a regex
     def convert_special_regex(self, special_regex):
-        converted_regex = ''
+        converted_regex = ""
         # Se busca el primer caracter '"' en la expresión regular.
         # Esto indica que la expresión regular es una cadena de caracteres
         # y no un conjunto de caracteres.
@@ -157,7 +161,7 @@ class YALexGenerator:
             # Se reemplazan todas las comillas simples por una cadena vacía.
             exp = ''.join(exp.split("'"))
             # Se imprime la expresión especial encontrada.
-            print("Expresion especial: ", exp)
+            #print("Expresion especial: ", exp)
             # Inicio del bucle for que recorre cada carácter en la expresión regular
             for char in exp:
                 # Si el carácter no es una barra invertida "\"...
@@ -170,7 +174,7 @@ class YALexGenerator:
                     # Se añade el carácter actual ("\") a la cadena
                     converted_regex += char
             # Se retorna la expresión regular convertida.
-            print("Nueva expresión con los ors agregados: ", converted_regex[:-1])
+            #print("Nueva expresión con los ors agregados: ", converted_regex[:-1])
             return converted_regex[:-1]
         elif "\'" in special_regex:
             # Si la expresión regular incluye comillas simples, significa que es una lista de caracteres
@@ -191,7 +195,7 @@ class YALexGenerator:
                 # Si no hay guión, entonces son caracteres separados por ORs
                 for char in chars:
                     converted_regex += f"'{char}'|"
-            print("Nueva expresión con los ors agregados: ", converted_regex[:-1])
+            #print("Nueva expresión con los ors agregados: ", converted_regex[:-1])
             return converted_regex[:-1]
 
 
@@ -211,16 +215,7 @@ class YALexGenerator:
                 if j < len(expression):
                     special_regular_expressions.append(expression[i+1:j])     
         #Imprimimos el resultado
-        print("Special regular expressions found: ", special_regular_expressions)
-        return special_regular_expressions if special_regular_expressions else None
-    
-    def evaluate_expression_result(self, expression_result, dic_values_tokens):
-        #Declaramos la variable que almacenará la nueva expresión regular
-        new_expression = ""
-        #Declaramos la variable de iteración
-        itera = 0
-        while itera < len(expression_result):
-            print(expression_result[itera])
-            itera+=1        
+        #print("Special regular expressions found: ", special_regular_expressions)
+        return special_regular_expressions if special_regular_expressions else None    
 
     

@@ -81,11 +81,12 @@ dfa_direct.output_image('AFD_DIRECT_MIN#11PreLabB')
 """
 
 #Construcción de AFD directamente
-yal = YALexGenerator("./Archivos Yal/slr-4.yal")
+yal = YALexGenerator("./Archivos Yal/slr-2.yal")
 regex = RegextoTree(yal.build_regular_expression())
 print("Expresión regular resultante: ",yal.build_regular_expression())
-tree = regex.build_AST()
-#Graph
+"""regex.build_AST()
+#Árbol de la expresión regular
+regex.print_tree()"""
 
 """postfix = yal.build_regular_expression()
 regex = RegextoTree(postfix)

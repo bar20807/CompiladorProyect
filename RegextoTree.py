@@ -14,7 +14,7 @@
 from Node import *
 import re
 from RegexErrorChecker import RegexErrorChecker
-import os
+from graphviz import Digraph
 
 class RegextoTree(object):
     def __init__(self, expression = None):
@@ -248,3 +248,22 @@ class RegextoTree(object):
                 res += self.postorder_helper(node.right_child)
             # Concatenamos el valor del nodo al resultado
             return res + node.value
+    
+    def clen_regular_expression(self, regular_expression):
+        valid_chars = '|*?.abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789+-/();:=<> \t\n'
+        return ''.join(c for c in regular_expression if c in valid_chars)
+    
+    def generate_dot(self, node, dot):
+        if node is not None:
+            dot.node(str(id(node)), node.value)
+            if node.left_child is not None:
+                dot.edge(str(id(node)), str(id(node.left_child)))
+                self.generate_dot(node.left_child, dot)
+            if node.right_child is not None:
+                dot.edge(str(id(node)), str(id(node.right_child)))
+                self.generate_dot(node.right_child, dot)
+
+    def print_tree(self):
+        dot = Digraph()
+        self.generate_dot(self.root, dot)
+        dot.render('./LaboratorioC/tree.pdf', format='pdf', view=True)
