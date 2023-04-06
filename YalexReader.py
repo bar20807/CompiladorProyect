@@ -194,7 +194,11 @@ class YALexGenerator:
             else:
                 # Si no hay guión, entonces son caracteres separados por ORs
                 for char in chars:
-                    converted_regex += f"'{char}'|"
+                    #En caso de encontrar un espacio, agregar un \s entre parentesis
+                    if char == " ":
+                        converted_regex += f"(\s)|"
+                    else:
+                        converted_regex += f"({char})|"
             #print("Nueva expresión con los ors agregados: ", converted_regex[:-1])
             return converted_regex[:-1]
 

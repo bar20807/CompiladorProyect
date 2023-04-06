@@ -249,13 +249,11 @@ class RegextoTree(object):
             # Concatenamos el valor del nodo al resultado
             return res + node.value
     
-    def clen_regular_expression(self, regular_expression):
-        valid_chars = '|*?.abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789+-/();:=<> \t\n'
-        return ''.join(c for c in regular_expression if c in valid_chars)
-    
     def generate_dot(self, node, dot):
         if node is not None:
-            dot.node(str(id(node)), node.value)
+            # Escape caracteres especiales en el valor del nodo
+            value = node.value.replace('\\', '\\\\').replace('"', '\\"')
+            dot.node(str(id(node)), value)
             if node.left_child is not None:
                 dot.edge(str(id(node)), str(id(node.left_child)))
                 self.generate_dot(node.left_child, dot)
@@ -266,4 +264,4 @@ class RegextoTree(object):
     def print_tree(self):
         dot = Digraph()
         self.generate_dot(self.root, dot)
-        dot.render('./LaboratorioC/tree.pdf', format='pdf', view=True)
+        dot.render('./LaboratorioC/tree4.pdf', format='pdf', view=True)
