@@ -163,8 +163,3 @@ class TreeReading():
         for key in self.follow_pos:
             if key[1] == '#':
                 return key[0]
-            
-    #Función para visualizar el árbol formado
-    def clen_regular_expression(self, regular_expression):
-        valid_chars = '|*?.abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789+-/();:=<> \t\n'
-        return ''.join(c for c in regular_expression if c in valid_chars)
