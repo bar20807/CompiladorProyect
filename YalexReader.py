@@ -14,7 +14,6 @@ class YALexGenerator:
         self.rules_tokens_list = []
         self.rule_tokens_index = 0
         self.rule_tokens_line = ''
-        self.regular_expression_result = ''
         
         
     def read_yal_file_(self):
@@ -64,19 +63,23 @@ class YALexGenerator:
         # Primero se guardará el primer valor de nuestra rule token
         for rule in self.rule_tokens_line:
             if "|" in rule:
+                # Verificar si hay un valor antes del or
+                if "|" in rule.split("|")[0]:
+                    first_value = rule.split("|")[0].split("|")[0].split("{")[0].strip()
+                    self.rules_tokens_list.append(first_value)
                 second_value = rule.split("|")[1].split("{")[0].strip()
-                #print("Este es el segundo valor: ", second_value)
-                self.rules_tokens_list.append(second_value.strip("'"))
+                self.rules_tokens_list.append(second_value)
             else:
                 first_value= rule.split("{")[0].split("{")[0].strip()
-                #print("Este es el primer valor: ", first_value)
-                self.rules_tokens_list.append(first_value.strip("'"))
+                self.rules_tokens_list.append(first_value)
         return self.rules_tokens_list
 
     # Función que se encargará de armar la expresión regular
     def build_regular_expression(self):
+        #Variable que almacenará la expresión regular resultante
+        self.regular_expression_result = ""
         # Primero, se obtiene la lista de rule tokens
-        self.detect_rule_tokens_expression()
+        rule_tokens= self.detect_rule_tokens_expression()
         # Lista temporal para almacenar los valores resultantes de las expresiones regulares especiales
         special_regular_expressions = []
         # Primero recorremos el diccionario de las definiciones regulares
@@ -84,18 +87,61 @@ class YALexGenerator:
             expression = self.values_dict[def_regular]
             #print("Expresión a analizar: ", expression)
             new_special_regex = self.find_special_regex(expression)
-            #print("Valor de new_special_regex: ", new_special_regex)
             if new_special_regex:
                 special_regular_expressions.extend(new_special_regex)
-            print("Special regular expressions found: ", special_regular_expressions)
             # Leemos nuestra lista de expresiones regulares especiales
             for special_regex in special_regular_expressions:
                 print("Expresión regular especial: ", special_regex)
                 new_expression_result = self.convert_special_regex(special_regex)
-                print("Nueva expresión con los ors agregados: ", new_expression_result)
                 self.values_dict[def_regular] = self.values_dict[def_regular].replace(special_regex, new_expression_result)
             self.values_dict[def_regular] = self.values_dict[def_regular].replace("[", "(").replace("]", ")")
         print("Nuevos valores del diccionario: ", self.values_dict)
+        print("Rule Tokens: ", rule_tokens)
+        #Con los valores que ya tenemos construimos nuestra expresión regular
+        for rule in rule_tokens:
+            print("Este es el rule_token_tomado: ", rule)
+            self.regular_expression_result += rule
+            self.regular_expression_result += "|"
+            print("Valores de la expresión: ", self.regular_expression_result)
+        self.regular_expression_result = self.regular_expression_result[:-1]
+        print("Expresión regular inicial: ", self.regular_expression_result)
+        # Inicializamos los valores de los tokens de la clave-valor y del iterador
+        key_value_token = ""
+        itera = 0
+        # Iteramos a través de la expresión regular
+        while itera < len(self.regular_expression_result):
+            # Obtenemos el carácter actual de la expresión regular
+            char = self.regular_expression_result[itera]        
+
+            # Si el carácter actual no es un operador de expresión regular, lo agregamos al token clave-valor actual
+            if char not in "+|*?()":
+                key_value_token += char
+            else:
+                # Si es un operador de expresión regular, verificamos si el token clave-valor actual es una clave en el diccionario
+                if key_value_token in self.values_dict:
+                    # Si la clave existe en el diccionario, reemplazamos el token clave-valor actual con su valor correspondiente
+                    regex = self.values_dict[key_value_token]
+                    word_len = len(key_value_token)                 
+                    # Guardamos los índices donde debemos cortar la expresión regular
+                    der = itera
+                    izq = itera - word_len
+                    # Hacemos el corte y agregamos la regex correspondiente
+                    self.regular_expression_result = self.regular_expression_result[:izq] + regex + self.regular_expression_result[der:]
+                    # Reiniciamos los valores de los tokens y el iterador
+                    itera = -1 # Colocamos -1 en vez de 0, ya que se le suma 1 en la siguiente línea y de esta forma iniciaría en 0
+                    key_value_token = ""
+                else:
+                    # Si la clave no existe en el diccionario, simplemente reiniciamos el valor del token clave-valor actual
+                    key_value_token = ""
+            # Incrementamos el iterador en cada iteración
+            itera += 1
+            
+            #Analizamos si la expresión regular resultante tiene un .digits, si lo tiene, será reemplazado por lo siguiente ('.')(0|1|2|3|4|5|6|7|8|9)+
+            if ".digits" in self.regular_expression_result:
+                self.regular_expression_result = self.regular_expression_result.replace(".digits", "'.'(0|1|2|3|4|5|6|7|8|9)+")
+        
+        return self.regular_expression_result
+        
 
     #Función que convierte las expresiones regulares especiales a regex
     def convert_special_regex(self, special_regex):
@@ -124,6 +170,7 @@ class YALexGenerator:
                     # Se añade el carácter actual ("\") a la cadena
                     converted_regex += char
             # Se retorna la expresión regular convertida.
+            print("Nueva expresión con los ors agregados: ", converted_regex[:-1])
             return converted_regex[:-1]
         elif "\'" in special_regex:
             # Si la expresión regular incluye comillas simples, significa que es una lista de caracteres
@@ -139,10 +186,12 @@ class YALexGenerator:
             elif "-" in special_regex and special_regex == "'0'-'9'":
                 for ascii_val in range(ord('0'), ord('9')+1):
                     converted_regex += f"{chr(ascii_val)}|"
+            #Si encuentra 
             else:
                 # Si no hay guión, entonces son caracteres separados por ORs
                 for char in chars:
                     converted_regex += f"'{char}'|"
+            print("Nueva expresión con los ors agregados: ", converted_regex[:-1])
             return converted_regex[:-1]
 
 
@@ -160,7 +209,18 @@ class YALexGenerator:
                 
                 # Si encontramos un corchete cerrado, agregamos la expresión regular especial a la lista
                 if j < len(expression):
-                    special_regular_expressions.append(expression[i+1:j])        
+                    special_regular_expressions.append(expression[i+1:j])     
+        #Imprimimos el resultado
+        print("Special regular expressions found: ", special_regular_expressions)
         return special_regular_expressions if special_regular_expressions else None
+    
+    def evaluate_expression_result(self, expression_result, dic_values_tokens):
+        #Declaramos la variable que almacenará la nueva expresión regular
+        new_expression = ""
+        #Declaramos la variable de iteración
+        itera = 0
+        while itera < len(expression_result):
+            print(expression_result[itera])
+            itera+=1        
 
     

@@ -14,6 +14,7 @@
 from Node import *
 import re
 from RegexErrorChecker import RegexErrorChecker
+import os
 
 class RegextoTree(object):
     def __init__(self, expression = None):
@@ -27,9 +28,6 @@ class RegextoTree(object):
         self.add_concatenation_symbol()
         self.idempotency()
         self.build_AST()
-
-        if self.error_checker.get_size() > 0:
-            raise Exception(self.error_checker.get_error_result())
 
     """ 
        Función que se encarga de extraer el alfabeto contenido en la expresión regular ingresada
@@ -208,7 +206,8 @@ class RegextoTree(object):
         
     def to_postfix(self):
         return self.postorder()
-        
+    
+    #Función que obtiene el árbol
     def get_root(self):
         return self.root
 

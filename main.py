@@ -37,13 +37,13 @@ print('\n¡ADVERTENCIA! Deberá ingresar las expresiones regulares sin "." en la
     Laboratorio C
     
 """
-yal = YALexGenerator("./Archivos Yal/slr-2.yal")
+#yal = YALexGenerator("./Archivos Yal/slr-2.yal")
 #print(yal.read_yal_file_())
 #print("Lista del archivo: ", yal.file_list)
 #print("Valor: ",yal.detect_rule_tokens_expression())
 #print("detected: ", yal.detect_regular_definitions())
 #Expresión regular formada desde el yalex
-print(yal.build_regular_expression())
+#print("Expresión regular resultante: ",yal.build_regular_expression())
 
 """postfix = input("Ingrese su expresión regular: ")
 cadena = input("Ingrese la cadena que desea evaluar: ")
@@ -79,6 +79,18 @@ result = dfa_direct.simulate_afd(cadena)
 print("La expresión ", cadena, " ha sido ", result, " por el AFD directo minimizado")
 dfa_direct.output_image('AFD_DIRECT_MIN#11PreLabB')
 """
+
+#Construcción de AFD directamente
+yal = YALexGenerator("./Archivos Yal/slr-4.yal")
+regex = RegextoTree(yal.build_regular_expression())
+print("Expresión regular resultante: ",yal.build_regular_expression())
+tree = regex.build_AST()
+#Graph
+
+"""postfix = yal.build_regular_expression()
+regex = RegextoTree(postfix)
+dfa_direct = AFD_construction(regex)
+dfa_direct.output_image('AFD_Direct_YalexFile')"""
 
 #Hacemos un menú para la interación
 """it= 0

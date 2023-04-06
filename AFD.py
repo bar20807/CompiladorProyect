@@ -550,4 +550,4 @@ class AFD_construction(FA):
                     # Se agrega una arista del estado actual al elemento, etiquetada con el símbolo del alfabeto correspondiente.
                     visual_graph.edge(str(state), str(element), label=str(self.alphabet[i]))
         # Se guarda el gráfico en un directorio específico y se muestra en la pantalla.
-        visual_graph.render(directory='Pre-laboratorio B',view=True)
+        visual_graph.render(directory='Laboratorio C',view=True)

@@ -163,4 +163,3 @@ class TreeReading():
         for key in self.follow_pos:
             if key[1] == '#':
                 return key[0]
-            
