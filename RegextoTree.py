@@ -264,4 +264,4 @@ class RegextoTree(object):
     def print_tree(self):
         dot = Digraph()
         self.generate_dot(self.root, dot)
-        dot.render('./LaboratorioC/tree4.pdf', format='pdf', view=True)
+        dot.render('./LaboratorioC/tree0.pdf', format='pdf', view=True)
