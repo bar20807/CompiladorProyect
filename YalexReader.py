@@ -110,40 +110,34 @@ class YALexGenerator:
             self.regular_expression_result = self.regular_expression_result[:-1]
         print("Expresión regular inicial: ", self.regular_expression_result)
         # Inicializamos los valores de los tokens de la clave-valor y del iterador
-        key_value_token = ""
+        key_token_value = ""
         itera = 0
-        # Iteramos a través de la expresión regular
-        while itera < len(self.regular_expression_result):
+        while itera < (len(self.regular_expression_result)):
             # Obtenemos el carácter actual de la expresión regular
-            char = self.regular_expression_result[itera]        
-
+            char = self.regular_expression_result[itera]
             # Si el carácter actual no es un operador de expresión regular, lo agregamos al token clave-valor actual
-            if char not in "+|*?()":
-                key_value_token += char
+            if char not in "+|*?()\'":
+                key_token_value += char
+                itera += 1
             else:
                 # Si es un operador de expresión regular, verificamos si el token clave-valor actual es una clave en el diccionario
-                if key_value_token in self.values_dict:
-                    # Si la clave existe en el diccionario, reemplazamos el token clave-valor actual con su valor correspondiente
-                    regex = self.values_dict[key_value_token]
-                    word_len = len(key_value_token)                 
-                    # Guardamos los índices donde debemos cortar la expresión regular
+                if key_token_value in self.values_dict:
+                     # Si la clave existe en el diccionario, reemplazamos el token clave-valor actual con su valor correspondiente
+                    regex = self.values_dict[key_token_value]
+                    word_len = len(key_token_value)
+                     # Guardamos los índices donde debemos cortar la expresión regular
                     der = itera
                     izq = itera - word_len
                     # Hacemos el corte y agregamos la regex correspondiente
                     self.regular_expression_result = self.regular_expression_result[:izq] + regex + self.regular_expression_result[der:]
                     # Reiniciamos los valores de los tokens y el iterador
                     itera = -1 # Colocamos -1 en vez de 0, ya que se le suma 1 en la siguiente línea y de esta forma iniciaría en 0
-                    key_value_token = ""
+                    key_token_value = "" 
                 else:
                     # Si la clave no existe en el diccionario, simplemente reiniciamos el valor del token clave-valor actual
-                    key_value_token = ""
-            # Incrementamos el iterador en cada iteración
-            itera += 1
-            
-            #Analizamos si la expresión regular resultante tiene un .digits, si lo tiene, será reemplazado por lo siguiente ('.')(0|1|2|3|4|5|6|7|8|9)+
-            if ".digits" in self.regular_expression_result:
-                self.regular_expression_result = self.regular_expression_result.replace(".digits", "'.'(0|1|2|3|4|5|6|7|8|9)+")
-        
+                    key_token_value = ""
+                     # Incrementamos el iterador en cada iteración
+                    itera += 1
         return self.regular_expression_result
         
 
@@ -177,29 +171,72 @@ class YALexGenerator:
             #print("Nueva expresión con los ors agregados: ", converted_regex[:-1])
             return converted_regex[:-1]
         elif "\'" in special_regex:
-            # Si la expresión regular incluye comillas simples, significa que es una lista de caracteres
-            # que pueden estar separados por ORs o ser una secuencia de caracteres ASCII
-            chars = special_regex.split("\'")[1::2]
-            if "-" in special_regex and special_regex == "'A'-'Z''a'-'z'":
-                # Si la secuencia de caracteres es 'A'-'Z''a'-'z', construimos la lista de caracteres apropiada
-                for ascii_val in range(ord('a'), ord('z')+1):
-                    converted_regex += f"{chr(ascii_val)}|"
-                for ascii_val in range(ord('A'), ord('Z')+1):
-                    converted_regex += f"{chr(ascii_val)}|"
-            #Ahora hacemos el caso para los números
-            elif "-" in special_regex and special_regex == "'0'-'9'":
-                for ascii_val in range(ord('0'), ord('9')+1):
-                    converted_regex += f"{chr(ascii_val)}|"
-            #Si encuentra 
+            # Se crea una lista vacía llamada 'chars'
+            chars = []
+            # Se inicializa un iterador en cero
+            iterador = 0
+            # Se recorre la cadena 'special_regex' mientras el iterador sea menor que la longitud de 'special_regex'
+            while iterador < len(special_regex):
+                # Si el carácter actual es una comilla simple
+                if special_regex[iterador] == "'":
+                    # Se incrementa el iterador para evitar la comilla simple inicial
+                    iterador += 1
+                    # Se crea una variable 'char' con una comilla simple inicial
+                    char = "'"
+                    # Se recorre la cadena 'special_regex' mientras el iterador sea menor que la longitud de 'special_regex'
+                    # y el carácter actual no sea una comilla simple
+                    while iterador < len(special_regex) and special_regex[iterador] != "'":
+                        # Se agrega el carácter actual a la variable 'char'
+                        char += special_regex[iterador]
+                        # Se incrementa el iterador
+                        iterador += 1
+                    # Se agrega una comilla simple final a la variable 'char'
+                    char += "'"
+                    # Se agrega la variable 'char' a la lista 'chars'
+                    chars.append(char)
+                # Se incrementa el iterador
+                iterador += 1
+            # Se imprime la lista de caracteres encontrados
+            print("Lista de caracteres: ", chars)
+            # Se copia la cadena 'special_regex' en la variable 'position'
+            position = special_regex
+            # Se recorre cada caracter en la lista 'chars'
+            for char in chars:
+                # Se reemplaza cada ocurrencia del caracter actual en la cadena 'position' con una cadena vacía
+                position = position.replace(char, "")
+            # Si 'position' no es una cadena vacía
+            if len(position) > 0:
+                # Se recorre cada carácter restante en 'position'
+                for char_p in position:
+                    # Se extrae el último caracter de la lista 'chars' y se guarda en la variable 'der'
+                    der = chars.pop()
+                    # Se extrae el último caracter de la lista 'chars' y se guarda en la variable 'izq'
+                    izq = chars.pop()
+                    # Se obtiene el código ASCII del primer caracter en la cadena 'izq'
+                    left_char = ord(izq[1])
+                    # Se obtiene el código ASCII del primer caracter en la cadena 'der'
+                    right_char = ord(der[1])
+                    # Se genera una lista de códigos ASCII que va desde 'left_char' hasta 'right_char'
+                    ascii_list = range(left_char, right_char + 1)
+                    # Se convierte cada código ASCII en su carácter correspondiente y se agrega a la cadena de expresión regular convertida
+                    for ascii_ in ascii_list:
+                        new_char = chr(ascii_)
+                        converted_regex += new_char
+                        converted_regex += "|"
             else:
-                # Si no hay guión, entonces son caracteres separados por ORs
+                # Se recorre cada carácter en la lista 'chars'
                 for char in chars:
-                    #En caso de encontrar un espacio, agregar un \s entre parentesis
-                    if char == " ":
-                        converted_regex += f"(\s)|"
+                    # Si el carácter actual contiene una barra invertida ('\')
+                    if '\\' in char:
+                        # Se remueve la comilla simple
+                        char_n = char.replace("'", "")
+                        # Se agrega el carácter modificado a la cadena de expresión regular convertida
+                        converted_regex += char_n
                     else:
-                        converted_regex += f"({char})|"
-            #print("Nueva expresión con los ors agregados: ", converted_regex[:-1])
+                        # Se agrega el carácter actual a la cadena de expresión regular convertida
+                        converted_regex += char
+                    # Se agrega un '|' después de cada carácter procesado
+                    converted_regex += '|'
             return converted_regex[:-1]
 
 
