@@ -14,19 +14,14 @@ class YALexGenerator(object):
         self.regex = []
         self.build_regex_expression()
 
-    # Se crea la funcion para leer el archivo
+    #Creamos la expresión regular a partir de la lectura del archivo
     def build_regex_expression(self):
-        # Se abre el archivo para leer
         with open(self.filename, "r") as file:  
-
-            # Se crea una variable para conocer si se toman los token y una para la regex final
             tokens = None
             final_regex = []
-
-            # Se itera por cada linea
+            #Hacemos la iteración línea por línea del archivo
             for line in file:
-
-                # Si la linea tiene un let
+                # Verificamos en qué línea se encuentra un let
                 if('let' in line):
                     # Se reemplazan los espacios vacios
                     line = line.replace('let ', '')
