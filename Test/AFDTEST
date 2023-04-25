@@ -1,5 +1,0 @@
-digraph {
-	labelloc=t rankdir=LR
-	S0 [label=S0 color=red shape=circle style=filled]
-	S0 [label=S0 shape=circle]
-}

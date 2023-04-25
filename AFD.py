@@ -11,7 +11,7 @@ class AFD_construction(FA):
         self.states = []
         self.transitions = []
         self.initial_state = []
-        self.final_state = []
+        self.final_state = {}
         self.symbols = []
 
 
@@ -82,78 +82,73 @@ class AFD_construction(FA):
 
     """
         Función que se encarga de crear el AFD directo a partir de su expresión regular
+        chr(character) if isinstance(character, int) else character
     """
     
-    def afd_direct_(self):
-        # Contador de estados
-        count = 1
-        # Se crea el árbol de lectura a partir de la expresión regular
-        tree = RegextoTree(self.regex)
-        # Se obtiene la tabla de followpos del árbol de lectura
-        table = tree.get_followpos_table()
-        # Se establece el primer estado del DFA
-        first_state = frozenset(tree.root.first_pos)
-        # Se crea el alfabeto especial
-        self.create_special_alphabet()
-        # Diccionario de estados del DFA
-        states = {first_state: count}
-        # Lista de estados no marcados
-        unmarked_states = [first_state]
-        # Entrada para el primer estado en la tabla de transiciones del DFA
-        entry = [set() for element in self.special_alphabet]
-        self.transitions[count] = entry
-        # Se aumenta el contador de estados
-        count += 1
-        # Se obtiene el último followpos
-        pos_augmented = tree.get_last_pos()
-        # Se agrega el primer estado como estado inicial del DFA
-        self.initial_states.add(states[first_state])
-        # Si el último followpos está en el primer estado, se agrega como estado de aceptación
-        if pos_augmented in first_state:
-            self.acceptance_states.add(states[first_state])
+    # Se utiliza el algoritmo para la construccion directa
+    def afd_direct_(self, regex, name):
+        # Se crea el arbol
+        tree = RegextoTree(regex)
+        # Se obtiene la raiz y la lista de nodos
+        tree_root = tree.tree_root
+        node_list = tree.node_list
+        # Se crean los estados y transiciones del AFD
+        states = ["S0"]
+        transitions = []
+        final_states = {}
+        symbols = tree.get_Alphabet()
 
-        # Se itera hasta que no hayan más estados no marcados
-        while unmarked_states:
-            # Se obtiene un estado no marcado
-            S = unmarked_states.pop()
-            # Se itera por cada símbolo del alfabeto especial
-            for symbol in self.special_alphabet:
-                # Se obtiene el conjunto U de followpos de S y el símbolo actual
-                U = set()
-                for state in S:
-                    if (state, symbol) in table:
-                        U = U.union(table[(state, symbol)])
-                U = frozenset(U)
-                # Si U no ha sido agregado a los estados del DFA
-                if U not in states:
-                    # Se agrega U como nuevo estado del DFA
-                    states[U] = count
-                    # Si U es un estado vacío, se establece como estado de muerte del DFA
-                    if not U:
-                        self.dead_state = count
-                    # Se crea una nueva entrada en la tabla de transiciones del DFA para U
-                    entry = [set() for element in self.special_alphabet]
-                    self.transitions[count] = entry
-                    # Se agrega U a la lista de estados no marcados
-                    unmarked_states.append(U)
-                    # Se aumenta el contador de estados
-                    count += 1
-                # Se crea una transición de S a U con el símbolo actual
-                self.create_transition(states[S], states[U], symbol)
-                # Si U contiene el último followpos, se agrega como estado de aceptación
-                if pos_augmented in U:
-                    self.acceptance_states.add(states[U])
+        # Se ejecutan las propiedades de los nodos
+        tree.Node_properties(node_list)
+        
+        # Se crea dstates
+        Dstates = [tree.compute_first_pos(tree_root)]
+        state_counter = 0
+        # Mientras no haya ninguno marcado se continua
+        while(state_counter != len(Dstates)):
+            # Se itera por cada simbolo
+            for symbol in symbols:
+                # Se crea el nuevo set
+                new_state = set()
+                # Por cada nodo de dstates
+                for node in Dstates[state_counter]:
+                    # Une cada followpos
+                    if(node.value == symbol):
+                        new_state = new_state.union(node.followpos)
+                # Si el nuevo estado es vacio no se toma en cuenta
+                if(len(new_state) != 0):
+                    # Si el estado no esta en Dstates se ingresa
+                    if(new_state not in Dstates):
+                        Dstates.append(new_state)
+                        states.append("S" + str(len(states)))
+                    # Se busca el estado de transicion
+                    new_state_counter = Dstates.index(new_state)
+                    # Se realiza la transicion
+                    transitions.append([states[state_counter], symbol, states[new_state_counter]])
 
-        # Se establece el alfabeto del DFA como el alfabeto especial
-        self.alphabet = self.special_alphabet
-        # Se guarda la tabla de transiciones temporalmente
-        self.temp_transitions = self.transitions
-        # Se elimina el estado de muerte del DFA
-        self.delete_dead_state()
-        # Se establece la tabla de transiciones del DFA como la tabla externa
-        self.external_transitions = self.transitions
-    
-    
+            # Se hacen dos sets para lograr hacer operaciones de conjuntos entre ellos
+            set_states = set(Dstates[state_counter])
+            set_final_states = set(tree.compute_last_pos(tree_root))
+
+            # Se verifica que los estados encontrados se encuentren en el conjunto de estados finales
+            if(set_states.intersection(set_final_states).__len__() != 0):
+                node_final = set_states.intersection(set_final_states)
+                node_char = node_final.pop().value
+                final_states[states[state_counter]] = node_char
+
+            # Se agrega un contador para marcar los estados
+            state_counter += 1
+            
+        # Se crea el AFD
+        afd = AFD_construction()
+        afd.regex = regex
+        afd.states = states
+        afd.symbols = symbols
+        afd.transitions = transitions
+        afd.initial_state = states[0]
+        afd.final_state = final_states
+        afd.output_image(name)
+        return afd
     
     def create_special_alphabet(self):
         self.special_alphabet = [element for element in self.alphabet]
@@ -403,24 +398,38 @@ class AFD_construction(FA):
     
     """
     def simulate_afd(self, string):
-        # Verifica que los caracteres del string pertenezcan al alfabeto
-        for element in string:
-            if element not in self.alphabet:
-                return "rechazada"
-        # Inicia en el estado inicial
-        s = self.initial_states
-        # Si el string está vacío, se mueve con una transición vacía
-        if not string:
-            s = self.move(s, 'ε')
-        else:
-            # Se mueve a través de cada elemento del string
-            for element in string:
-                s = self.move(s, element)
-        # Si el estado actual está en los estados de aceptación, se acepta el string
-        if s.intersection(self.acceptance_states):
-            return "aceptada"
-        # Si no, se rechaza el string
-        return "rechazada"
+        file = open(string, 'r').read()
+        file_stack = []
+        for i in file:
+            file_stack.append(ord(i))
+        print(file_stack)
+        characters_list = []
+        last_token = None
+        while(len(file_stack) != 0):
+            # Se inicializan los estados con e_closure del inicial
+            states = [self.initial_state]
+            characters_list.append(file_stack.pop(0))
+            print(characters_list)
+            # Se inicia el conteo de caracteres de la cadena
+            character_count = 0
+            # Mientras hayan caracteres para verificar en el string
+            while(character_count < len(characters_list)):
+                # Se toman los estados devueltos por e_closure del move con el caracter
+                states = self.move(states, characters_list[character_count])
+                # Se pasa al siguiente caracter
+                character_count += 1
+            # Se hacen dos sets para lograr hacer operaciones de conjuntos entre ellos
+            final_states_keys = list(self.final_state.keys())
+            set_states = set(states)
+            set_final_states = set(final_states_keys)
+
+            # Se verifica que los estados encontrados se encuentren en el conjunto de estados finales
+            if(set_states.intersection(set_final_states).__len__() != 0):
+                last_final = set_states.intersection(set_final_states).pop()
+                last_token = self.final_state[last_final]
+                print(last_token)
+            else:
+                print("Cadena No Aceptada") 
 
     
     """
@@ -485,47 +494,45 @@ class AFD_construction(FA):
         - states: conjunto de estados a partir del cual se realizará la transición.
         - symbol: símbolo de entrada para realizar la transición.
         """
-        # Inicializamos el conjunto de estados resultantes vacío.
-        result = set()
-        #Obtenemos las transiciones externas o internas del autómata, según corresponda.
-        transitions = self.external_transitions.copy() if self.external_transitions else self.transitions.copy()
-        #Recorremos los estados del conjunto de estados de entrada.
-        for state in states:
-            #Obtenemos el índice del símbolo en la tabla de transiciones.  
-            index = self.get_symbol_index(symbol)
-            #Obtenemos la transición correspondiente al estado actual. 
-            transition = transitions[state]
-            #Obtenemos el conjunto de estados alcanzables con el símbolo actual.
-            states_reached = transition[index]
-            #Recorremos los estados alcanzables.
-            for element in states_reached:
-                #Agregamos cada estado alcanzable al conjunto de estados resultantes.
-                result.add(element)
-        #Devolvemos el conjunto de estados alcanzables.
-        return result
+        # Se inicia el stack con los estados de T
+        states_stack = states
+        # Se inicia sin estados
+        states_result = []
+        # Se itera mientra el stack no se encuentre vacio
+        while(len(states_stack) != 0):
+            # Se saca el estado t
+            state = states_stack.pop()
+            # Se revisa en cada transicion
+            for i in self.transitions:
+                # Se revisa que tenga transicion con el caracter
+                if(i[0] == state and i[1] == symbol):
+                    # Si el estado no esta en los resultados se ingresa
+                    if(i[2] not in states_result):
+                        states_result.append(i[2])
+        # Se retorna el resultado
+        return states_result
 
     
     # Funcion para graficar el automata
-    def graphAF(self):
-        
-        # Se realiza el titulo del automata
-        description = ("AFD")
+    def output_image(self, name):
+        #Si name es null, poner por defecto AFD
+        if name == None:
+            self.afd_name = "AFD"
+        else: 
+            self.afd_name = name
         graph = Digraph()
-        graph.attr(rankdir="LR", labelloc="t", label=description)
-
+        graph.attr(rankdir="LR", labelloc="t")
         # Por cada estado se crea la imagen para graficarlo
         for state in self.states:
-
             if(state in self.initial_state):
-                graph.node(str(state), str(state), shape="circle", style="filled")
+                graph.node(str(state), str(state), shape="circle", style="filled", color="red")
             if(state in self.final_state):
-                graph.node(str(state), str(state), shape="doublecircle", style="filled")
+                graph.node(str(state), str(state), shape="doublecircle", style="filled", color="green")
             else:
                 graph.node(str(state), str(state), shape="circle")
-
         # Se crean las transiciones de los estados
         for transition in self.transitions:
             graph.edge(str(transition[0]), str(transition[2]), label=str(transition[1]))
 
         # Se renderiza
-        graph.render(f"./images/AFDDefault", format="png", view=True)
+        graph.render(f"./AFDs_LabD/AFDDefault", format="png", view=True)

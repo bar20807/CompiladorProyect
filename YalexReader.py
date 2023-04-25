@@ -12,10 +12,10 @@ class YALexGenerator(object):
         self.filename = filename
         self.regular_expressions = {}
         self.regex = []
-        self.read()
+        self.build_regex_expression()
 
     # Se crea la funcion para leer el archivo
-    def read(self):
+    def build_regex_expression(self):
         # Se abre el archivo para leer
         with open(self.filename, "r") as file:  
 
@@ -33,9 +33,6 @@ class YALexGenerator(object):
                     line = line.replace(" ", "")
                     # Se divide entre la definicion y el valor de esta
                     definition, value = line.split('=')
-                    print("Linea de Let")
-                    print(definition)
-                    print(value)
                     # Se crea la lista con la definicion final
                     value_definition = []
                     # Si el primer elemento del valor es una llave significa que es un charset
@@ -49,14 +46,12 @@ class YALexGenerator(object):
                             separator_counter = value.count('-')
                             # Si se debe de realizar un ciclo 
                             if(separator_counter != 0):
-
                                 # Se crea un ciclo while para iterar con respecto a la cantidad de ciclos de caracteres
                                 index_counter = 1
                                 first_value = ""
                                 second_value = ""
                                 first_apostrophe = None
                                 second_apostrophe = None
-
                                 while(separator_counter != 0):
                                     # Se visualiza que exista una apostrofe y la segunda
                                     # Para conocer que elemento inicia el ciclo
@@ -137,9 +132,6 @@ class YALexGenerator(object):
                                 
                         # Para la definicion nueva se agrega con el parentesis de cierre al final
                         value_definition.append(')') 
-                        print("Valor final")
-                        print(value_definition)
-                        print("")
                         # Se guarda la definicion con el valor final de esta
                         self.regular_expressions[definition] = value_definition 
                     # Si no es un charset se revisa
@@ -174,7 +166,6 @@ class YALexGenerator(object):
                                     new_string = ""
                                 if(not first_apostrophe):
                                     value_list.append(value[i])
-
                         # Se tienen el diccionario con las definiciones
                         dictionary_keys = list(self.regular_expressions.keys())
                         # Se itera entre las definiciones para ver si existen en el valor
@@ -208,10 +199,6 @@ class YALexGenerator(object):
                         # Para el valor final de la definicion se agregan en el primero y ultimo valor un parentesis
                         value_list[0:0] = '('
                         value_list[len(value_list):len(value_list)] = ')'
-
-                        print("Valor final nuevos")
-                        print(value_list)
-                        print("")
                         # Se guarda la definicion con su valor en el diccionario
                         self.regular_expressions[definition] = value_list
                 # Si se encuentra la linea de rule tokens se pone como verdadera la variables
@@ -219,9 +206,6 @@ class YALexGenerator(object):
                     tokens = True
                 # Si esta verdadera la variable de rule tokens
                 elif(tokens):
-                    print("Regex Final")
-                    print(final_regex)
-                    print("")
                     # Se toman las llaves del diccionario
                     dictionary_keys = list(self.regular_expressions.keys())
                     # Si la linea tiene un or se agrega a la expresion final

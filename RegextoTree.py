@@ -29,113 +29,126 @@ class RegextoTree(object):
 
     def buildTree(self):
         node_stack = []  # pila de nodos
-        pos_counter = 1  # contador de posiciones
+        iterator = 1
         for char in self.postfix:
-            if char == '+':  # suma unaria
-                node = Node(char)
+            if (isinstance(char, str) and char is '+'):  # suma unaria
+                node = Node(char,True)
                 node.left_child = node_stack.pop()
                 node_stack.append(node)
                 self.node_list.append(node)
-            elif char == '*':  # cierre de Kleene
-                node = Node(char)
+            elif (isinstance(char, str) and char is '*'):  # cierre de Kleene
+                node = Node(char,True)
                 node.left_child = node_stack.pop()
                 node_stack.append(node)
                 self.node_list.append(node)
-            elif char == '?':  # opcionalidad
-                node = Node(char)
+            elif (isinstance(char, str) and char is '?'):  # opcionalidad
+                node = Node(char,True)
                 node.left_child = node_stack.pop()
                 node_stack.append(node)
                 self.node_list.append(node)
-            elif char == '.':  # concatenación
-                node = Node(char)
+            elif (isinstance(char, str) and char is '.'):  # concatenación
+                node = Node(char,True)
                 node.right_child = node_stack.pop()
                 node.left_child = node_stack.pop()
                 node_stack.append(node)
                 self.node_list.append(node)
-            elif char == '|':  # alternancia
-                node = Node(char)
+            elif (isinstance(char, str) and char is '|'):  # alternancia
+                node = Node(char,True)
                 node.right_child = node_stack.pop()
                 node.left_child = node_stack.pop()
                 node_stack.append(node)
                 self.node_list.append(node)
             else:  # símbolo
-                node = Node(char, pos_counter)
-                pos_counter += 1
+                node = Node(char, False, iterator)
                 node_stack.append(node)
                 self.node_list.append(node)
         self.tree_root = node_stack.pop()  # el último nodo es la raíz
 
-    # Función para calcular si un nodo es nulo o no
+    # Define una función llamada compute_nullable que recibe como argumento un nodo
     def compute_nullable(self, node):
-        # Se retornan nulos los simbolos que lo son
-        if(node.isOperator and node.character in "ε?*"):
-            return True
-        # Para el or se retorna los nulos de los dos hijos con or
-        elif(node.isOperator and node.character == "|"):
-            return (self.compute_nullable(node.left_child) or self.compute_nullable(node.right_child))
-        # Para concatenacion se retorna el nulo de los dos hijos con and
-        elif(node.character == "." and node.isOperator):
-            return (self.compute_nullable(node.left_child) and self.compute_nullable(node.right_child))
-        # Para la cerradura positiva se regresa el nulo del hijo
-        elif(node.character == "+" and node.isOperator):
-            return self.compute_nullable(node.left_child)
-        # Si es un caracter no es nulo
+        # Si el nodo es un operador, se entra en este bloque
+        if node.operator:
+            # Si el valor del nodo es uno de los símbolos especiales (ε, ?, o *), entonces el nodo es nulo y se retorna True
+            if node.value in "ε?*":
+                return True
+            # Si el valor del nodo es el operador OR ('|'), se evalúa si al menos uno de los dos hijos es nulo
+            elif node.value == "|":
+                # Se aplica la función compute_nullable a cada uno de los dos hijos y se verifica si alguno es nulo usando la función any
+                return any(self.compute_nullable(child) for child in [node.left_child, node.right_child])
+            # Si el valor del nodo es el operador AND ('.'), se evalúa si ambos hijos son nulos
+            elif node.value == ".":
+                # Se aplica la función compute_nullable a cada uno de los dos hijos y se verifica si ambos son nulos usando la función all
+                return all(self.compute_nullable(child) for child in [node.left_child, node.right_child])
+            # Si el valor del nodo es el operador de cerradura positiva ('+'), se evalúa si el hijo es nulo
+            elif node.value == "+":
+                # Se aplica la función compute_nullable al hijo y se retorna el resultado
+                return self.compute_nullable(node.left_child)
+        # Si el nodo no es un operador, entonces no es nulo y se retorna False
         else:
             return False
 
+
     def compute_first_pos(self, node):
-        # Si es epsilon se regresa un vacio
-        if(node.isOperator and node.character == "ε"):
-            return set()
-        # Si es un or se regresa la union de los dos hijos
-        elif(node.isOperator and node.character == "|"):
-            return (self.compute_first_pos(node.right_child).union(self.compute_first_pos(node.left_child)))
-        # Si es concatenacion se regresa la union si el izquierdo es nulo, del contrario es el izquierdo
-        elif(node.isOperator and node.character == "."):
-            if(self.compute_nullable(node.left_child)):
-                return (self.compute_first_pos(node.right_child).union(self.compute_first_pos(node.left_child)))
-            else:
-                return self.compute_first_pos(node.left_child)
-        # Para las cerraduras se regresa el firstpos de su hijo
-        elif(node.isOperator and node.character in "*+?"):
-            return self.compute_first_pos(node.left_child)
-        # Si es un caracter se regresa solo la posicion
-        else:
-            return {node}
+        first_pos = set()
+        # Si el nodo es un caracter, su first_pos es solo la posición del nodo
+        if not node.operator:
+            first_pos.add(node)
+        # Si el nodo es una cerradura, su first_pos es el first_pos de su hijo
+        elif node.value in "*+?":
+            first_pos.update(self.compute_first_pos(node.left_child))
+        # Si el nodo es un OR, su first_pos es la unión de los first_pos de sus hijos
+        elif node.value == "|":
+            first_pos.update(self.compute_first_pos(node.left_child))
+            first_pos.update(self.compute_first_pos(node.right_child))
+        # Si el nodo es una concatenación, su first_pos es el first_pos de su hijo izquierdo,
+        # a menos que este sea nullable, en cuyo caso se agrega el first_pos de su hijo derecho
+        elif node.value == ".":
+            first_pos.update(self.compute_first_pos(node.left_child))
+            if self.compute_nullable(node.left_child):
+                first_pos.update(self.compute_first_pos(node.right_child))
+        # Si el nodo es un epsilon, su first_pos es vacío
+        elif node.value == "ε":
+            pass
+        return first_pos
+
 
 
     def compute_last_pos(self, node):
-        # Para epsilon se regresa un vacio
-        if(node.isOperator and node.character == "ε"):
-            return set()
-        # Si es un or se regresa la union de los dos hijos
-        elif(node.isOperator and node.character == "|"):
-            return (self.compute_last_pos(node.right_child).union(self.compute_last_pos(node.left_child)))
-        # Si es concatenacion se regresa la union si el derecho es nulo, del contrario es el derecho
-        elif(node.isOperator and node.character == "."):
-            if(self.compute_nullable(node.right_child)):
-                return (self.compute_last_pos(node.right_child).union(self.compute_last_pos(node.left_child)))
-            else:
-                return self.compute_last_pos(node.right_child)
-        # Para las cerraduras se regresa el firstpos de su hijo
-        elif(node.isOperator and node.character in "*+?"):
-            return self.compute_last_pos(node.left_child)
-        # Si es un caracter se regresa solo la posicion
-        else:
-            return {node}
+        last_pos = set()
+        # Si el nodo es un caracter, su last_pos es solo la posición del nodo
+        if not node.operator:
+            last_pos.add(node)
+        # Si el nodo es una cerradura, su last_pos es el last_pos de su hijo
+        elif node.value in "*+?":
+            last_pos.update(self.compute_last_pos(node.left_child))
+        # Si el nodo es un OR, su last_pos es la unión de los last_pos de sus hijos
+        elif node.value == "|":
+            last_pos.update(self.compute_last_pos(node.left_child))
+            last_pos.update(self.compute_last_pos(node.right_child))
+        # Si el nodo es una concatenación, su last_pos es el last_pos de su hijo derecho,
+        # a menos que este sea nullable, en cuyo caso se agrega el last_pos de su hijo izquierdo
+        elif node.value == ".":
+            last_pos.update(self.compute_last_pos(node.right_child))
+            if self.compute_nullable(node.right_child):
+                last_pos.update(self.compute_last_pos(node.left_child))
+        # Si el nodo es un epsilon, su last_pos es vacío
+        elif node.value == "ε":
+            pass
+        return last_pos
+
 
     def compute_follow_pos(self, node):
         # Si es un nodo final, no se hace nada
         if not node.left_child and not node.right_child:
             return
         # Si es un nodo de concatenación
-        elif node.character == '.':
+        elif node.value == '.':
             # Se toman los nodos de lastpos del nodo izquierdo
             for i in self.compute_last_pos(node.left_child):
                 # A cada nodo de lastpos se le añade el followpos del nodo derecho
                 i.followpos |= self.compute_first_pos(node.right_child)
         # Si es un nodo de cerradura (tanto * como +)
-        elif node.character in '*+':
+        elif node.value in '*+':
             # Se toman los nodos de lastpos del nodo izquierdo
             for i in self.compute_last_pos(node.left_child):
                 # A cada nodo de lastpos se le añade el followpos del nodo izquierdo
@@ -143,7 +156,7 @@ class RegextoTree(object):
             # Se aplica lo mismo a los nodos del nodo derecho
             self.compute_follow_pos(node.left_child)
         # Si es un nodo alternativo, se aplica lo mismo a ambos nodos
-        elif node.character == '|':
+        elif node.value == '|':
             self.compute_follow_pos(node.left_child)
             self.compute_follow_pos(node.right_child)
             
@@ -169,24 +182,25 @@ class RegextoTree(object):
                 nodes.append(node.left_child)
             if node.right_child:
                 nodes.append(node.right_child)
-                
-
-    """
-        Esta función recibe un objeto de la clase regex y devuelve el alfabeto de la expresión regular
     
-    """
-    def get_Alphabet(self): 
+    def get_Alphabet(self):
         symbols = []
+
         for i in self.regex:
             if(isinstance(i, int) and i not in symbols):
                 symbols.append(i)
+            elif(i not in symbols and i not in ".|*+?()"):
+                symbols.append(i)
+
         return symbols
-    
-    
+
     # Función para graficar cada nodo del árbol
     def generate_dot(self, node, graph):
         # Se crea un nodo en el grafo con un ID único y el valor del nodo del árbol de expresión regular
-        graph.node(str(id(node)), str(node.character))
+        if(isinstance(node.value, int)):
+            graph.node(str(id(node)), chr(node.value))
+        else:
+            graph.node(str(id(node)), str(node.value))
         # Si el nodo actual tiene un hijo izquierdo, se genera un nodo y se conecta con una arista
         if(node.left_child):
             graph.edge(str(id(node)), str(id(node.left_child)))

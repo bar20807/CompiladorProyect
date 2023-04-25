@@ -8,13 +8,13 @@
 
 
 class Node (object):
-    def __init__(self, character=None, isOperator = None, position=None):
-        self.character = chr(character) if isinstance(character, int) else character
-        self.right_child = None
-        self.left_child = None
-        self.nullable = False
+    def __init__(self, value, operator,  position = None):
+        self.value = value
         self.firstpos = set()
         self.lastpos = set()
         self.followpos = set()
         self.position = position
-        self.isOperator = isOperator
+        self.operator = operator
+        self.left_child = None
+        self.right_child = None
+            
