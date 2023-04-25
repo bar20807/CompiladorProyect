@@ -184,15 +184,7 @@ class RegextoTree(object):
                 nodes.append(node.right_child)
     
     def get_Alphabet(self):
-        symbols = []
-
-        for i in self.regex:
-            if(isinstance(i, int) and i not in symbols):
-                symbols.append(i)
-            elif(i not in symbols and i not in ".|*+?()"):
-                symbols.append(i)
-
-        return symbols
+        return sorted(set(filter(lambda i: isinstance(i, int) or (i.isalpha() and i not in ".|*+?()"), self.regex)))
 
     # Función para graficar cada nodo del árbol
     def generate_dot(self, node, graph):
