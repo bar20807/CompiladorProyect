@@ -6,7 +6,7 @@ from FA import FA
 
 class AFD_construction(FA):
     def __init__(self, regex=None):
-        self.regex = None
+        self.regex = regex
         self.states_counter = 0
         self.states = []
         self.transitions = []
@@ -107,7 +107,7 @@ class AFD_construction(FA):
         # Se itera mientras haya nuevos estados por procesar
         unprocessed_states = ["S0"]
         while unprocessed_states:
-            state = unprocessed_states.pop()
+            state = unprocessed_states.pop(0)
             # Se agrega el estado al conjunto de estados del AFD
             afd.states.append(state)
             # Se obtienen los followpos del estado actual para cada símbolo del alfabeto
@@ -124,7 +124,7 @@ class AFD_construction(FA):
                     # Se agrega la transición del estado actual al nuevo estado
                     afd.transitions.append([state, symbol, next(key for key, value in Dstates.items() if value == followpos_set)])
                     # Si el nuevo estado contiene un nodo final, se agrega al conjunto de estados finales del AFD
-                    if any(node.value == "$" for node in followpos_set):
+                    if any(node.value == "#" for node in followpos_set):
                         afd.final_state[state] = symbol
 
         # Se genera la imagen del AFD
@@ -385,38 +385,31 @@ class AFD_construction(FA):
     def simulate_afd(self, string):
         with open(string, 'r') as file:
             file_content = file.read()
-        
         # Convertimos el contenido del archivo a una lista de enteros
         file_stack = [ord(char) for char in file_content]
-        
         characters_list = []
         last_token = None
         current_state = self.initial_state
-        
         # Verificamos caracter por caracter
         for char in file_stack:
             # Agregamos el caracter actual a la lista de caracteres a verificar
             characters_list.append(char)
-            
+            print("Caracteres: ", characters_list)
             # Realizamos el move del estado actual con el caracter actual
             next_state = self.move(current_state, char)
-            
             # Si el move devuelve un estado vacío, significa que la cadena no es aceptada
             if not next_state:
                 print("Cadena No Aceptada")
                 return None
-            
             # Verificamos si llegamos a un estado final
             if next_state in self.final_state:
                 last_token = self.final_state[next_state]
-                
+                print("last_token: ", last_token)
             current_state = next_state
-            
         # Si llegamos al final del archivo y no encontramos un estado final, la cadena no es aceptada
         if not last_token:
             print("Cadena No Aceptada")
             return None
-        
         print(last_token)
         return last_token
 

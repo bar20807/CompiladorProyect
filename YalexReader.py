@@ -15,13 +15,19 @@ class YALexGenerator(object):
         self.build_regex_expression()
 
     #Creamos la expresión regular a partir de la lectura del archivo
+    # Se crea la funcion para leer el archivo
     def build_regex_expression(self):
+        # Se abre el archivo para leer
         with open(self.filename, "r") as file:  
+
+            # Se crea una variable para conocer si se toman los token y una para la regex final
             tokens = None
             final_regex = []
-            #Hacemos la iteración línea por línea del archivo
+
+            # Se itera por cada linea
             for line in file:
-                # Verificamos en qué línea se encuentra un let
+
+                # Si la linea tiene un let
                 if('let' in line):
                     # Se reemplazan los espacios vacios
                     line = line.replace('let ', '')
@@ -41,12 +47,14 @@ class YALexGenerator(object):
                             separator_counter = value.count('-')
                             # Si se debe de realizar un ciclo 
                             if(separator_counter != 0):
+
                                 # Se crea un ciclo while para iterar con respecto a la cantidad de ciclos de caracteres
                                 index_counter = 1
                                 first_value = ""
                                 second_value = ""
                                 first_apostrophe = None
                                 second_apostrophe = None
+
                                 while(separator_counter != 0):
                                     # Se visualiza que exista una apostrofe y la segunda
                                     # Para conocer que elemento inicia el ciclo
@@ -89,7 +97,6 @@ class YALexGenerator(object):
                                 first_value = ""
                                 first_apostrophe = None
                                 second_apostrophe = None
-
                                 while(value[index_counter] != ']'):
                                     # Se buscan las apostrofes
                                     if(value[index_counter] == "'" and not first_apostrophe):
@@ -98,12 +105,21 @@ class YALexGenerator(object):
                                         second_apostrophe = index_counter
                                     # Se encuentra el valor dentro de las apostrofes y se guarda como tal
                                     if(first_apostrophe and second_apostrophe):
-                                        first_value = value[(first_apostrophe + 1):second_apostrophe]
+                                        first_value = str(value[(first_apostrophe + 1):second_apostrophe])
                                         first_apostrophe = None
                                         second_apostrophe = None
                                         if(first_value == ''):
                                             first_value = ' '
+                                            first_value = ord(first_value)
+                                        elif(first_value.startswith("\\")):
+                                            first_value = first_value.replace("\\", '')
+                                            if(first_value == "n"):
+                                                first_value = ord("\n")
+                                            elif(first_value == "t"):
+                                                first_value = ord("\t")
                                         value_definition.append(first_value)
+                                        if(value[index_counter + 1] != ']'):
+                                            value_definition.append("|")
                                     # Se itera en todos los valores
                                     index_counter += 1
                         # Si el charset se define entre comillas dobles, por lo tanto son valores uno despues de otro
@@ -161,6 +177,7 @@ class YALexGenerator(object):
                                     new_string = ""
                                 if(not first_apostrophe):
                                     value_list.append(value[i])
+
                         # Se tienen el diccionario con las definiciones
                         dictionary_keys = list(self.regular_expressions.keys())
                         # Se itera entre las definiciones para ver si existen en el valor
@@ -194,6 +211,7 @@ class YALexGenerator(object):
                         # Para el valor final de la definicion se agregan en el primero y ultimo valor un parentesis
                         value_list[0:0] = '('
                         value_list[len(value_list):len(value_list)] = ')'
+
                         # Se guarda la definicion con su valor en el diccionario
                         self.regular_expressions[definition] = value_list
                 # Si se encuentra la linea de rule tokens se pone como verdadera la variables
@@ -221,6 +239,7 @@ class YALexGenerator(object):
                                 apostrophes_value = line[(first_apostrophe + 1):i]
                                 value_ascii = ord(apostrophes_value)
                                 final_regex.append(value_ascii)
+                                final_regex.append(f"#{apostrophes_value}")
                                 first_apostrophe = None
                     # Si tiene comillas dobles el caracter se revisa
                     elif('"' in line):
@@ -235,6 +254,7 @@ class YALexGenerator(object):
                             elif(line[i] == '"' and first_apostrophe != None):
                                 apostrophes_value = line[(first_apostrophe + 1):i]
                                 final_regex.append(apostrophes_value)
+                                final_regex.append(f"#{apostrophes_value}")
                                 first_apostrophe = None
                     # Si no tiene nada de lo anterior
                     else:
@@ -243,6 +263,7 @@ class YALexGenerator(object):
                             # Si existe una definicion en la linea se agrega a la expresion final
                             if i in line:
                                 final_regex[len(final_regex):len(final_regex)] = self.regular_expressions[i]
+                                final_regex.append(f"#{i}")
         # Se guarda la expresion regular final en el atributo de la clase
         self.regex = final_regex
                         

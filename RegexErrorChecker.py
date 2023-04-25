@@ -9,6 +9,7 @@ class RegexErrorChecker(object):
         self.regex = regex
         self.operators_list = ['|', '?', '*', '+']
         self.operators = []
+        self.postfix_expression = []
         self.ERROR_CHECKER()
 
     def ERROR_CHECKER(self):
@@ -44,8 +45,6 @@ class RegexErrorChecker(object):
     def to_postfix(self):
         # Lista donde se guardan los caracteres que aún no han sido procesados
         characters_queue = []
-        # Lista donde se guarda la expresión en notación postfix
-        postfix_expression = []
         # Iteramos sobre los caracteres de la expresión regular
         for i in range(len(self.regex)):
             char = self.regex[i]
@@ -70,7 +69,7 @@ class RegexErrorChecker(object):
             elif(char == ')'):
                 # Desapilamos operadores y los agregamos a la lista postfix hasta encontrar el paréntesis abierto correspondiente
                 while(self.operators[-1] != '('):
-                    postfix_expression.append(self.operators.pop())
+                    self.postfix_expression.append(self.operators.pop())
                 # Desapilamos el paréntesis abierto correspondiente
                 self.operators.pop()
             # Si el caracter es un operador
@@ -81,16 +80,16 @@ class RegexErrorChecker(object):
                     last_char_precedence = self.precedence(last_char)
                     char_precedence = self.precedence(char)
                     if(last_char_precedence >= char_precedence):
-                        postfix_expression.append(self.operators.pop())
+                        self.postfix_expression.append(self.operators.pop())
                     else:
                         break
                 # Agregamos char a la pila de operadores
                 self.operators.append(char)
         # Desapilamos todos los operadores restantes y los agregamos a la lista postfix
         while(len(self.operators) > 0):
-            postfix_expression.append(self.operators.pop())
+            self.postfix_expression.append(self.operators.pop())
         # Devolvemos la expresión en notación postfix
-        return postfix_expression
+        return self.postfix_expression
 
 
 
