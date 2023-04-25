@@ -93,11 +93,11 @@ dfa_direct_yalex.afd_direct_()"""
 """dfa_direct = AFD_construction(regex)
 dfa_direct.output_image('AFDYalex')"""
 
-yal = YALexGenerator("./Archivos Yal/slr-1.yal")
+yal = YALexGenerator("./Archivos Yal/slr-2.yal")
 tree = RegextoTree(yal.regex)
 tree.buildTree()
 afd = AFD_construction()
-afd.afd_direct_(yal.regex, "Yalex1")
+afd.afd_direct_(yal.regex, "Yalex2")
 afd.simulate_afd("./LabD_test_file/test1.txt")
 
 """#Construimos el árbol
