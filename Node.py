@@ -7,18 +7,14 @@
 """
 
 
-class Node(object):
-    def __init__(self, value=None):
-        self.value = value
+class Node (object):
+    def __init__(self, character=None, isOperator = None, position=None):
+        self.character = chr(character) if isinstance(character, int) else character
         self.right_child = None
         self.left_child = None
         self.nullable = False
-        self.first_pos = set()
-        self.last_pos = set()
-        self.number = None
-        
-    def set_right_child(self, node):
-        self.right_child = node
-    
-    def set_left_child(self, node):
-        self.left_child = node
+        self.firstpos = set()
+        self.lastpos = set()
+        self.followpos = set()
+        self.position = position
+        self.isOperator = isOperator

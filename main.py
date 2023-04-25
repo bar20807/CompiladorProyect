@@ -8,9 +8,9 @@
 
 from Thompson import *
 from RegextoTree import RegextoTree
-from AFD import AFD_construction
-from YalexReader import YALexGenerator
-from TreeReading import TreeReading
+from AFD import *
+from YalexReader import *
+
 
 print('\n¡ADVERTENCIA! Deberá ingresar las expresiones regulares sin "." en la concatenación, el programa los agregará.')
 
@@ -82,12 +82,20 @@ dfa_direct.output_image('AFD_DIRECT_MIN#11PreLabB')
 """
 
 #Construcción de AFD directamente
-yal = YALexGenerator("./Archivos Yal/slr-1.yal")
-regex = RegextoTree(yal.build_regular_expression())
-print("Expresión regular resultante: ",yal.build_regular_expression())
+"""yal = YALexGenerator("./Archivos Yal/slr-1.yal")
+tree = RegextoTree(yal.regex)
+tree.buildTree()
+tree.print_tree(nameTree="tree1")"""
+#print("Expresión regular resultante: ",yal.regex)
+"""dfa_direct_yalex = AFD_construction(yal.regex)
+dfa_direct_yalex.afd_direct_()"""
 """dfa_direct = AFD_construction(regex)
 dfa_direct.output_image('AFDYalex')"""
 
+yal = YALexGenerator("./Archivos Yal/slr-1.yal")
+tree = RegextoTree(yal.regex)
+tree.buildTree()
+tree.print_tree(nameTree="tree1")
 
 """#Construimos el árbol
 regex.build_AST()

@@ -2,17 +2,18 @@ from RegextoTree import *
 import graphviz
 from collections import deque
 from FA import FA
-from TreeReading import TreeReading
+
 
 class AFD_construction(FA):
     def __init__(self, regex=None):
-        super().__init__(regex)
-        self.dead_state = None
-        self.temp_transitions = None
-        if regex: 
-            self.afd_direct_()
-        # Variable que se encarga de verificar los errores
-        self.error_checker = RegexErrorChecker()
+        self.regex = None
+        self.states_counter = 0
+        self.states = []
+        self.transitions = []
+        self.initial_state = []
+        self.final_state = []
+        self.symbols = []
+
 
     """
         
@@ -87,7 +88,7 @@ class AFD_construction(FA):
         # Contador de estados
         count = 1
         # Se crea el árbol de lectura a partir de la expresión regular
-        tree = TreeReading(self.regex)
+        tree = RegextoTree(self.regex)
         # Se obtiene la tabla de followpos del árbol de lectura
         table = tree.get_followpos_table()
         # Se establece el primer estado del DFA
@@ -504,50 +505,27 @@ class AFD_construction(FA):
         return result
 
     
-    def output_image(self, path=None):
-        # Si no se especifica una ruta, se establece una por defecto.
-        if not path:
-            path = "AFD"
-        # Se crea un objeto visual_graph de la clase Digraph de graphviz en formato PNG y con una orientación izquierda-derecha.
-        visual_graph = graphviz.Digraph(format='png', graph_attr={'rankdir':'LR'}, name=path)
-        # Se agrega un nodo falso al gráfico para conectar los nodos iniciales.
-        visual_graph.node('fake', style='invisible')
-        # Se crea una cola (queue) con los estados iniciales del autómata.
-        queue = deque(self.initial_states)
-        # Se crea un conjunto (visited) para almacenar los estados ya visitados.
-        visited = set(self.initial_states)
-        # Mientras la cola no esté vacía.
-        while queue:
-            # Se obtiene y elimina el primer elemento de la cola.
-            state = queue.popleft()
-            # Si el estado es uno de los estados finales del autómata, se agrega un nodo doblecírculo al gráfico.
-            if state in self.acceptance_states:
-                visual_graph.node(str(state), shape="doublecircle")
-            # Si el estado es uno de los estados iniciales del autómata, se agrega una arista al nodo falso y se agrega una etiqueta "root".
-            elif state in self.initial_states:
-                visual_graph.edge("fake", str(state), style="bold")
-                visual_graph.node(str(state), root="true")
-            # Si el estado no es ni un estado final ni un estado inicial, se agrega un nodo normal al gráfico.
+    # Funcion para graficar el automata
+    def graphAF(self):
+        
+        # Se realiza el titulo del automata
+        description = ("AFD")
+        graph = Digraph()
+        graph.attr(rankdir="LR", labelloc="t", label=description)
+
+        # Por cada estado se crea la imagen para graficarlo
+        for state in self.states:
+
+            if(state in self.initial_state):
+                graph.node(str(state), str(state), shape="circle", style="filled")
+            if(state in self.final_state):
+                graph.node(str(state), str(state), shape="doublecircle", style="filled")
             else:
-                visual_graph.node(str(state))
-            # Se obtienen las transiciones del estado actual.
-            transitions = self.transitions[state]
-            # Para cada transición:
-            for i, transition in enumerate(transitions):
-                if not transition:
-                    continue
-                # Para cada elemento de la transición:
-                for element in transition:
-                    # Si el elemento no ha sido visitado, se agrega al gráfico y se marca como visitado.
-                    if element not in visited:
-                        visited.add(element)
-                        if element in self.acceptance_states:
-                            visual_graph.node(str(element), shape="doublecircle")
-                        else:
-                            visual_graph.node(str(element))
-                        # Se agrega el elemento a la cola.
-                        queue.append(element)
-                    # Se agrega una arista del estado actual al elemento, etiquetada con el símbolo del alfabeto correspondiente.
-                    visual_graph.edge(str(state), str(element), label=str(self.alphabet[i]))
-        # Se guarda el gráfico en un directorio específico y se muestra en la pantalla.
-        visual_graph.render(directory='Laboratorio C',view=True)
+                graph.node(str(state), str(state), shape="circle")
+
+        # Se crean las transiciones de los estados
+        for transition in self.transitions:
+            graph.edge(str(transition[0]), str(transition[2]), label=str(transition[1]))
+
+        # Se renderiza
+        graph.render(f"./images/AFDDefault", format="png", view=True)

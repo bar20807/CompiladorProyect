@@ -1,0 +1,5 @@
+digraph {
+	label=AFD labelloc=t rankdir=LR
+	S0 [label=S0 shape=circle style=filled]
+	S0 [label=S0 shape=circle]
+}
