@@ -258,25 +258,8 @@ class YALexGenerator(object):
                                 first_apostrophe = None
                     # Si no tiene nada de lo anterior
                     else:
-                        # Se itera en el diccionario
                         for i in dictionary_keys:
-                            # Si existe una definicion en la linea se agrega a la expresion final
                             if i in line:
                                 final_regex[len(final_regex):len(final_regex)] = self.regular_expressions[i]
                                 final_regex.append(f"#{i}")
-        # Se guarda la expresion regular final en el atributo de la clase
-        self.regex = final_regex
-                        
-                            
-                        
-                        
-                            
-                                    
-                                    
-                    
-                    
-                    
-    
-            
-        
-        
+        self.regex = final_regex  
