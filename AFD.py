@@ -382,36 +382,74 @@ class AFD_construction(FA):
         Función que se encarga de hacer la simulación del AFD
     
     """
-    def simulate_afd(self, string):
-        with open(string, 'r') as file:
-            file_content = file.read()
-        # Convertimos el contenido del archivo a una lista de enteros
-        file_stack = [ord(char) for char in file_content]
+    # Se realiza la simulacion con el algoritmo del libro
+    def simulate_afd(self, filename):
+        file = open(filename, 'r').read()
+        file_stack = []
+        for i in file:
+            file_stack.append(ord(i))
         characters_list = []
         last_token = None
-        current_state = self.initial_state
-        # Verificamos caracter por caracter
-        for char in file_stack:
-            # Agregamos el caracter actual a la lista de caracteres a verificar
-            characters_list.append(char)
-            print("Caracteres: ", characters_list)
-            # Realizamos el move del estado actual con el caracter actual
-            next_state = self.move(current_state, char)
-            # Si el move devuelve un estado vacío, significa que la cadena no es aceptada
-            if not next_state:
-                print("Cadena No Aceptada")
-                return None
-            # Verificamos si llegamos a un estado final
-            if next_state in self.final_state:
-                last_token = self.final_state[next_state]
-                print("last_token: ", last_token)
-            current_state = next_state
-        # Si llegamos al final del archivo y no encontramos un estado final, la cadena no es aceptada
-        if not last_token:
-            print("Cadena No Aceptada")
-            return None
-        print(last_token)
-        return last_token
+        while(len(file_stack) != 0):
+            characters_list.append(file_stack.pop(0))
+            # print("Characters")
+            # print(characters_list)
+            set_final = self.simulate_string(characters_list)
+
+            if(set_final):
+                last_final = set_final.pop()
+                last_token = self.final_state[last_final]
+            else:
+                look_ahead = False
+                if(len(file_stack) != 0):
+                    characters_list.append(file_stack.pop(0))
+                    look_ahead = True
+                set_final_look_ahead = self.simulate_string(characters_list)
+                if(set_final_look_ahead):
+                    last_final = set_final_look_ahead.pop()
+                    last_token = self.final_state[last_final]
+                else:
+                    if(look_ahead):
+                        file_stack.insert(0, characters_list.pop())
+                    # print("FILE")
+                    # print(file_stack)
+                    if(last_token):
+                        file_stack.insert(0, characters_list.pop())
+                        token_string = ""
+                        for i in characters_list:
+                            token_string += chr(i)
+                        print(repr(token_string) + " " + last_token)
+                        characters_list = []
+                        last_token = None
+                    else:
+                        error_char = chr(characters_list[0])
+                        print(repr(error_char) + " " + "Error Lexico")
+                        characters_list = []
+        if(len(characters_list) != 0 and last_token):
+            token_string = ""
+            for i in characters_list:
+                token_string += chr(i)
+            print(repr(token_string) + " " + last_token)
+    # Se realiza la simulacion con el algoritmo del libro para una cadena
+    def simulate_string(self, string):
+        # Se inicializan los estados con e_closure del inicial
+        states = [self.initial_state]
+        # Se inicia el conteo de caracteres de la cadena
+        character_count = 0
+        # Mientras hayan caracteres para verificar en el string
+        while(character_count < len(string)):
+            # Se toman los estados devueltos por e_closure del move con el caracter
+            states = self.move(states, string[character_count])
+            # Se pasa al siguiente caracter
+            character_count += 1
+        # Se hacen dos sets para lograr hacer operaciones de conjuntos entre ellos
+        set_states = set(states)
+        set_final_states = set(self.final_state)
+        # Se verifica que los estados encontrados se encuentren en el conjunto de estados finales
+        if(set_states.intersection(set_final_states).__len__() != 0):
+            return set_states.intersection(set_final_states)
+        else:
+            return False
 
 
     
