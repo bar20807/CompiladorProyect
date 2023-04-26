@@ -43,6 +43,11 @@ class YALexGenerator(object):
                 #Como lo está, tomaremos en cuenta, cuantos guiones hay entre cada expresion
                 guion = valor.count('-')
                 #print("Cantidad de guiones: ", guion)
+                #Una vez habiendo obtenido la cantidad de expresiones que poseen al menos 1 guion, debemos de comprobar que este sea diferente de 0, esto para evitar todas
+                #Aquellas cadenas que lo sean. 
+                if guion != 0:
+                    pass
+                    
 
 yalex_test = YALexGenerator("./Archivos Yal/slr-1.yal")
 yalex_test.detect_special_lines()
