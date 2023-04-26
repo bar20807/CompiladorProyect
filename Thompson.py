@@ -12,6 +12,7 @@ import graphviz
 from collections import deque
 from RegexErrorChecker import RegexErrorChecker
 from AFD import AFD_construction
+from RegextoTree import *
 from FA import FA
         
 class Thompson(FA):
@@ -20,7 +21,7 @@ class Thompson(FA):
         # Llama al constructor de la clase base (Automata) y pasa como parámetro la expresión regular.
         super().__init__(regex)
         # Obtiene la raíz del árbol sintáctico de la expresión regular.
-        self.root = self.regex.get_root()
+        self.root = RegextoTree(regex).tree_root
         self.build_afn()
         self.error_checker = RegexErrorChecker()
     """
@@ -193,8 +194,6 @@ class Thompson(FA):
         
     """
     def simulate_afn(self, string):
-        # Verifica si la cadena de entrada contiene algún símbolo que no pertenezca al alfabeto del autómata
-        self.error_checker.check_alphabet_errors(string, self.alphabet)
         # Obtiene el conjunto de estados alcanzables por transiciones epsilon a partir de los estados iniciales
         s = self.e_closure(self.initial_states)
         # Si la cadena de entrada está vacía, se asume que el símbolo de entrada es epsilon
