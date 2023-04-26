@@ -3,10 +3,10 @@
     Universidad del Valle de Guatemala
     Diseño de Lenguajes
 """
-
 class RegexErrorChecker(object):
     def __init__(self, regex):
         self.regex = regex
+        self.alphabet = ['ε']
         self.operators_list = ['|', '?', '*', '+']
         self.operators = []
         self.postfix_expression = []

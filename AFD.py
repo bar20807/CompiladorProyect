@@ -7,6 +7,8 @@ from FA import FA
 class AFD_construction(FA):
     def __init__(self, regex=None):
         self.regex = regex
+        self.dead_state = None
+        self.temp_transitions = None
         self.states_counter = 0
         self.states = []
         self.transitions = []

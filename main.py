@@ -93,12 +93,18 @@ dfa_direct_yalex.afd_direct_()"""
 """dfa_direct = AFD_construction(regex)
 dfa_direct.output_image('AFDYalex')"""
 
-yal = YALexGenerator("./Archivos Yal/slr-1.yal")
+"""yal = YALexGenerator("./Archivos Yal/slr-1.yal")
 tree = RegextoTree(yal.regex)
 tree.buildTree()
 afd = AFD_construction()
 afd.afd_direct_(yal.regex, "Yalex1")
-afd.simulate_afd("./LabD_test_file/test1.txt")
+afd.simulate_afd("./LabD_test_file/test1.txt")"""
+
+#Construcción de AFD directamente
+afn = Thompson("ab ∗ ab ∗")
+result = afn.simulate_afn("aaa")
+print("La expresión ", "aaa", " ha sido ", result, " por el AFN ")
+afn.output_image('AFN#11PreLabB')
 
 """#Construimos el árbol
 regex.build_AST()
