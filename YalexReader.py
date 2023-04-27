@@ -2,7 +2,6 @@ class YALexGenerator(object):
     def __init__(self, path_file):
         self.path_file = path_file
         self.dict_value = {}
-        self.let_values = []
     
     #Función que se encarga de leer el archivo yalex
     def read_yal_file_(self):
@@ -31,13 +30,14 @@ class YALexGenerator(object):
     #Función que se encargará de analizar todos los valores encontrados
     def values_detect_(self, valor):
         #Primero, para analizar dichos valores, debemos de plantearnos si comienzan con [] o no, ya que esto determinará si es un charset o no
-        #Si comienza con [], entonces es un charset, por lo que debemos de analizar los valores que se encuentran dentro de los corchetes   
-        if valor[0] == '[':
+        #Si comienza con [], entonces es un charset, por lo que debemos de analizar los valores que se encuentran dentro de los corchetes
+        self.let_values = []   
+        if valor.startswith('['):
             #print("Detecte la llave, y este es el valor: " + valor)
             self.let_values.append('(')
             #Si detectamos que es un charset, entonces debemos de analizar los valores que se encuentran dentro de los corchetes
             #Para ello debemos de analizar el hecho de que se encuentren en comillas simples o dobles
-            if valor[1] == "'":
+            if valor[1].startswith("'"):
                 #Printeamos lo que se obtiene al momento de leer esta línea
                 #print("Detecte que es un charset con comillas simples", valor[1])
                 #Como lo está, tomaremos en cuenta, cuantos guiones hay entre cada expresion
@@ -45,10 +45,66 @@ class YALexGenerator(object):
                 #print("Cantidad de guiones: ", guion)
                 #Una vez habiendo obtenido la cantidad de expresiones que poseen al menos 1 guion, debemos de comprobar que este sea diferente de 0, esto para evitar todas
                 #Aquellas cadenas que lo sean. 
-                if guion != 0:
-                    pass
-                    
+                if(guion != 0):
+                    #Ya habiendo comprobado que si se encontró al menos un guión en nuestro charset, procederemos a sacar el primer valor encontrado después de tomar la 
+                    #primera comilla simple, entonces, procederemos a sacar el segundo valor haciendo un proceso simlar.
+                    # Se crea un ciclo while para iterar con respecto a la cantidad de ciclos de caracteres
+                    iterador = 1
+                    #Variables para guardar los caracteres iniciales y finales de un rango de caracteres en el charset
+                    primer_char = ""
+                    segundo_char = ""
+                    comilla_simple1 = 0
+                    comilla_simple2 = 0
+                    """
+                    iterador, primer_char, segundo_char, comilla_simple1, y comilla_simple2 son variables que se inicializan para su posterior uso en el ciclo while. 
+                    iterador se inicializa en 1, porque el primer caracter a analizar es el segundo caracter del charset (el primer caracter es el corchete de apertura).
+                    """
+                    """
+                     Es el inicio del ciclo while, que se ejecuta mientras el contador de guiones sea diferente de 0. 
+                     El ciclo se usa para iterar sobre los caracteres dentro del charset y extraer los valores que conforman el charset.
+                    """
+                    while(guion != 0):
+                        # Si se encuentra una comilla simple y no se ha detectado la primera comilla simple del rango actual
+                        if(valor[iterador] == "'" and not comilla_simple1):
+                            comilla_simple1 = iterador
+                        # Si se encuentra una comilla simple y ya se había detectado la primera comilla simple del rango actual
+                        elif(valor[iterador] == "'" and comilla_simple1):
+                            comilla_simple2 = iterador
 
+                        # Si se han detectado ambas comillas simples que delimitan el rango actual y aún no se ha procesado el primer caracter
+                        if(comilla_simple1 and comilla_simple2 and primer_char == ""):
+                            primer_char = valor[comilla_simple1 + 1]
+                            comilla_simple1 = 0
+                            comilla_simple2 = 0
+                        # Si se han detectado ambas comillas simples que delimitan el rango actual y ya se ha procesado el primer caracter
+                        elif(comilla_simple1 and comilla_simple2 and primer_char != ""):
+                            segundo_char = valor[comilla_simple1 + 1]
+                            comilla_simple1 = 0
+                            comilla_simple2 = 0
+                            # Se ha procesado un rango de caracteres, por lo que se disminuye en 1 el número de guiones sin procesar
+                            guion -= 1  
+                        # Si ya se tienen los dos caracteres que delimitan el rango actual
+                        if(primer_char != "" and segundo_char != ""):
+                            # Se convierten los caracteres a su valor ASCII
+                            char_to_ascii1 = ord(primer_char)
+                            char_to_ascii2 = ord(segundo_char)
+                            # Se resetean las variables para el siguiente rango de caracteres
+                            primer_char = ""
+                            segundo_char = ""
+                            print("Lista de valores: ", self.let_values)
+                            # Si ya hay al menos 2 valores en la lista de valores, se agrega un separador de OR '|'
+                            if(len(self.let_values) > 2):
+                                self.let_values.append('|')
+                            # Se agrega cada valor del rango de caracteres a la lista de valores, separados por un separador de OR '|'
+                            for i in range(char_to_ascii1, char_to_ascii2):
+                                self.let_values.append(i)
+                                self.let_values.append('|')
+                            # Se agrega el último valor del rango sin separador de OR
+                            self.let_values.append(char_to_ascii2) 
+                        # Se avanza al siguiente caracter del charset para buscar el siguiente rango de caracteres    
+                        iterador += 1  
+
+                
 yalex_test = YALexGenerator("./Archivos Yal/slr-1.yal")
 yalex_test.detect_special_lines()
 

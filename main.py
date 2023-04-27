@@ -100,11 +100,6 @@ afd = AFD_construction()
 afd.afd_direct_(yal.regex, "Yalex1")
 afd.simulate_afd("./LabD_test_file/test1.txt")"""
 
-#Construcción de AFD directamente
-afn = Thompson("ab ∗ ab ∗")
-result = afn.simulate_afn("aaa")
-print("La expresión ", "aaa", " ha sido ", result, " por el AFN ")
-afn.output_image('AFN#11PreLabB')
 
 """#Construimos el árbol
 regex.build_AST()
