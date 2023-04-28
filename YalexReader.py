@@ -25,10 +25,10 @@ class YALexGenerator(object):
                 nombre = equal_line[0].strip().split()[1]
                 valor = equal_line[1].strip()
                 print("valor del nombre: ", nombre)
-                self.values_detect_(valor)
+                self.values_detect_(nombre, valor)
                 
     #Función que se encargará de analizar todos los valores encontrados
-    def values_detect_(self, valor):
+    def values_detect_(self, nombre, valor):
         #Primero, para analizar dichos valores, debemos de plantearnos si comienzan con [] o no, ya que esto determinará si es un charset o no
         #Si comienza con [], entonces es un charset, por lo que debemos de analizar los valores que se encuentran dentro de los corchetes
         self.let_values = []   
@@ -144,9 +144,9 @@ class YALexGenerator(object):
                             # (newline = \n, tab = \t)
                             elif (primer_char.startswith("\\")):
                                 primer_char = primer_char.replace("\\", '')
-                                if(primer_char == "n"):
+                                if(primer_char == "\n"):
                                     primer_char = ord("\n")
-                                elif(primer_char == "t"):
+                                elif(primer_char == "\t"):
                                     primer_char = ord("\t")
                             # Se imprime el mensaje "Nuevos valores encontrados: " seguido de la lista de valores actuales en 'let_values'
                             print("Nuevos valores encontrados: ", self.let_values)
@@ -158,6 +158,33 @@ class YALexGenerator(object):
                                 self.let_values.append("|")
                         # Se incrementa el valor de 'iterador' en 1
                         iterador += 1
+            #Ahora analizaremos los valores que se encuentren denntro de comillas dobles, para ello deberemos de evaluar la segunda posición de nuestro valor
+            #El cual se obtiene de la partición de nuestra declaración Let
+            elif valor[1].startswith('"'):
+                #print("Este es el valor encontrado: ", valor)
+                # Iterar sobre los caracteres de la cadena
+                i = 0
+                while i < len(valor):
+                    # Si encontramos una comilla doble, terminamos
+                    if valor[i] == '"':
+                        break
+                    # Si encontramos una barra invertida, agregamos los dos caracteres siguientes
+                    elif valor[i] == "\\":
+                        self.let_values.append(valor[i:i+2])
+                        i += 2
+                    # Si no, agregamos el valor ASCII del carácter
+                    else:
+                        self.let_values.append(ord(valor[i]))
+                        i += 1
+
+                    # Si no hemos llegado al final de la cadena, agregamos un "|"
+                    if i < len(valor) and valor[i] != '"':
+                        self.let_values.append('|')
+
+                # Agregamos el paréntesis final y almacenamos la expresión regular en el diccionario
+                self.let_values.append(')')
+                self.dict_value[nombre] = self.let_values
+                print("Diccionario de los valores: ", self.dict_value)
 
 
                     
@@ -165,7 +192,7 @@ class YALexGenerator(object):
                     
 
                 
-yalex_test = YALexGenerator("./Archivos Yal/slr-1.yal")
+yalex_test = YALexGenerator("./Archivos Yal/slr-2.yal")
 yalex_test.detect_special_lines()
 
     
