@@ -27,55 +27,11 @@ class AFD_construction(FA):
 
     """
         Función que se encarga de crear el AFD directo a partir de su expresión regular
-        chr(character) if isinstance(character, int) else character
     """
     
     def afd_direct_(self, regex, name):
-        # Se crea el árbol y se computan los followpos
-        tree = RegextoTree(regex)
-        tree.Node_properties(tree.node_list)
-        # Se obtiene el alfabeto del árbol
-        alphabet = tree.get_Alphabet()
-
-        # Se crea el AFD
-        afd = AFD_construction()
-        afd.regex = regex
-        afd.states = []
-        afd.alphabet = alphabet
-        afd.transitions = []
-        afd.initial_state = "S0"
-        afd.final_state = {}
-
-        # Se crea el diccionario de estados
-        Dstates = {"S0": tree.compute_first_pos(tree.tree_root)}
-
-        # Se itera mientras haya nuevos estados por procesar
-        unprocessed_states = ["S0"]
-        while unprocessed_states:
-            state = unprocessed_states.pop(0)
-            # Se agrega el estado al conjunto de estados del AFD
-            afd.states.append(state)
-            # Se obtienen los followpos del estado actual para cada símbolo del alfabeto
-            followpos = {symbol: set() for symbol in alphabet}
-            for node in Dstates[state]:
-                if node.value in alphabet:
-                    followpos[node.value].update(node.followpos)
-            # Se crea un nuevo estado para cada conjunto de followpos encontrado
-            for symbol, followpos_set in followpos.items():
-                if followpos_set:
-                    if followpos_set not in Dstates.values():
-                        Dstates[f"S{len(Dstates)}"] = followpos_set
-                        unprocessed_states.append(f"S{len(Dstates)-1}")
-                    # Se agrega la transición del estado actual al nuevo estado
-                    afd.transitions.append([state, symbol, next(key for key, value in Dstates.items() if value == followpos_set)])
-                    # Si el nuevo estado contiene un nodo final, se agrega al conjunto de estados finales del AFD
-                    if any(node.value == "#" for node in followpos_set):
-                        afd.final_state[state] = symbol
-
-        # Se genera la imagen del AFD
-        afd.output_image(name)
-
-        return afd
+        #Mañana veremos y afinaremos detalles.
+        pass
 
 
     
