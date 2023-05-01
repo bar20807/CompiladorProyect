@@ -2,6 +2,16 @@ class YALexGenerator(object):
     def __init__(self, path_file):
         self.path_file = path_file
         self.dict_value = {}
+        #Lista que almacenará la expresión regular final
+        self.regular_expression_result = list()
+        #Diccionario que almacenará todas las rule tokens detectadas
+        self.tokens_rule_list = {}
+        #Variable de iteración que sirve para detectar si es un token o no
+        self.is_token = False
+        #Llamaremos de una vez a la función para construir la expresión regular,
+        #de esa manera podremos llamar directamente a la variable regular expression result
+        self.build_regular_expression_()
+        
     
     #Función que se encarga de leer el archivo yalex
     def read_yal_file_(self):
@@ -10,8 +20,11 @@ class YALexGenerator(object):
         file.close()
         return self.file_list
 
+
     #Función donde analizaremos línea por línea del archivo
-    def detect_special_lines(self):
+    def build_regular_expression_(self):
+        #Lista que almacenara temporalmente la nueva regex
+        regular_expression_result_temp = list()
         #Recorremos las líneas recibidas del archivo.
         for line in self.read_yal_file_():
             #print(line)
@@ -26,6 +39,13 @@ class YALexGenerator(object):
                 valor = equal_line[1].strip()
                 #print("valor del nombre: ", nombre)
                 self.values_detect_(nombre, valor)
+            #Ahora mandamos a llamar a nuestra función encargada de identificar los rule tokens de nuestro yalex
+            elif line.startswith("rule") or line.startswith("Rule"):
+                self.is_token = True
+            elif (self.is_token):
+                #print("Rule tokens: ", line)
+                #Llamamos a la función encargada de detectar las rule tokens
+                self.detect_rule_tokens(line)
                 
     #Función que se encargará de analizar todos los valores encontrados
     def values_detect_(self, nombre, valor):
@@ -270,11 +290,54 @@ class YALexGenerator(object):
             #Se procede a guardar el valor con su nombre correspondiente en el diccionario de valores
             self.dict_value[nombre] = lista_valores
             #print("Nuevos valores del diccionario: ", self.dict_value)
-        
-        
-yalex_test = YALexGenerator("./Archivos Yal/slr-3.yal")
-yalex_test.detect_special_lines()
-
+    
+    #Función encargada de detectar la línea en donde se encuentran las rule tokens
+    def detect_rule_tokens(self, linea):
+        #Variable que utilizaremos para saber en el token actual que nos estamos posicionando
+        token_actual = ""
+        # Verificamos si la línea que estamos leyendo encuentra un |, si lo encuentra, lo agregamos a nuestra lista final de la regex
+        if '|' in linea:
+            self.regular_expression_result.append('|')
+        # Ahora revisamos si dicho valor posee comillas simples
+        if "'" in linea:
+            # Tomaremos la segunda comilla simple, y tomaremos el valor que se encuentra dentro de ellas, 
+            # Para después poder obtener su valor en ASCII
+            value_between_quotes = linea[linea.index("'")+1: linea.rindex("'")]
+            value_ascii = [ord(v) for v in value_between_quotes]
+            self.regular_expression_result.extend(value_ascii)
+            self.regular_expression_result.append(f"#{value_between_quotes}")
+            token_actual = f"#{value_between_quotes}"
+        # Ahora revisaremos si el valor que se está analizando se encuentra dentro de dos comillas dobles
+        elif '"' in linea:
+            # Posterior a ello, vamos iterar sobre la línea en búsqueda de la primera comilla doble que se encuentre
+            value_between_quotes = linea[linea.index('"')+1: linea.rindex('"')]
+            value_ascii = [ord(v) for v in value_between_quotes]
+            self.regular_expression_result.extend(value_ascii)
+            self.regular_expression_result.append(f"#{value_between_quotes}")
+            token_actual = f"#{value_between_quotes}"
+        # Si el valor no se encuentra entre comillas, se procede a buscar el valor en el diccionario de valores
+        else:
+            # Iteramos sobre nuestra lista que contiene las llaves del diccionario
+            for i in self.dict_value.keys():
+                # Verificamos si dicho nombre i extraido de las llaves de nuestro diccionario se encuentra presente en la línea
+                if i in linea:
+                    self.regular_expression_result.extend(self.dict_value[i])
+                    self.regular_expression_result.append(f"#{i}")
+                    token_actual = f"#{i}"
+                    break
+        # Una vez habiendo evaluado cada tipo de expresión que podemos obtener, evaluamos si el token actual no se encuentra vacío
+        if token_actual:
+            # Para ello, obtendremos el indicie inicial donde se encuentre {
+            indice_inicial = linea.index("{")
+            # Ahora obtendremos el índice final donde se encuentre }
+            indice_final = linea.index("}")
+            # Con ello obtendremos el valor que se encuentra en la subcadena entre ambos índices
+            subcadena = linea[indice_inicial + 2:indice_final - 1]
+            self.tokens_rule_list[token_actual] = subcadena
+              
+"""yalex_test = YALexGenerator("./Archivos Yal/slr-3.yal")
+print(yalex_test.regular_expression_result)
+"""
     
     
         

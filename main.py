@@ -6,6 +6,13 @@
     Laboratorio D
 """
 
-#Nuevo main limpio
+from RegextoTree import *
+from YalexReader import *
+from AFD import *
 
+#Nuevo main limpio
+regex = YALexGenerator("./Archivos Yal/slr-3.yal")
+tree  = RegextoTree(regex.regular_expression_result)
+tree.buildTree()
+tree.print_tree("TestNewYalex")
 
