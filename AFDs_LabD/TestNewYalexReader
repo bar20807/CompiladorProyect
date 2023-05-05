@@ -1,0 +1,4 @@
+digraph TestNewYalexReader {
+	labelloc=t rankdir=LR
+	S0 [label=S0 color=red shape=circle style=filled]
+}

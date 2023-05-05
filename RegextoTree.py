@@ -16,76 +16,60 @@ import RegexErrorChecker as re
 from graphviz import Digraph
 
 class RegextoTree(object):
-    # Se inicia con la expresion regular
     def __init__(self, regex):
         self.regex = regex
         # Se agrega la raiz al final de la expresion
         self.postfix =  re.RegexErrorChecker(self.regex).to_postfix()
-        self.postfix.append("#")
-        self.postfix.append(".")
         self.node_list = []
         self.tree_root = None
         self.buildTree()
-
+        
     def buildTree(self):
-        node_stack = []  # pila de nodos
+        #Pila de nodos
+        node_stack = []
+        #Contador de nodos
         iterator = 1
+        # Itera sobre cada carácter en la expresión regular en formato postfix
         for char in self.postfix:
-            if (isinstance(char, str) and char is '+'):  # suma unaria
+            # Si el carácter es un operador de suma unaria, crea un nodo para el operador y agrega el nodo a la pila de nodos
+            if (isinstance(char, str) and char == '+'):  # suma unaria
                 node = Node(char,True)
                 node.left_child = node_stack.pop()
                 node_stack.append(node)
                 self.node_list.append(node)
-            elif (isinstance(char, str) and char is '*'):  # cierre de Kleene
+            # Si el carácter es un operador de suma binaria, crea dos nodos para el operador y agrega los nodos a la pila de nodos
+            elif (isinstance(char, str) and char == '*'):  # cierre de Kleene
                 node = Node(char,True)
                 node.left_child = node_stack.pop()
                 node_stack.append(node)
                 self.node_list.append(node)
-            elif (isinstance(char, str) and char is '?'):  # opcionalidad
+            # Si el carácter es un operador de opcionalidad, crea un nodo para el operador y agrega el nodo a la pila de nodos
+            elif (isinstance(char, str) and char == '?'):  # opcionalidad
                 node = Node(char,True)
                 node.left_child = node_stack.pop()
                 node_stack.append(node)
                 self.node_list.append(node)
-            elif (isinstance(char, str) and char is '.'):  # concatenación
-                node = Node(char,True)
-                node.right_child = node_stack.pop()
-                node.left_child = node_stack.pop()
-                node_stack.append(node)
-                self.node_list.append(node)
-            elif (isinstance(char, str) and char is '|'):  # alternancia
+            # Si el carácter es un operador de concatenación, crea un nodo para el operador y agrega el nodo a la pila de nodos
+            elif (isinstance(char, str) and char == '.'):  # concatenación
                 node = Node(char,True)
                 node.right_child = node_stack.pop()
                 node.left_child = node_stack.pop()
                 node_stack.append(node)
                 self.node_list.append(node)
+            # Si el carácter es un operador de alternancia, crea un nodo para el operador y agrega el nodo a la pila de nodos
+            elif (isinstance(char, str) and char == '|'):  # alternancia
+                node = Node(char,True)
+                node.right_child = node_stack.pop()
+                node.left_child = node_stack.pop()
+                node_stack.append(node)
+                self.node_list.append(node)
+            # Si el carácter es un símbolo, crea un nodo para el símbolo y agrega el nodo a la pila de nodos
             else:  # símbolo
                 node = Node(char, False, iterator)
                 node_stack.append(node)
                 self.node_list.append(node)
-        self.tree_root = node_stack.pop()  # el último nodo es la raíz
-
-    # Define una función llamada compute_nullable que recibe como argumento un nodo
-    def compute_nullable(self, node):
-        # Si el nodo es un operador, se entra en este bloque
-        if node.operator:
-            # Si el valor del nodo es uno de los símbolos especiales (ε, ?, o *), entonces el nodo es nulo y se retorna True
-            if node.value in "ε?*":
-                return True
-            # Si el valor del nodo es el operador OR ('|'), se evalúa si al menos uno de los dos hijos es nulo
-            elif node.value == "|":
-                # Se aplica la función compute_nullable a cada uno de los dos hijos y se verifica si alguno es nulo usando la función any
-                return any(self.compute_nullable(child) for child in [node.left_child, node.right_child])
-            # Si el valor del nodo es el operador AND ('.'), se evalúa si ambos hijos son nulos
-            elif node.value == ".":
-                # Se aplica la función compute_nullable a cada uno de los dos hijos y se verifica si ambos son nulos usando la función all
-                return all(self.compute_nullable(child) for child in [node.left_child, node.right_child])
-            # Si el valor del nodo es el operador de cerradura positiva ('+'), se evalúa si el hijo es nulo
-            elif node.value == "+":
-                # Se aplica la función compute_nullable al hijo y se retorna el resultado
-                return self.compute_nullable(node.left_child)
-        # Si el nodo no es un operador, entonces no es nulo y se retorna False
-        else:
-            return False
+        #El último nodo en la pila de nodos es la raíz del árbol
+        self.tree_root = node_stack.pop() 
 
 
     def compute_first_pos(self, node):
@@ -135,6 +119,29 @@ class RegextoTree(object):
         elif node.value == "ε":
             pass
         return last_pos
+    
+    # Define una función llamada compute_nullable que recibe como argumento un nodo
+    def compute_nullable(self, node):
+        # Si el nodo es un operador, se entra en este bloque
+        if node.operator:
+            # Si el valor del nodo es uno de los símbolos especiales (ε, ?, o *), entonces el nodo es nulo y se retorna True
+            if node.value in "ε?*":
+                return True
+            # Si el valor del nodo es el operador OR ('|'), se evalúa si al menos uno de los dos hijos es nulo
+            elif node.value == "|":
+                # Se aplica la función compute_nullable a cada uno de los dos hijos y se verifica si alguno es nulo usando la función any
+                return any(self.compute_nullable(child) for child in [node.left_child, node.right_child])
+            # Si el valor del nodo es el operador AND ('.'), se evalúa si ambos hijos son nulos
+            elif node.value == ".":
+                # Se aplica la función compute_nullable a cada uno de los dos hijos y se verifica si ambos son nulos usando la función all
+                return all(self.compute_nullable(child) for child in [node.left_child, node.right_child])
+            # Si el valor del nodo es el operador de cerradura positiva ('+'), se evalúa si el hijo es nulo
+            elif node.value == "+":
+                # Se aplica la función compute_nullable al hijo y se retorna el resultado
+                return self.compute_nullable(node.left_child)
+        # Si el nodo no es un operador, entonces no es nulo y se retorna False
+        else:
+            return False
 
 
     def compute_follow_pos(self, node):
@@ -184,7 +191,19 @@ class RegextoTree(object):
                 nodes.append(node.right_child)
     
     def get_Alphabet(self):
-        return sorted(set(filter(lambda i: isinstance(i, int) or (i.isalpha() and i not in ".|*+?()"), self.regex)))
+        # Inicializamos un conjunto vacío para almacenar los símbolos únicos del alfabeto
+        alphabet = set()
+        # Iteramos sobre cada elemento en la expresión regular
+        for i in self.regex:
+            # Si el elemento es un entero, lo agregamos al conjunto
+            if(isinstance(i, int)):
+                alphabet.add(i)
+            # Si el elemento no es uno de los caracteres especiales ".", "|", "*", "+", "?", "(", ")", lo agregamos al conjunto
+            elif(i not in ".|*+?()"):
+                alphabet.add(i)   
+        # Convertimos el conjunto a una lista y lo devolvemos
+        return list(alphabet)
+
 
     # Función para graficar cada nodo del árbol
     def generate_dot(self, node, graph):
@@ -217,4 +236,3 @@ class RegextoTree(object):
         self.generate_dot(self.tree_root, graph)
         # Se guarda el grafo como un archivo PNG en la carpeta de imágenes, con el nombre del árbol
         graph.render(f"./LaboratorioC/{nameTree}", format="png", view=True)
-
