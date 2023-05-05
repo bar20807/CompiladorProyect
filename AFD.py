@@ -434,7 +434,7 @@ class AFD_construction(FA):
         file.write(f"\t\tself.states = {self.states}\n")
         file.write(f"\t\tself.transitions = {self.transitions}\n")
         file.write(f"\t\tself.initial_state = '{self.initial_state}'\n")
-        file.write(f"\t\tself.final_states = {self.final_state}\n")
+        file.write(f"\t\tself.final_state = {self.final_state}\n")
         file.write(f"\t\tself.alphabet = {self.alphabet}\n\n")
         file.write("\tdef tokens(token):\n")
         yal = YALexGenerator(path)
