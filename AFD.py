@@ -90,8 +90,10 @@ class AFD_construction(FA):
         # Se obtiene la raíz del árbol y la lista de nodos
         root = tree.tree_root
         nodes = tree.node_list
+        # Se inicializa el contador de estados en 0
+        state_counter = 0
         # Se crea una lista con el estado inicial
-        states = ["S0"]
+        states = [state_counter]
         # Se crea una lista vacía para almacenar las transiciones
         transitions = list()
         # Se crea un diccionario vacío para almacenar los estados finales y su símbolo correspondiente
@@ -100,8 +102,6 @@ class AFD_construction(FA):
         tree.Node_properties(nodes)
         # Se crea una lista con el primer estado, que es el firstpos de la raíz del árbol
         Dstates = [tree.compute_first_pos(root)]
-        # Se inicializa el contador de estados en 0
-        state_counter = 0
         # Se itera hasta que se hayan procesado todos los estados
         while state_counter != len(Dstates):
             # Se itera sobre todos los símbolos del alfabeto del árbol
@@ -119,7 +119,7 @@ class AFD_construction(FA):
                 # Si el nuevo estado no está en Dstates, se agrega a states y Dstates
                 if new_state not in Dstates:
                     Dstates.append(new_state)
-                    states.append("S" + str(len(states)))
+                    states.append(len(states))
                 # Se busca el estado de transición y se agrega la transición a transitions
                 new_state_counter = Dstates.index(new_state)
                 transitions.append([states[state_counter], symbol, states[new_state_counter]])
