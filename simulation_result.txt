@@ -1,19 +1,273 @@
-'3.2E3' #number
+'let' #minusword
+' ' #ws
+'delim' #minusword
+' ' #ws
+'=' Error Lexico
+' ' #ws
+'[' Error Lexico
+"'" Error Lexico
+' ' #ws
+"'" Error Lexico
+"'" Error Lexico
+'\\' Error Lexico
+'t' #minusword
+"'" Error Lexico
+"'" Error Lexico
+'\\' Error Lexico
+'n' #minusword
+"'" Error Lexico
+']' Error Lexico
 '\n' #ws
-'h' Error Lexico
-'o' Error Lexico
-'l' Error Lexico
-'a' Error Lexico
+'let' #minusword
+' ' #ws
+'characters' #minusword
+' ' #ws
+'=' Error Lexico
+' ' #ws
+'[' Error Lexico
+"'" Error Lexico
+'+' Error Lexico
+"'" Error Lexico
+"'" Error Lexico
+'*' #characters
+"'" Error Lexico
+"'" Error Lexico
+'-' Error Lexico
+"'" Error Lexico
+"'" Error Lexico
+'/' Error Lexico
+"'" Error Lexico
+']' Error Lexico
 '\n' #ws
-'r' Error Lexico
-'o' Error Lexico
-'d' Error Lexico
-'r' Error Lexico
-'i' Error Lexico
-'g' Error Lexico
-'o' Error Lexico
+'let' #minusword
+' ' #ws
+'ws' #minusword
+' ' #ws
+'=' Error Lexico
+' ' #ws
+'delim' #minusword
+'+' Error Lexico
 '\n' #ws
-'i' Error Lexico
-'f' Error Lexico
-'(' #(
-')' #)
+'let' #minusword
+' ' #ws
+'letter' #minusword
+'M' #mayusword
+'ayus' #minusword
+' ' #ws
+'=' Error Lexico
+' ' #ws
+'[' Error Lexico
+"'" Error Lexico
+'A' #mayusword
+"'" Error Lexico
+'-' Error Lexico
+"'" Error Lexico
+'Z' #mayusword
+"'" Error Lexico
+']' Error Lexico
+'\n' #ws
+'let' #minusword
+' ' #ws
+'letter' #minusword
+'M' #mayusword
+'inus' #minusword
+' ' #ws
+'=' Error Lexico
+' ' #ws
+'[' Error Lexico
+"'" Error Lexico
+'a' #minusword
+"'" Error Lexico
+'-' Error Lexico
+"'" Error Lexico
+'z' #minusword
+"'" Error Lexico
+']' Error Lexico
+'\n' #ws
+'let' #minusword
+' ' #ws
+'minusword' #minusword
+' ' #ws
+'=' Error Lexico
+' ' #ws
+'letter' #minusword
+'M' #mayusword
+'inus' #minusword
+'*' #characters
+'\n' #ws
+'let' #minusword
+' ' #ws
+'mayusword' #minusword
+' ' #ws
+'=' Error Lexico
+' ' #ws
+'letter' #minusword
+'M' #mayusword
+'ayus' #minusword
+'*' #characters
+'\n\n\n' #ws
+'rule' #minusword
+' ' #ws
+'tokens' #minusword
+' ' #ws
+'=' Error Lexico
+'\n    ' #ws
+'ws' #minusword
+'        ' #ws
+'{' Error Lexico
+' ' #ws
+'return' #minusword
+' ' #ws
+'WHITESPACE' #mayusword
+' ' #ws
+'}' Error Lexico
+'\n  ' #ws
+'|' #|
+' ' #ws
+'characters' #minusword
+' ' #ws
+'{' Error Lexico
+' ' #ws
+'return' #minusword
+' ' #ws
+'CHARACTERS' #mayusword
+' ' #ws
+'}' Error Lexico
+'\n  ' #ws
+'|' #|
+' ' #ws
+'"' Error Lexico
+'/*' #/*
+'"' Error Lexico
+'      ' #ws
+'{' Error Lexico
+' ' #ws
+'return' #minusword
+' ' #ws
+'LEFTCOMMENT' #mayusword
+' ' #ws
+'}' Error Lexico
+'\n  ' #ws
+'|' #|
+' ' #ws
+'"' Error Lexico
+'*/' #*/
+'"' Error Lexico
+'      ' #ws
+'{' Error Lexico
+' ' #ws
+'return' #minusword
+' ' #ws
+'RIGHTCOMMENT' #mayusword
+' ' #ws
+'}' Error Lexico
+'\n  ' #ws
+'|' #|
+' ' #ws
+'"' Error Lexico
+'%' Error Lexico
+'token' #minusword
+'"' Error Lexico
+'  ' #ws
+'{' Error Lexico
+' ' #ws
+'return' #minusword
+' ' #ws
+'TOKEN' #mayusword
+' ' #ws
+'}' Error Lexico
+'\n  ' #ws
+'|' #|
+' ' #ws
+"'" Error Lexico
+'|' #|
+"'" Error Lexico
+'       ' #ws
+'{' Error Lexico
+' ' #ws
+'return' #minusword
+' ' #ws
+'OR' #mayusword
+' ' #ws
+'}' Error Lexico
+'\n  ' #ws
+'|' #|
+' ' #ws
+'"' Error Lexico
+'IGNORE' #IGNORE
+'"' Error Lexico
+'  ' #ws
+'{' Error Lexico
+' ' #ws
+'return' #minusword
+' ' #ws
+'IGNORE' #IGNORE
+' ' #ws
+'}' Error Lexico
+'\n  ' #ws
+'|' #|
+' ' #ws
+'minusword' #minusword
+' ' #ws
+'{' Error Lexico
+' ' #ws
+'return' #minusword
+' ' #ws
+'WORDMIN' #mayusword
+' ' #ws
+'}' Error Lexico
+'\n  ' #ws
+'|' #|
+' ' #ws
+'mayusword' #minusword
+' ' #ws
+'{' Error Lexico
+' ' #ws
+'return' #minusword
+' ' #ws
+'WORDMAY' #mayusword
+' ' #ws
+'}' Error Lexico
+'\n  ' #ws
+'|' #|
+' ' #ws
+'"' Error Lexico
+'%%' #%%
+'"' Error Lexico
+'      ' #ws
+'{' Error Lexico
+' ' #ws
+'return' #minusword
+' ' #ws
+'SPLIT' #mayusword
+' ' #ws
+'}' Error Lexico
+'  \n  ' #ws
+'|' #|
+' ' #ws
+'"' Error Lexico
+':' #:
+'"' Error Lexico
+'       ' #ws
+'{' Error Lexico
+' ' #ws
+'return' #minusword
+' ' #ws
+'TWOPOINTS' #mayusword
+' ' #ws
+'}' Error Lexico
+'\n  ' #ws
+'|' #|
+' ' #ws
+'"' Error Lexico
+';' #;
+'"' Error Lexico
+'       ' #ws
+'{' Error Lexico
+' ' #ws
+'return' #minusword
+' ' #ws
+'FINISHDECLARATION' #mayusword
+' ' #ws
+'}' Error Lexico
+'\n  ' #ws

@@ -426,8 +426,8 @@ class AFD_construction(FA):
     """
         Función encargada de construir un archivo scanner
     """
-    def build_scanner(self, path, file_name):
-        file = open(f"./{file_name}.py", "w")  
+    def build_scanner(self, path, name):
+        file = open(f"./{name}.py", "w")  
         file.write("class ScannerClassAFD(object):\n")
         file.write("    def __init__(self):\n")
         file.write(f"        self.regex = {self.regex}\n")
