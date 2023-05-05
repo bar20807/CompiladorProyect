@@ -264,6 +264,7 @@ class AFD_construction(FA):
         with open(filename, 'r') as f:
             file_contents = [ord(char) for char in f.read()]
         #print(file_contents)
+        file_token_write = open('simulation_result.txt', "w")
         # Inicializar variables
         current_characters = []
         current_token = ''
@@ -323,18 +324,18 @@ class AFD_construction(FA):
                         # Si ya se ha identificado un token, imprimirlo en la consola junto con su tipo correspondiente
                         file_contents.insert(0, current_characters.pop())
                         token_value = "".join([chr(i) for i in current_characters])
-                        print(f"{repr(token_value)} {current_token}")
+                        file_token_write.write(f"{repr(token_value)} {current_token}\n")
                         current_characters = []
                         current_token = ''
                     else:
                         # Si aún no se ha identificado un token, imprimir un mensaje de error léxico en la consola
                         error_char = chr(current_characters[0])
-                        print(f"{repr(error_char)} Error Lexico")
+                        file_token_write.write(f"{repr(error_char)} Error Lexico\n")
                         current_characters = []
         # Al final del archivo, imprimir cualquier token pendiente junto con su tipo correspondiente
         if current_characters and current_token:
             token_value = "".join([chr(i) for i in current_characters])
-            print(f"{repr(token_value)} {current_token}")
+            file_token_write.write(f"{repr(token_value)} {current_token}\n")
 
     """
         Función que se encarga de realizar el e-closure

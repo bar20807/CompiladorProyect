@@ -1,0 +1,19 @@
+'3.2E3' #number
+'\n' #ws
+'h' Error Lexico
+'o' Error Lexico
+'l' Error Lexico
+'a' Error Lexico
+'\n' #ws
+'r' Error Lexico
+'o' Error Lexico
+'d' Error Lexico
+'r' Error Lexico
+'i' Error Lexico
+'g' Error Lexico
+'o' Error Lexico
+'\n' #ws
+'i' Error Lexico
+'f' Error Lexico
+'(' #(
+')' #)
