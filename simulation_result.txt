@@ -194,14 +194,14 @@
 '|' #|
 ' ' #ws
 '"' Error Lexico
-'IGNORE' #IGNORE
+'IGNORE' #mayusword
 '"' Error Lexico
 '  ' #ws
 '{' Error Lexico
 ' ' #ws
 'return' #minusword
 ' ' #ws
-'IGNORE' #IGNORE
+'IGNORE' #mayusword
 ' ' #ws
 '}' Error Lexico
 '\n  ' #ws
