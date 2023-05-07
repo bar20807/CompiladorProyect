@@ -9,7 +9,9 @@ let digit = ['0'-'9']
 let id = letter(letter|digit)*
 
 rule tokens = 
-    ws        {return WHITESPACE}
+    ws        { return WHITESPACE }
+  | "if"      { return IF }
+  | "else"    { return ELSE }
   | id        { return ID }  
   | '+'       { return PLUS }
   | '*'       { return TIMES }

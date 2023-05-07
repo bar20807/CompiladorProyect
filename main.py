@@ -3,22 +3,27 @@
     Universidad del Valle de Guatemala
     Diseño de Lenguajes
     20807
-    Laboratorio D
+    Laboratorio E
 """
 
 from RegextoTree import *
 from YalexReader import *
 from AFD import *
+from YalpReader import *
 
-#Nuevo main limpio
-regex = YALexGenerator("./Archivos Yal/yalp_analyzer.yal")
+#Main que utilicé para el laboratorio D
+"""regex = YALexGenerator("./Archivos Yalp/slr-1.yalp")
 tree  = RegextoTree(regex.regular_expression_result)
 tree.buildTree()
-tree.print_tree("TestNewYalex")
+tree.print_tree("Test")"""
 
-afd = AFD_construction()
+"""afd = AFD_construction()
 afd.afd_direct_(regex.regular_expression_result)
-afd.build_scanner("./Archivos Yal/yalp_analyzer.yal", "scannerYal_Yalp")
+afd.build_scanner("./Archivos Yal/slr-4.yal", "scannerYal4")
 afd.output_image("YalexTestAFD")
-afd.simulate_afd("./Archivos Yal/yalp_analyzer.yal")
+afd.simulate_afd("./LabD_test_file/test1.txt")"""
+
+#Main a utilizar para el laboratorio E
+yalp_lecture = YalpGenerator("./Archivos Yalp/slr-1.yalp")
+print(yalp_lecture.read_file())
 

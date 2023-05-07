@@ -1,4 +1,15 @@
-3.2E3
+id id id id 
+adios
+casa perro juen
+3.14159        ########
 hola
+789
 rodrigo
-if()
+(
+)
+if ()
+{
+}
+else ()
+{
+}
