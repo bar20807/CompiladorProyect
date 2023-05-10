@@ -1,0 +1,172 @@
+'/*' #/*
+' ' #ws
+'C' #mayusword
+'onfiguraci' #minusword
+'Ã' Error Lexico
+'³' Error Lexico
+'n' #minusword
+' ' #ws
+'del' #minusword
+' ' #ws
+'parser' #minusword
+' ' #ws
+'para' #minusword
+' ' #ws
+'G' #mayusword
+'ram' #minusword
+'Ã' Error Lexico
+'¡' Error Lexico
+'tica' #minusword
+' ' #ws
+'N' #mayusword
+'o' #minusword
+'.' Error Lexico
+'1' Error Lexico
+' ' #ws
+'*/' #*/
+'\n' #ws
+'/*' #/*
+' ' #ws
+'S' #mayusword
+'igue' #minusword
+' ' #ws
+'la' #minusword
+' ' #ws
+'gram' #minusword
+'Ã' Error Lexico
+'¡' Error Lexico
+'tica' #minusword
+' ' #ws
+'SLR' #mayusword
+':' #:
+' ' #ws
+'*/' #*/
+'\n' #ws
+'/*' #/*
+' ' #ws
+'E' #mayusword
+' ' #ws
+'â' Error Lexico
+'†' Error Lexico
+'’' Error Lexico
+' ' #ws
+'E' #mayusword
+' ' #ws
+'+' Error Lexico
+' ' #ws
+'T' #mayusword
+' ' #ws
+'|' #|
+' ' #ws
+'T' #mayusword
+' ' #ws
+'*/' #*/
+'\n' #ws
+'/*' #/*
+' ' #ws
+'T' #mayusword
+' ' #ws
+'â' Error Lexico
+'†' Error Lexico
+'’' Error Lexico
+' ' #ws
+'T' #mayusword
+' ' #ws
+'â' Error Lexico
+'ˆ' Error Lexico
+'—' Error Lexico
+' ' #ws
+'F' #mayusword
+' ' #ws
+'|' #|
+' ' #ws
+'F' #mayusword
+' ' #ws
+'*/' #*/
+'\n' #ws
+'/*' #/*
+' ' #ws
+'F' #mayusword
+' ' #ws
+'â' Error Lexico
+'†' Error Lexico
+'’' Error Lexico
+' ' #ws
+'(' Error Lexico
+' ' #ws
+'E' #mayusword
+' ' #ws
+')' Error Lexico
+' ' #ws
+'|' #|
+' ' #ws
+'id' #minusword
+' ' #ws
+'*/' #*/
+'\n\n' #ws
+'%' Error Lexico
+'token' #minusword
+' ' #ws
+'ID' #mayusword
+'\n' #ws
+'%' Error Lexico
+'token' #minusword
+' ' #ws
+'PLUS' #mayusword
+'\n' #ws
+'%' Error Lexico
+'token' #minusword
+' ' #ws
+'TIMES' #mayusword
+'\n' #ws
+'%' Error Lexico
+'token' #minusword
+' ' #ws
+'LPAREN' #mayusword
+' ' #ws
+'RPAREN' #mayusword
+'\n\n' #ws
+'expression' #minusword
+':' #:
+'\n    ' #ws
+'expression' #minusword
+' ' #ws
+'PLUS' #mayusword
+' ' #ws
+'term' #minusword
+'\n  ' #ws
+'|' #|
+' ' #ws
+'term' #minusword
+'\n' #ws
+';' #;
+'\n' #ws
+'term' #minusword
+':' #:
+'\n    ' #ws
+'term' #minusword
+' ' #ws
+'TIMES' #mayusword
+' ' #ws
+'factor' #minusword
+'\n  ' #ws
+'|' #|
+' ' #ws
+'factor' #minusword
+'\n' #ws
+';' #;
+'\n' #ws
+'factor' #minusword
+':' #:
+'\n    ' #ws
+'LPAREN' #mayusword
+' ' #ws
+'expression' #minusword
+' ' #ws
+'RPAREN' #mayusword
+'\n  ' #ws
+'|' #|
+' ' #ws
+'ID' #mayusword
+'\n' #ws
+';' #;

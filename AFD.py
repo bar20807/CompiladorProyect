@@ -264,7 +264,7 @@ class AFD_construction(FA):
         with open(filename, 'r') as f:
             file_contents = [ord(char) for char in f.read()]
         #print(file_contents)
-        file_token_write = open('simulation_result.txt', "w")
+        file_token_write = open('simulation_result_yalp.txt', "w")
         # Inicializar variables
         current_characters = []
         current_token = ''
