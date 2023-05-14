@@ -4,12 +4,10 @@
 from YalexReader import *
 
 class YalpGenerator(object):
-    def __init__(self, path_file, yal_file):
+    def __init__(self, path_file):
         self.path_file = path_file
         #Declaramos un diccionario que servirá para almacenar las gramáticas detectadas
         self.grammars = {}
-        #Obtenemos nuestra lista de rule tokens que logramos armar del YalexReader
-        self.rule_tokens = YALexGenerator(yal_file).tokens_rule_list
         #Declaramos la lista donde estarán los tokens
         self.tokens_list = list()
         #Declaramos la lista para las producciones que vamos a realizar

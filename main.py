@@ -25,8 +25,9 @@ afd.simulate_afd("./Archivos Yalp/slr-1.yalp")
 
 #print("Lista resultante: ", afd.token_list_file)
 
-yalp_reader = YalpGenerator("./simulation_result.txt", "./Archivos Yal/yalp_analyzer.yal")
+yalp_reader = YalpGenerator("./simulation_result.txt")
 yalp_reader.detect_productions_file()
+
 
 
 
