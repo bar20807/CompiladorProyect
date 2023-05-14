@@ -27,8 +27,8 @@ afd.simulate_afd("./Archivos Yalp/slr-1.yalp")
 
 yalp_reader = YalpGenerator("./simulation_result.txt", "./Archivos Yal/yalp_analyzer.yal")
 yalp_reader.detect_productions_file()
-print("Producciones: ")
-print(yalp_reader.productions_list)
+
+
 
 
 
