@@ -11,7 +11,7 @@ from YalexReader import *
 from AFD import *
 from YalpReader import *
 
-#Main que utilicé para el laboratorio D
+#Main que utilicé para el laboratorio E
 regex = YALexGenerator("./Archivos Yal/yalp_analyzer.yal")
 tree  = RegextoTree(regex.regular_expression_result)
 tree.buildTree()
