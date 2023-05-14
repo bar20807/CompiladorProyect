@@ -10,8 +10,6 @@ let id = letter(letter|digit)*
 
 rule tokens = 
     ws        { return WHITESPACE }
-  | "if"      { return IF }
-  | "else"    { return ELSE }
   | id        { return ID }  
   | '+'       { return PLUS }
   | '*'       { return TIMES }

@@ -5,19 +5,20 @@ let letterMayus = ['A'-'Z']
 let letterMinus = ['a'-'z']
 let minusword = letterMinus*
 let mayusword = letterMayus*
-
+let production = minusword':'
 
 rule tokens =
     ws        { return WHITESPACE }
   | characters { return CHARACTERS }
   | "/*"      { return LEFTCOMMENT }
   | "*/"      { return RIGHTCOMMENT }
+  | production { return PRODUCTION }
   | "%token"  { return TOKEN }
   | '|'       { return OR }
   | "IGNORE"  { return IGNORE }
-  | minusword { return WORDMIN }
-  | mayusword { return WORDMAY }
+  | minusword { return MINUSWORD }
+  | mayusword { return MAYUSWORD }
   | "%%"      { return SPLIT }  
-  | ":"       { return TWOPOINTS }
-  | ";"       { return FINISHDECLARATION }
+  | ":"       { return COLON }
+  | ";"       { return SEMICOLON }
   

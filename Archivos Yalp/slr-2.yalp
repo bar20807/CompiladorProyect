@@ -4,13 +4,15 @@
 /* T → T ∗ F | T / F | F */
 /* F → ( E ) | id | number */
 
-%token ID
-%token PLUS
-%token MINUS
-%token TIMES
-%token DIV
-%token NUMBER
-%token LPAREN RPAREN
+%%token ID
+%%token PLUS
+%%token MINUS
+%%token TIMES
+%%token DIV
+%%token NUMBER
+%%token LPAREN RPAREN
+
+%%
 
 expression:
     expression PLUS term

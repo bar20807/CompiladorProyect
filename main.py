@@ -19,9 +19,18 @@ tree.print_tree("Test")
 
 afd = AFD_construction()
 afd.afd_direct_(regex.regular_expression_result)
-afd.build_scanner("./Archivos Yal/yalp_analyzer.yal", "ScannerYalp1")
+afd.build_scanner("./Archivos Yal/yalp_analyzer.yal", "ScannerYal1")
 afd.output_image("YalexTestAFD")
 afd.simulate_afd("./Archivos Yalp/slr-1.yalp")
+
+#print("Lista resultante: ", afd.token_list_file)
+
+yalp_reader = YalpGenerator("./simulation_result.txt", "./Archivos Yal/yalp_analyzer.yal")
+yalp_reader.detect_productions_file()
+print("Producciones: ")
+print(yalp_reader.productions_list)
+
+
 
 """#Main a utilizar para el laboratorio E
 yalp_lecture = YalpGenerator("./Archivos Yalp/slr-1.yalp")

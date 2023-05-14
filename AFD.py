@@ -14,6 +14,8 @@ class AFD_construction(FA):
     def __init__(self, regex=None):
         super().__init__(regex)
         self.regex = regex
+        #Lista para almacenar todos los valores que se detecten como token o error léxico
+        self.token_list_file = []
 
 
     """
@@ -245,98 +247,86 @@ class AFD_construction(FA):
         
             
     """
-        Función que se encargará de realizar la simulación de nuestro afd
+        Funciones que se encargarán de realizar la simulación de nuestro afd
     """
     
+    def read_characters(self,filename):
+        with open(filename, 'r') as file:
+            return [ord(char) for char in file.read()]
+
+    def write_simulation_result(self, token_list, filename='simulation_result.txt'):
+        with open(filename, 'w') as file:
+            for token_string, token in token_list:
+                file.write(f"{repr(token_string)} {token}\n")
+
+    def process_characters(self, chars):
+        # Inicializa una lista vacía para almacenar los resultados de los tokens
+        token_results = list()
+        # Inicializa una lista vacía para almacenar los caracteres del token actual
+        char_list = list()
+        # Inicializa una variable para almacenar el token previo
+        prev_token = None
+        # Inicializa el estado actual con el estado inicial del autómata
+        current_states = [self.initial_state]
+        # Inicializa un índice para rastrear la posición actual en la lista de caracteres
+        char_index = 0
+        # Mientras el índice sea menor que la longitud de la lista de caracteres
+        while char_index < len(chars):
+            # Obtiene el carácter en la posición actual del índice
+            char = chars[char_index]
+            # Añade el carácter a la lista de caracteres del token actual
+            char_list.append(char)
+            # Actualiza los estados actuales usando el método move con los estados actuales y el carácter
+            current_states = self.move(current_states, char)
+            # Incrementa el índice en 1
+            char_index += 1
+            # Si no hay estados actuales (no se encontró ninguna transición)
+            if not current_states:
+                # Reinicia los estados actuales al estado inicial del autómata
+                current_states = [self.initial_state]
+                # Si hay un token previo
+                if prev_token:
+                    # Elimina el último carácter de la lista de caracteres del token actual
+                    char_list.pop()
+                    # Decrementa el índice en 1
+                    char_index -= 1
+                    # Convierte la lista de caracteres en una cadena y la guarda en token_str
+                    token_str = "".join(chr(i) for i in char_list)
+                    # Añade el par (token_str, prev_token) a la lista de resultados de tokens
+                    token_results.append([token_str, prev_token])
+                    # Reinicia la lista de caracteres del token actual
+                    char_list = list()
+                    # Reinicia el token previo
+                    prev_token = None
+                else:
+                    # Si no hay un token previo, se genera un error léxico con el primer carácter de la lista de caracteres
+                    error_character = chr(char_list[0])
+                    token_results.append([error_character, "Error Lexico"])
+                    # Reinicia la lista de caracteres del token actual
+                    char_list = list()
+            else:
+                # Si hay estados actuales, crea conjuntos de estados actuales y estados finales
+                state_set = set(current_states)
+                final_state_set = set(self.final_state)
+                # Si hay una intersección entre los conjuntos de estados actuales y estados finales
+                if state_set.intersection(final_state_set):
+                    # Obtiene el último estado final de la intersección
+                    last_final_state = state_set.pop()
+                    # Asigna el token correspondiente al último estado final como el token previo
+                    prev_token = self.final_state[last_final_state]
+        # Devuelve la lista de resultados de tokens
+        return token_results
+    
+
+    
+
     def simulate_afd(self, filename):
-        """
-        Esta función toma un archivo de texto y utiliza el autómata finito determinístico (AFD) definido en la clase actual
-        para simular su funcionamiento y reconocer los tokens presentes en el archivo. Los tokens reconocidos se imprimen
-        en la consola junto con su tipo correspondiente.
+        characters = self.read_characters(filename)
+        token_list = self.process_characters(characters)
+        self.write_simulation_result(token_list)
+        self.token_list_file.extend(token_list)
 
-        Parámetros:
-        - filename: el nombre del archivo de texto a procesar
-
-        Salida:
-        - No devuelve nada, pero imprime los tokens reconocidos y sus tipos correspondientes en la consola.
-        """
-        # Abrir el archivo y leer su contenido
-        with open(filename, 'r') as f:
-            file_contents = [ord(char) for char in f.read()]
-        #print(file_contents)
-        file_token_write = open('simulation_result_yalp.txt', "w")
-        # Inicializar variables
-        current_characters = []
-        current_token = ''
-        # Recorrer el archivo caracter por caracter
-        while file_contents:
-            current_characters.append(file_contents.pop(0))
-            state_move = [self.initial_state]
-            final_states= False 
-            character_count = 0
-            # Avanzar por cada caracter de la cadena
-            while character_count < len(current_characters):
-                # se aplica la función move para el caracter actual
-                state_move = self.move(state_move, current_characters[character_count])
-                # se incrementa el contador de caracteres
-                character_count += 1  
-            # Verificar si hay algún estado final alcanzado
-            if any(state in self.final_state for state in state_move):  # se verifica si algún estado actual es final
-                # se devuelve la intersección de estados finales y actuales
-                final_states =  set(state_move) & set(self.final_state)  
-            else:
-                # si no hay ningún estado final alcanzado, se devuelve False
-                final_states = False  
-            # Si el conjunto de estados finales obtenido no está vacío, tomar el último estado final como el estado actual
-            if final_states:
-                current_final_state = final_states.pop()
-                current_token = self.final_state[current_final_state]
-            else:
-                # Si el conjunto de estados finales obtenido está vacío, hacer un "look ahead" para el siguiente caracter
-                lookahead = False
-                if file_contents:
-                    current_characters.append(file_contents.pop(0))
-                    lookahead = True
-                # Avanzar por cada caracter de la cadena
-                while character_count < len(current_characters):
-                    # se aplica la función move para el caracter actual
-                    state_move = self.move(state_move, current_characters[character_count])
-                    # se incrementa el contador de caracteres
-                    character_count += 1  
-                # Verificar si hay algún estado final alcanzado
-                if any(state in self.final_state for state in state_move):  # se verifica si algún estado actual es final
-                    # se devuelve la intersección de estados finales y actuales
-                    final_states =  set(state_move) & set(self.final_state)  
-                else:
-                    # si no hay ningún estado final alcanzado, se devuelve False
-                    final_states = False  
-                if final_states:
-                    # Si el conjunto de estados finales obtenido en el "look ahead" no está vacío, tomar el último estado
-                    # final como el estado actual
-                    current_final_state = final_states.pop()
-                    current_token = self.final_state[current_final_state]
-                else:
-                    if lookahead:
-                        # Si el conjunto de estados finales obtenido en el "look ahead" está vacío, insertar el último
-                        # caracter procesado de nuevo al stack de caracteres y reiniciar la lista de caracteres actual
-                        file_contents.insert(0, current_characters.pop())
-                    if current_token:
-                        # Si ya se ha identificado un token, imprimirlo en la consola junto con su tipo correspondiente
-                        file_contents.insert(0, current_characters.pop())
-                        token_value = "".join([chr(i) for i in current_characters])
-                        file_token_write.write(f"{repr(token_value)} {current_token}\n")
-                        current_characters = []
-                        current_token = ''
-                    else:
-                        # Si aún no se ha identificado un token, imprimir un mensaje de error léxico en la consola
-                        error_char = chr(current_characters[0])
-                        file_token_write.write(f"{repr(error_char)} Error Lexico\n")
-                        current_characters = []
-        # Al final del archivo, imprimir cualquier token pendiente junto con su tipo correspondiente
-        if current_characters and current_token:
-            token_value = "".join([chr(i) for i in current_characters])
-            file_token_write.write(f"{repr(token_value)} {current_token}\n")
-
+            
     """
         Función que se encarga de realizar el e-closure
     
@@ -376,25 +366,19 @@ class AFD_construction(FA):
     
     """
     
-    # Se utiliza el algoritmo de e-closure para calcular move
     def move(self, states, character):
-        # Se inicia el stack con los estados de T
-        states_stack = states
-        # Se inicia sin estados
-        states_result = []
-        # Se itera mientra el stack no se encuentre vacio
-        while(len(states_stack) != 0):
-            # Se saca el estado t
-            state = states_stack.pop()
-            # Se revisa en cada transicion
-            for i in self.transitions:
-                # Se revisa que tenga transicion con el caracter
-                if(i[0] == state and i[1] == character):
-                    # Si el estado no esta en los resultados se ingresa
-                    if(i[2] not in states_result):
-                        states_result.append(i[2])
-        # Se retorna el resultado
-        return states_result
+        # Método que mueve un conjunto de estados (states) a través de una transición con un carácter (character)
+        # desde una configuración actual a una configuración resultante.
+        states_result = set()
+        while states:
+            state = states.pop()
+            # Se busca una transición que vaya desde el estado actual hacia un estado con el carácter dado
+            new_states = {i[2] for i in self.transitions if i[0] == state and i[1] == character}
+            states_result.update(new_states)
+        # Al final, se devuelve la lista de estados resultantes
+        return list(states_result)
+
+
     
     
     """
@@ -438,6 +422,7 @@ class AFD_construction(FA):
         file.write(f"\t\tself.alphabet = {self.alphabet}\n\n")
         file.write("\tdef tokens(token):\n")
         yal = YALexGenerator(path)
+        #print("Lista de tokens del yal: ", yal.tokens_rule_list)
         for i in yal.tokens_rule_list:
             file.write(f"\t\tif(token == '{i}'):\n")
             file.write(f"\t\t\t{yal.tokens_rule_list[i]}\n")
