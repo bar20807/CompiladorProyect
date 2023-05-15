@@ -27,18 +27,18 @@
 /* F -> number */
 /* F -> id */
 
-%%token ID
-%%token NUMBER
-%%token LPAREN
-%%token RPAREN
-%%token SEMICOLON
-%%token ASSIGNOP
-%%token LT
-%%token EQ
-%%token MINUS
-%%token DIV
-%%token PLUS
-%%token TIMES
+%token ID
+%token NUMBER
+%token LPAREN
+%token RPAREN
+%token SEMICOLON
+%token ASSIGNOP
+%token LT
+%token EQ
+%token MINUS
+%token DIV
+%token PLUS
+%token TIMES
 
 %%
 
