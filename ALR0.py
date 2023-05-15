@@ -21,8 +21,6 @@ class ALR0 (FA):
         self.subsets_ = list()
         #Lista que nos ayudará con el número de conjuntos
         self.subsets_iterations = list()
-        #Variable número
-        self.number = 0
         
     def create_initial_production(self):
         # Copiar la lista de producciones
@@ -91,9 +89,11 @@ class ALR0 (FA):
         # Devolver la lista de nuevos elementos que se agregarán a closure_array
         return new_elements
 
-    def closure(self, item, elem=None, cicle=None):
+    def closure(self, input_item, input_elem=None, input_cycle=None):
         # Copia el ítem y lo almacena en una lista para el cálculo de la clausura
-        closure = item.copy()
+        closure = input_item.copy()
+        #Creamos la variable estado
+        state = 0
         # Calcula la clausura del ítem actual
         new_elements = self.update_closure_array(closure)
         while new_elements:
@@ -104,14 +104,15 @@ class ALR0 (FA):
         if sort not in self.subsets_:
             self.subsets_.append(sort)
             self.subsets_iterations.append(self.number)
-            self.number += 1
+            state += 1
             self.iterations.append(sort)
         # Si los argumentos de entrada no son nulos, agrega una transición a la lista de transiciones
-        if elem is None or cicle is None:
+        if input_elem is None and input_cycle is None:
             return
-        start_index = self.subsets_.index(cicle)
-        end_index = self.subsets_.index(sort)
-        self.transitions.append([self.subsets_iterations[start_index], elem, self.subsets_iterations[end_index]])
+        initial = self.subsets_.index(input_cycle)
+        end = self.subsets_.index(sort)
+        self.transitions.append([self.subsets_iterations[initial], input_elem, self.subsets_iterations[end]])
+
         
     def goto(self, iteraciones):
         # Obtener los elementos a los que se puede transicionar

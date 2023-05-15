@@ -1,0 +1,167 @@
+digraph {
+	0 [label="I0
+[, [., */, /*, E, âErrorLexico, †ErrorLexico, ’ErrorLexico, T, +ErrorLexico, E]]
+[, [., T, */, /*, T, âErrorLexico, †ErrorLexico, ’ErrorLexico, number, *, T]]
+[, [., number]]
+[, [., (ErrorLexico, E, )ErrorLexico, */, %%, token, NUMBER, %%, token, PLUS, %%, token, TIMES, %%, token, LPAREN, RPAREN, %%]]
+[, [., ]]
+" fontsize=10 shape=rectangle]
+	1 [label="I1
+[, [, .]]
+" fontsize=10 shape=rectangle]
+	2 [label="I2
+[, [T, ., */, /*, T, âErrorLexico, †ErrorLexico, ’ErrorLexico, number, *, T]]
+" fontsize=10 shape=rectangle]
+	3 [label="I3
+[, [*/, ., /*, E, âErrorLexico, †ErrorLexico, ’ErrorLexico, T, +ErrorLexico, E]]
+" fontsize=10 shape=rectangle]
+	4 [label="I4
+[, [number, .]]
+" fontsize=10 shape=rectangle]
+	5 [label="I5
+[, [(ErrorLexico, ., E, )ErrorLexico, */, %%, token, NUMBER, %%, token, PLUS, %%, token, TIMES, %%, token, LPAREN, RPAREN, %%]]
+" fontsize=10 shape=rectangle]
+	6 [label="I6
+[, [T, */, ., /*, T, âErrorLexico, †ErrorLexico, ’ErrorLexico, number, *, T]]
+" fontsize=10 shape=rectangle]
+	7 [label="I7
+[, [*/, /*, ., E, âErrorLexico, †ErrorLexico, ’ErrorLexico, T, +ErrorLexico, E]]
+" fontsize=10 shape=rectangle]
+	8 [label="I8
+[, [(ErrorLexico, E, ., )ErrorLexico, */, %%, token, NUMBER, %%, token, PLUS, %%, token, TIMES, %%, token, LPAREN, RPAREN, %%]]
+" fontsize=10 shape=rectangle]
+	9 [label="I9
+[, [T, */, /*, ., T, âErrorLexico, †ErrorLexico, ’ErrorLexico, number, *, T]]
+" fontsize=10 shape=rectangle]
+	10 [label="I10
+[, [*/, /*, E, ., âErrorLexico, †ErrorLexico, ’ErrorLexico, T, +ErrorLexico, E]]
+" fontsize=10 shape=rectangle]
+	11 [label="I11
+[, [(ErrorLexico, E, )ErrorLexico, ., */, %%, token, NUMBER, %%, token, PLUS, %%, token, TIMES, %%, token, LPAREN, RPAREN, %%]]
+" fontsize=10 shape=rectangle]
+	12 [label="I12
+[, [T, */, /*, T, ., âErrorLexico, †ErrorLexico, ’ErrorLexico, number, *, T]]
+" fontsize=10 shape=rectangle]
+	13 [label="I13
+[, [*/, /*, E, âErrorLexico, ., †ErrorLexico, ’ErrorLexico, T, +ErrorLexico, E]]
+" fontsize=10 shape=rectangle]
+	14 [label="I14
+[, [(ErrorLexico, E, )ErrorLexico, */, ., %%, token, NUMBER, %%, token, PLUS, %%, token, TIMES, %%, token, LPAREN, RPAREN, %%]]
+" fontsize=10 shape=rectangle]
+	15 [label="I15
+[, [T, */, /*, T, âErrorLexico, ., †ErrorLexico, ’ErrorLexico, number, *, T]]
+" fontsize=10 shape=rectangle]
+	16 [label="I16
+[, [*/, /*, E, âErrorLexico, †ErrorLexico, ., ’ErrorLexico, T, +ErrorLexico, E]]
+" fontsize=10 shape=rectangle]
+	17 [label="I17
+[, [(ErrorLexico, E, )ErrorLexico, */, %%, ., token, NUMBER, %%, token, PLUS, %%, token, TIMES, %%, token, LPAREN, RPAREN, %%]]
+" fontsize=10 shape=rectangle]
+	18 [label="I18
+[, [T, */, /*, T, âErrorLexico, †ErrorLexico, ., ’ErrorLexico, number, *, T]]
+" fontsize=10 shape=rectangle]
+	19 [label="I19
+[, [*/, /*, E, âErrorLexico, †ErrorLexico, ’ErrorLexico, ., T, +ErrorLexico, E]]
+" fontsize=10 shape=rectangle]
+	20 [label="I20
+[, [(ErrorLexico, E, )ErrorLexico, */, %%, token, ., NUMBER, %%, token, PLUS, %%, token, TIMES, %%, token, LPAREN, RPAREN, %%]]
+" fontsize=10 shape=rectangle]
+	21 [label="I21
+[, [T, */, /*, T, âErrorLexico, †ErrorLexico, ’ErrorLexico, ., number, *, T]]
+" fontsize=10 shape=rectangle]
+	22 [label="I22
+[, [*/, /*, E, âErrorLexico, †ErrorLexico, ’ErrorLexico, T, ., +ErrorLexico, E]]
+" fontsize=10 shape=rectangle]
+	23 [label="I23
+[, [(ErrorLexico, E, )ErrorLexico, */, %%, token, NUMBER, ., %%, token, PLUS, %%, token, TIMES, %%, token, LPAREN, RPAREN, %%]]
+" fontsize=10 shape=rectangle]
+	24 [label="I24
+[, [T, */, /*, T, âErrorLexico, †ErrorLexico, ’ErrorLexico, number, ., *, T]]
+" fontsize=10 shape=rectangle]
+	25 [label="I25
+[, [*/, /*, E, âErrorLexico, †ErrorLexico, ’ErrorLexico, T, +ErrorLexico, ., E]]
+" fontsize=10 shape=rectangle]
+	26 [label="I26
+[, [(ErrorLexico, E, )ErrorLexico, */, %%, token, NUMBER, %%, ., token, PLUS, %%, token, TIMES, %%, token, LPAREN, RPAREN, %%]]
+" fontsize=10 shape=rectangle]
+	27 [label="I27
+[, [T, */, /*, T, âErrorLexico, †ErrorLexico, ’ErrorLexico, number, *, ., T]]
+" fontsize=10 shape=rectangle]
+	28 [label="I28
+[, [*/, /*, E, âErrorLexico, †ErrorLexico, ’ErrorLexico, T, +ErrorLexico, E, .]]
+" fontsize=10 shape=rectangle]
+	29 [label="I29
+[, [(ErrorLexico, E, )ErrorLexico, */, %%, token, NUMBER, %%, token, ., PLUS, %%, token, TIMES, %%, token, LPAREN, RPAREN, %%]]
+" fontsize=10 shape=rectangle]
+	30 [label="I30
+[, [T, */, /*, T, âErrorLexico, †ErrorLexico, ’ErrorLexico, number, *, T, .]]
+" fontsize=10 shape=rectangle]
+	31 [label="I31
+[, [(ErrorLexico, E, )ErrorLexico, */, %%, token, NUMBER, %%, token, PLUS, ., %%, token, TIMES, %%, token, LPAREN, RPAREN, %%]]
+" fontsize=10 shape=rectangle]
+	32 [label="I32
+[, [(ErrorLexico, E, )ErrorLexico, */, %%, token, NUMBER, %%, token, PLUS, %%, ., token, TIMES, %%, token, LPAREN, RPAREN, %%]]
+" fontsize=10 shape=rectangle]
+	33 [label="I33
+[, [(ErrorLexico, E, )ErrorLexico, */, %%, token, NUMBER, %%, token, PLUS, %%, token, ., TIMES, %%, token, LPAREN, RPAREN, %%]]
+" fontsize=10 shape=rectangle]
+	34 [label="I34
+[, [(ErrorLexico, E, )ErrorLexico, */, %%, token, NUMBER, %%, token, PLUS, %%, token, TIMES, ., %%, token, LPAREN, RPAREN, %%]]
+" fontsize=10 shape=rectangle]
+	35 [label="I35
+[, [(ErrorLexico, E, )ErrorLexico, */, %%, token, NUMBER, %%, token, PLUS, %%, token, TIMES, %%, ., token, LPAREN, RPAREN, %%]]
+" fontsize=10 shape=rectangle]
+	36 [label="I36
+[, [(ErrorLexico, E, )ErrorLexico, */, %%, token, NUMBER, %%, token, PLUS, %%, token, TIMES, %%, token, ., LPAREN, RPAREN, %%]]
+" fontsize=10 shape=rectangle]
+	37 [label="I37
+[, [(ErrorLexico, E, )ErrorLexico, */, %%, token, NUMBER, %%, token, PLUS, %%, token, TIMES, %%, token, LPAREN, ., RPAREN, %%]]
+" fontsize=10 shape=rectangle]
+	38 [label="I38
+[, [(ErrorLexico, E, )ErrorLexico, */, %%, token, NUMBER, %%, token, PLUS, %%, token, TIMES, %%, token, LPAREN, RPAREN, ., %%]]
+" fontsize=10 shape=rectangle]
+	39 [label="I39
+[, [(ErrorLexico, E, )ErrorLexico, */, %%, token, NUMBER, %%, token, PLUS, %%, token, TIMES, %%, token, LPAREN, RPAREN, %%, .]]
+" fontsize=10 shape=rectangle]
+	accept [label=accept fontsize=10 shape=rectangle]
+	0 -> 1 [label="" fontsize=10]
+	0 -> 2 [label=T fontsize=10]
+	0 -> 3 [label="*/" fontsize=10]
+	0 -> 4 [label=number fontsize=10]
+	0 -> 5 [label="(ErrorLexico" fontsize=10]
+	1 -> accept [label="$" fontsize=10]
+	2 -> 6 [label="*/" fontsize=10]
+	3 -> 7 [label="/*" fontsize=10]
+	5 -> 8 [label=E fontsize=10]
+	6 -> 9 [label="/*" fontsize=10]
+	7 -> 10 [label=E fontsize=10]
+	8 -> 11 [label=")ErrorLexico" fontsize=10]
+	9 -> 12 [label=T fontsize=10]
+	10 -> 13 [label="âErrorLexico" fontsize=10]
+	11 -> 14 [label="*/" fontsize=10]
+	12 -> 15 [label="âErrorLexico" fontsize=10]
+	13 -> 16 [label="†ErrorLexico" fontsize=10]
+	14 -> 17 [label="%%" fontsize=10]
+	15 -> 18 [label="†ErrorLexico" fontsize=10]
+	16 -> 19 [label="’ErrorLexico" fontsize=10]
+	17 -> 20 [label=token fontsize=10]
+	18 -> 21 [label="’ErrorLexico" fontsize=10]
+	19 -> 22 [label=T fontsize=10]
+	20 -> 23 [label=NUMBER fontsize=10]
+	21 -> 24 [label=number fontsize=10]
+	22 -> 25 [label="+ErrorLexico" fontsize=10]
+	23 -> 26 [label="%%" fontsize=10]
+	24 -> 27 [label="*" fontsize=10]
+	25 -> 28 [label=E fontsize=10]
+	26 -> 29 [label=token fontsize=10]
+	27 -> 30 [label=T fontsize=10]
+	29 -> 31 [label=PLUS fontsize=10]
+	31 -> 32 [label="%%" fontsize=10]
+	32 -> 33 [label=token fontsize=10]
+	33 -> 34 [label=TIMES fontsize=10]
+	34 -> 35 [label="%%" fontsize=10]
+	35 -> 36 [label=token fontsize=10]
+	36 -> 37 [label=LPAREN fontsize=10]
+	37 -> 38 [label=RPAREN fontsize=10]
+	38 -> 39 [label="%%" fontsize=10]
+}
