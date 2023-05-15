@@ -50,7 +50,7 @@ class ALR0 (FA):
         self.subsets_.append(sorted_items)
         # Asignar el número 0 al conjunto actual y aumentar el número de conjunto en 1
         self.subsets_iterations.append(0)
-        self.number = 1
+        state = 1
         # Agregar el conjunto actual al ciclo de conjuntos
         self.iterations.append(sorted_items)
         # Mientras haya conjuntos en el ciclo, procesar el siguiente conjunto en el ciclo
@@ -103,7 +103,7 @@ class ALR0 (FA):
         sort = sorted(closure, key=lambda x: x[0])
         if sort not in self.subsets_:
             self.subsets_.append(sort)
-            self.subsets_iterations.append(self.number)
+            self.subsets_iterations.append(state)
             state += 1
             self.iterations.append(sort)
         # Si los argumentos de entrada no son nulos, agrega una transición a la lista de transiciones
