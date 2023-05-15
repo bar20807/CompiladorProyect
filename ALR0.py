@@ -21,6 +21,8 @@ class ALR0 (FA):
         self.subsets_ = list()
         #Lista que nos ayudará con el número de conjuntos
         self.subsets_iterations = list()
+        #Número 
+        self.number = 0
         
     def create_initial_production(self):
         # Copiar la lista de producciones
@@ -50,7 +52,6 @@ class ALR0 (FA):
         self.subsets_.append(sorted_items)
         # Asignar el número 0 al conjunto actual y aumentar el número de conjunto en 1
         self.subsets_iterations.append(0)
-        state = 1
         # Agregar el conjunto actual al ciclo de conjuntos
         self.iterations.append(sorted_items)
         # Mientras haya conjuntos en el ciclo, procesar el siguiente conjunto en el ciclo
@@ -67,33 +68,20 @@ class ALR0 (FA):
             self.transitions.append([self.subsets_iterations[final_index], "$", "accept"])
 
     def update_closure_array(self, closure):
-        # Crear una lista vacía para almacenar los nuevos elementos que se agregarán a closure_array
         new_elements = []
-        # Iterar a través de cada elemento en closure_array
         for x in closure:
-            # Encontrar el índice del punto (.) en la segunda parte del elemento (x[1])
             dot_index = x[1].index(".")
-            # Verificar si el punto no está al final de la lista x[1]
             if dot_index + 1 < len(x[1]):
-                # Obtener el valor que sigue al punto en la lista x[1]
                 val = x[1][dot_index + 1]
-
-                # Iterar a través de todas las producciones
                 for y in self.productions:
-                    # Verificar si el valor obtenido coincide con la primera parte de la producción (y[0])
-                    # y si la producción no está ya en closure_array
-                    if y[0] == val and y not in closure:
-                        # Si se cumplen las condiciones, agregar la producción a la lista de nuevos elementos
+                    if y[0] == val and y not in closure and y not in new_elements:
                         new_elements.append(y)
-
-        # Devolver la lista de nuevos elementos que se agregarán a closure_array
         return new_elements
+
 
     def closure(self, input_item, input_elem=None, input_cycle=None):
         # Copia el ítem y lo almacena en una lista para el cálculo de la clausura
         closure = input_item.copy()
-        #Creamos la variable estado
-        state = 0
         # Calcula la clausura del ítem actual
         new_elements = self.update_closure_array(closure)
         while new_elements:
@@ -103,8 +91,8 @@ class ALR0 (FA):
         sort = sorted(closure, key=lambda x: x[0])
         if sort not in self.subsets_:
             self.subsets_.append(sort)
-            self.subsets_iterations.append(state)
-            state += 1
+            self.subsets_iterations.append(self.number)
+            self.number += 1
             self.iterations.append(sort)
         # Si los argumentos de entrada no son nulos, agrega una transición a la lista de transiciones
         if input_elem is None and input_cycle is None:
