@@ -30,9 +30,13 @@ yalp_reader = YalpGenerator("./simulation_result.txt")
 yalp_reader.detect_productions_file()
 #print(yalp_reader.productions_list)
 alr0 = ALR0(productions= yalp_reader.productions_list)
-alr0.create_subsets()
-alr0.output_image("./ALR0/ALR0_Yalp4")
-
+first_sets = alr0.first()
+follow_sets = alr0.follow(first_sets)
+print("FIRST sets:", first_sets)
+print("")
+print("FOLLOW sets:", follow_sets)
+"""alr0.create_subsets()
+alr0.output_image("./ALR0/ALR0_Yalp4")"""
 
 """#Main a utilizar para el laboratorio E
 yalp_lecture = YalpGenerator("./Archivos Yalp/slr-1.yalp")

@@ -68,14 +68,23 @@ class ALR0 (FA):
             self.transitions.append([self.subsets_iterations[final_index], "$", "accept"])
 
     def update_closure_array(self, closure):
+        # Crea una lista vacía para almacenar los nuevos elementos que se encontrarán
         new_elements = []
+        # Itera sobre cada item en la lista de entrada `closure`
         for x in closure:
+            # Encuentra el índice del punto en la regla de producción
             dot_index = x[1].index(".")
+            # Si el punto no está al final de la regla de producción
             if dot_index + 1 < len(x[1]):
+                # Encuentra el siguiente símbolo en la regla de producción después del punto
                 val = x[1][dot_index + 1]
+                # Itera sobre todas las producciones para encontrar aquellas que empiecen con `val`
                 for y in self.productions:
+                    # Si encuentra una producción con `val` como símbolo no terminal y no está ya en `closure` ni en `new_elements`
                     if y[0] == val and y not in closure and y not in new_elements:
+                        # Agrega la producción encontrada a la lista `new_elements`
                         new_elements.append(y)
+        # Devuelve la lista `new_elements` con las producciones encontradas
         return new_elements
 
 
@@ -95,7 +104,7 @@ class ALR0 (FA):
             self.number += 1
             self.iterations.append(sort)
         # Si los argumentos de entrada no son nulos, agrega una transición a la lista de transiciones
-        if input_elem is None and input_cycle is None:
+        if input_elem is None or input_cycle is None:
             return
         initial = self.subsets_.index(input_cycle)
         end = self.subsets_.index(sort)
@@ -123,7 +132,81 @@ class ALR0 (FA):
             # Obtener la cerradura de los nuevos items y agregar las transiciones
             self.closure(items_temporales, x, iteraciones)
         return nuevos_elementos_iteraciones
-            
+
+    def first(self):
+        # Creación del diccionario first_sets vacío
+        first_sets = {}
+        # Iterar sobre las producciones
+        for prod in self.productions:
+            # Obtener el no terminal de la producción
+            non_terminal = prod[0]
+            # Si el no terminal no está en first_sets, agregarlo con un conjunto vacío
+            if non_terminal not in first_sets:
+                first_sets[non_terminal] = set()
+        # Iterar sobre las producciones varias veces
+        for _ in range(len(self.productions)):
+            # Iterar sobre cada producción
+            for prod in self.productions:
+                # Obtener el no terminal y el lado derecho de la producción
+                non_terminal, rhs = prod
+                # Obtener el primer elemento del lado derecho
+                first_elem = rhs[0]
+                # Si el primer elemento es un no terminal, agregarlo a los primeros del no terminal actual
+                if first_elem.isupper():
+                    first_sets[non_terminal].add(first_elem)
+                # Si el primer elemento es un terminal, agregar los primeros del primer elemento a los primeros del no terminal actual
+                else:
+                    first_sets[non_terminal] |= first_sets.get(first_elem, set())
+        # Regresar el diccionario de primeros
+        return first_sets
+
+    def follow(self, first_sets):
+        # Creación del diccionario follow_sets vacío
+        follow_sets = {}
+        # Iterar sobre las producciones
+        for prod in self.productions:
+            # Obtener el no terminal de la producción
+            non_terminal = prod[0]
+            # Si el no terminal no está en follow_sets, agregarlo con un conjunto vacío
+            if non_terminal not in follow_sets:
+                follow_sets[non_terminal] = set()
+
+            # Iterar sobre cada símbolo en el lado derecho de la producción
+            for symbol in prod[1]:
+                # Si el símbolo no está en follow_sets, agregarlo con un conjunto vacío
+                if symbol not in follow_sets:
+                    follow_sets[symbol] = set()
+        # Obtener el símbolo inicial de la gramática y agregar el fin de cadena ($) a su conjunto de siguientes
+        start_symbol = self.productions[0][0]
+        follow_sets[start_symbol].add('$')
+
+        # Iterar sobre las producciones varias veces
+        for _ in range(len(self.productions)):
+            # Iterar sobre cada producción
+            for prod in self.productions:
+                # Obtener el no terminal y el lado derecho de la producción
+                non_terminal, rhs = prod
+                # Iterar sobre cada símbolo en el lado derecho de la producción
+                for i, symbol in enumerate(rhs):
+                    # Si el símbolo no es un no terminal, continuar con el siguiente símbolo
+                    if not symbol.isupper():
+                        continue
+                    # Si hay un siguiente símbolo en el lado derecho de la producción
+                    if i + 1 < len(rhs):
+                        next_symbol = rhs[i + 1]
+                        # Si el siguiente símbolo es un no terminal, agregarlo al conjunto de siguientes del símbolo actual
+                        if next_symbol.isupper():
+                            follow_sets[symbol].add(next_symbol)
+                        # Si el siguiente símbolo es un terminal, agregar los primeros del siguiente símbolo al conjunto de siguientes del símbolo actual
+                        elif next_symbol in first_sets:  
+                            follow_sets[symbol] |= first_sets[next_symbol]
+                    # Si el símbolo actual es el último en el lado derecho de la producción, agregar los siguientes del no terminal al conjunto de siguientes del símbolo actual
+                    else:
+                        follow_sets[symbol] |= follow_sets[non_terminal]
+        # Regresar el diccionario de siguientes
+        return follow_sets
+
+
     def output_image(self, filename):
         G = nx.DiGraph()
         dot = graphviz.Digraph(format='png')
