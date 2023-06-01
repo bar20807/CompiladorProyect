@@ -7,9 +7,14 @@ from FA import *
 import copy
 import graphviz
 import networkx as nx
+import pandas as pd
+import networkx as nx
+import matplotlib.pyplot as plt
+
 
 class ALR0 (FA):
     def __init__(self, regex=None, productions = None):
+        #Inicializamos la clase padre
         super().__init__(regex)
         #Acá vamos a recibir nuestra lista de producciones
         self.productions = productions
@@ -21,51 +26,46 @@ class ALR0 (FA):
         self.subsets_ = list()
         #Lista que nos ayudará con el número de conjuntos
         self.subsets_iterations = list()
-        #Número 
+        #Número de iteraciones
         self.number = 0
+        #Ciclo de los conjuntos
+        self.cycle = []
         
     def create_initial_production(self):
-        # Copiar la lista de producciones
-        productions_copy = [x[:] for x in self.productions]
         # Obtener el valor de la primera producción
         value = self.productions[0][0]
         # Insertar una nueva producción al inicio de la lista de producciones
         self.productions.insert(0, [value + "'", [value]])
+        # Copiar la lista de producciones
+        self.productions_copy = copy.deepcopy(self.productions)
         # Agregar un punto al inicio de cada producción
         for i in range(len(self.productions)):
-            self.productions[i][1].insert(0, ".")  
-        return productions_copy
+            self.productions[i][1].insert(0, ".")
 
     def create_subsets(self):
-        # Crear la producción inicial
+        # Crear la producción inicial, modificando la primera producción y agregándola al comienzo de la lista de producciones
         self.create_initial_production()
-        # Crear el array de clausura con la producción inicial
-        closure_array = [self.productions[0]]
-        # Actualizar el array de clausura hasta que ya no se puedan agregar más elementos
-        new_elements = self.update_closure_array(closure_array)
-        while new_elements:
-            closure_array.extend(new_elements)
-            new_elements = self.update_closure_array(closure_array)
-        # Ordenar los elementos del array de clausura por el estado inicial de cada producción
-        sorted_items = sorted(closure_array, key=lambda x: x[0])
-        # Agregar los elementos del array de clausura al array de conjuntos
-        self.subsets_.append(sorted_items)
-        # Asignar el número 0 al conjunto actual y aumentar el número de conjunto en 1
-        self.subsets_iterations.append(0)
-        # Agregar el conjunto actual al ciclo de conjuntos
-        self.iterations.append(sorted_items)
-        # Mientras haya conjuntos en el ciclo, procesar el siguiente conjunto en el ciclo
-        while len(self.iterations) > 0:
-            self.goto(self.iterations.pop(0))
-        # Agregar una transición de aceptación si se encuentra una producción que termine con un punto
-        initial_prod = self.productions[0][0]
-        final_index = -1
-        for i in range(len(self.subsets_)):
-            if any(y[0] == initial_prod and y[1][-1] == '.' for y in self.subsets_[i]):
-                final_index = i
-                break
-        if final_index != -1:
-            self.transitions.append([self.subsets_iterations[final_index], "$", "accept"])
+        # Calcular el cierre para la primera producción y actualizar el conjunto de subconjuntos y transiciones
+        self.closure([self.productions[0]])
+        # Mientras haya elementos en el ciclo, ejecutar la función goto para cada uno y actualizar el conjunto de subconjuntos y transiciones
+        while self.cycle:
+            self.goto(self.cycle.pop(0))
+        # Establecer el estado inicial como el primer elemento de la primera producción
+        initial_state = self.productions[0][0]
+        # Iterar a través de todos los subconjuntos
+        for subset in self.subsets_:
+            # Iterar a través de todos los elementos en el subconjunto actual
+            for item in subset:
+                # Encontrar el índice del punto en la lista de elementos del subconjunto
+                accept_index = item[1].index(".")
+                # Verificar si el índice del punto menos 1 es mayor o igual a 0
+                if accept_index - 1 >= 0:
+                    # Verificar si el primer elemento del item es igual al estado inicial y si el elemento anterior al punto es igual al estado inicial sin el último carácter
+                    if item[0] == initial_state and item[1][accept_index-1] == initial_state[:-1]:
+                        # Encontrar el índice del subconjunto en la lista de subconjuntos
+                        final_index = self.subsets_.index(subset)
+                        # Agregar una nueva transición con el índice del subconjunto, el símbolo de fin de entrada y la acción de aceptar
+                        self.transitions.append([self.subsets_iterations[final_index], "$", "accept"])
 
     def update_closure_array(self, closure):
         # Crea una lista vacía para almacenar los nuevos elementos que se encontrarán
@@ -87,125 +87,70 @@ class ALR0 (FA):
         # Devuelve la lista `new_elements` con las producciones encontradas
         return new_elements
 
-
     def closure(self, input_item, input_elem=None, input_cycle=None):
+        closure = list()
         # Copia el ítem y lo almacena en una lista para el cálculo de la clausura
-        closure = input_item.copy()
-        # Calcula la clausura del ítem actual
-        new_elements = self.update_closure_array(closure)
-        while new_elements:
-            closure.extend(new_elements)
-            new_elements = self.update_closure_array(closure)
+        closure.extend(input_item)
+        #Variable que se utilizará para las iteraciones
+        iteration = 0
+        while iteration != len(closure):
+            iteration = len(closure)
+            #Mandamos a llamar a la función para actualizar el closure
+            closure.extend(self.update_closure_array(closure))
         # Ordena los elementos y los almacena en una lista de conjuntos si no existen en ella
         sort = sorted(closure, key=lambda x: x[0])
         if sort not in self.subsets_:
             self.subsets_.append(sort)
             self.subsets_iterations.append(self.number)
             self.number += 1
-            self.iterations.append(sort)
+            self.cycle.append(sort)
         # Si los argumentos de entrada no son nulos, agrega una transición a la lista de transiciones
-        if input_elem is None or input_cycle is None:
-            return
-        initial = self.subsets_.index(input_cycle)
-        end = self.subsets_.index(sort)
-        self.transitions.append([self.subsets_iterations[initial], input_elem, self.subsets_iterations[end]])
+        if input_elem != None and input_cycle != None:
+            start_index = self.subsets_.index(input_cycle)
+            end_index = self.subsets_.index(sort)
+            self.transitions.append([self.subsets_iterations[start_index],input_elem,self.subsets_iterations[end_index]])
+        #print("Transiciones en la armada: ", self.transitions)
 
         
     def goto(self, iteraciones):
-        # Obtener los elementos a los que se puede transicionar
-        elementos = {x[1][x[1].index(".") + 1] for x in iteraciones if x[1].index(".") + 1 < len(x[1])}
-        # Crear nuevos items transicionando a los elementos encontrados
-        nuevos_elementos_iteraciones = []
-        for x in elementos:
-            items_temporales = [
-                [y[0], y[1][:posicion_punto] + [y[1][posicion_punto + 1], '.'] + y[1][posicion_punto + 2:]]
-                for y in iteraciones
-                if (
-                    (posicion_punto := y[1].index(".")) + 1 < len(y[1])
-                    and y[1][posicion_punto + 1] == x
-                )
-            ]
-            # Agregar nuevos items a la lista
-            nuevos_elementos_iteraciones.extend(
-                item for item in items_temporales if item not in nuevos_elementos_iteraciones
-            )
-            # Obtener la cerradura de los nuevos items y agregar las transiciones
-            self.closure(items_temporales, x, iteraciones)
-        return nuevos_elementos_iteraciones
-
-    def first(self):
-        # Creación del diccionario first_sets vacío
-        first_sets = {}
-        # Iterar sobre las producciones
-        for prod in self.productions:
-            # Obtener el no terminal de la producción
-            non_terminal = prod[0]
-            # Si el no terminal no está en first_sets, agregarlo con un conjunto vacío
-            if non_terminal not in first_sets:
-                first_sets[non_terminal] = set()
-        # Iterar sobre las producciones varias veces
-        for _ in range(len(self.productions)):
-            # Iterar sobre cada producción
-            for prod in self.productions:
-                # Obtener el no terminal y el lado derecho de la producción
-                non_terminal, rhs = prod
-                # Obtener el primer elemento del lado derecho
-                first_elem = rhs[0]
-                # Si el primer elemento es un no terminal, agregarlo a los primeros del no terminal actual
-                if first_elem.isupper():
-                    first_sets[non_terminal].add(first_elem)
-                # Si el primer elemento es un terminal, agregar los primeros del primer elemento a los primeros del no terminal actual
-                else:
-                    first_sets[non_terminal] |= first_sets.get(first_elem, set())
-        # Regresar el diccionario de primeros
-        return first_sets
-
-    def follow(self, first_sets):
-        # Creación del diccionario follow_sets vacío
-        follow_sets = {}
-        # Iterar sobre las producciones
-        for prod in self.productions:
-            # Obtener el no terminal de la producción
-            non_terminal = prod[0]
-            # Si el no terminal no está en follow_sets, agregarlo con un conjunto vacío
-            if non_terminal not in follow_sets:
-                follow_sets[non_terminal] = set()
-
-            # Iterar sobre cada símbolo en el lado derecho de la producción
-            for symbol in prod[1]:
-                # Si el símbolo no está en follow_sets, agregarlo con un conjunto vacío
-                if symbol not in follow_sets:
-                    follow_sets[symbol] = set()
-        # Obtener el símbolo inicial de la gramática y agregar el fin de cadena ($) a su conjunto de siguientes
-        start_symbol = self.productions[0][0]
-        follow_sets[start_symbol].add('$')
-
-        # Iterar sobre las producciones varias veces
-        for _ in range(len(self.productions)):
-            # Iterar sobre cada producción
-            for prod in self.productions:
-                # Obtener el no terminal y el lado derecho de la producción
-                non_terminal, rhs = prod
-                # Iterar sobre cada símbolo en el lado derecho de la producción
-                for i, symbol in enumerate(rhs):
-                    # Si el símbolo no es un no terminal, continuar con el siguiente símbolo
-                    if not symbol.isupper():
-                        continue
-                    # Si hay un siguiente símbolo en el lado derecho de la producción
-                    if i + 1 < len(rhs):
-                        next_symbol = rhs[i + 1]
-                        # Si el siguiente símbolo es un no terminal, agregarlo al conjunto de siguientes del símbolo actual
-                        if next_symbol.isupper():
-                            follow_sets[symbol].add(next_symbol)
-                        # Si el siguiente símbolo es un terminal, agregar los primeros del siguiente símbolo al conjunto de siguientes del símbolo actual
-                        elif next_symbol in first_sets:  
-                            follow_sets[symbol] |= first_sets[next_symbol]
-                    # Si el símbolo actual es el último en el lado derecho de la producción, agregar los siguientes del no terminal al conjunto de siguientes del símbolo actual
-                    else:
-                        follow_sets[symbol] |= follow_sets[non_terminal]
-        # Regresar el diccionario de siguientes
-        return follow_sets
-
+        #obtener los token o elementos con el cual probar
+        # print("sorted_items: ",ciclo)
+        elements = []
+        for x in iteraciones:
+            indice = x[1].index(".")
+            if indice + 1 < len(x[1]):
+                if x[1][indice+1] not in elements: 
+                    elements.append(x[1][indice+1])
+        # print("elements: ", elements)
+        #encontrar todos los que son .elements y apartir de esos mover el . una casilla 
+        for x in elements:
+            # print("x: ", x)
+            temporal = []
+            for y in iteraciones:
+                indice = y[1].index(".")
+                if indice + 1 < len(y[1]):
+                    # print("y[1]: ", y[1])
+                    if y[1][indice+1] == x: 
+                        temporal.append(copy.deepcopy(y))
+            # print("self.conjuntos antes de mover el .:", self.conjuntos)
+            # print("self.productions antes de mover el .: ",self.productions)
+            # print("temporal antes de mover el .: ", temporal)
+            # print()
+            #mover el . una casilla a la derech
+            for z in temporal:
+                indice = z[1].index(".")
+                if indice + 1 < len(z[1]):
+                    a = z[1][indice]
+                    b = z[1][indice+1]
+                    z[1][indice] = b
+                    z[1][indice+1]=a
+            # print("self.conjuntos: ", self.conjuntos)
+            # print("self.productions: ",self.productions)
+            # print("temporal: ",temporal)
+            #envairlo al closure
+            self.closure(temporal, x, iteraciones)
+            # input()
+        
 
     def output_image(self, filename):
         G = nx.DiGraph()
@@ -237,7 +182,3 @@ class ALR0 (FA):
 
         # Render and save the graph as a PNG file
         dot.render(filename, view=False)
-
-            
-            
-            
