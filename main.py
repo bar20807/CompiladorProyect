@@ -23,7 +23,7 @@ afd = AFD_construction()
 afd.afd_direct_(regex.regular_expression_result)
 afd.build_scanner("./Archivos Yal/yalp_analyzer.yal", "ScannerYal1")
 """afd.output_image("YalexTestAFD")"""
-afd.simulate_afd("./Archivos Yalp/slr-3.yalp")
+afd.simulate_afd("./Archivos Yalp/slr-1.yalp")
 
 #print("Lista resultante: ", afd.token_list_file)
 
@@ -33,7 +33,7 @@ print(yalp_reader.productions_list)
 alr0 = ALR0(productions= yalp_reader.productions_list)
 table = SLRTable(yalp_reader.productions_list, alr0.subsets_, alr0.subsets_iterations, alr0.transitions)
 alr0.create_subsets()
-alr0.output_image("./ALR0/ALR0_Yalp3")
+alr0.output_image("./ALR0/ALR0_Yalp1")
 table.get_construction_table()
 table.print_table()
 

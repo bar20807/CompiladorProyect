@@ -113,25 +113,43 @@ class ALR0 (FA):
 
         
     def goto(self, iteraciones):
-        # Obtener los elementos a los que se puede transicionar
-        elementos = {x[1][x[1].index(".") + 1] for x in iteraciones if x[1].index(".") + 1 < len(x[1])}
-        # Crear nuevos items transicionando a los elementos encontrados
-        nuevos_elementos_iteraciones = []
-        for x in elementos:
-            items_temporales = [
-                [y[0], y[1][:posicion_punto] + [y[1][posicion_punto + 1], '.'] + y[1][posicion_punto + 2:]]
-                for y in iteraciones
-                if (
-                    (posicion_punto := y[1].index(".")) + 1 < len(y[1])
-                    and y[1][posicion_punto + 1] == x
-                )
-            ]
-            # Agregar nuevos items a la lista
-            nuevos_elementos_iteraciones.extend(
-                item for item in items_temporales if item not in nuevos_elementos_iteraciones
-            )
-            # Obtener la cerradura de los nuevos items y agregar las transiciones
-            self.closure(items_temporales, x, iteraciones)
+        # Crear una lista vacía para almacenar los elementos
+        elements = list()
+        # Iterar sobre las iteraciones
+        for x in iteraciones:
+            # Encontrar el índice del punto en la iteración
+            indice = x[1].index(".")
+            # Verificar si hay un carácter después del punto
+            if indice + 1 < len(x[1]):
+                # Verificar si el carácter después del punto no ha sido agregado a la lista de elementos
+                if x[1][indice+1] not in elements: 
+                    # Agregar el carácter después del punto a la lista de elementos
+                    elements.append(x[1][indice+1])
+        # Iterar sobre los elementos
+        for x in elements:
+            # Crear una lista vacía para almacenar las iteraciones que contienen el elemento
+            temporal = list()
+            # Iterar sobre las iteraciones
+            for y in iteraciones:
+                # Encontrar el índice del punto en la iteración
+                indice = y[1].index(".")
+                # Verificar si hay un carácter después del punto
+                if indice + 1 < len(y[1]):
+                    # Verificar si el carácter después del punto es igual al elemento actual
+                    if y[1][indice+1] == x: 
+                        # Agregar una copia profunda de la iteración a la lista temporal
+                        temporal.append(copy.deepcopy(y))
+            # Iterar sobre las iteraciones en la lista temporal
+            for z in temporal:
+                # Encontrar el índice del punto en la iteración
+                indice = z[1].index(".")
+                # Verificar si hay un carácter después del punto
+                if indice + 1 < len(z[1]):
+                    # Intercambiar el carácter después del punto con el punto
+                    z[1][indice], z[1][indice+1] = z[1][indice+1], z[1][indice]
+            # Calcular el cierre para la lista de iteraciones en la lista temporal
+            self.closure(temporal, x, iteraciones)
+
         
 
     def output_image(self, filename):
