@@ -37,7 +37,7 @@
 'tica' #minusword
 ' ' #ws
 'SLR' #mayusword
-':' #:
+':' #production
 ' ' #ws
 '*/' #*/
 '\n' #ws

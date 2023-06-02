@@ -246,25 +246,3 @@ class SLRTable(ALR0):
         # Display the table in the console
         print(table)
 
-    
-
-
-
-                
-"""
-
-[[['expression', ['.', 'expression', 'PLUS', 'term']], ['expression', ['.', 'term']], ["expression'", ['.', 'expression']], ['factor', ['.', 'LPAREN', 'expression', 'RPAREN']], ['factor', ['.', 'ID']], ['term', ['.', 'term', 'TIMES', 'factor']], ['term', ['.', 'factor']]], [['expression', ['expression', '.', 'PLUS', 'term']], ["expression'", ['expression', '.']]], [['expression', ['term', '.']], ['term', ['term', '.', 'TIMES', 'factor']]], [['expression', ['.', 'expression', 'PLUS', 'term']], ['expression', ['.', 'term']], ['factor', ['LPAREN', '.', 'expression', 'RPAREN']], ['factor', ['.', 'LPAREN', 'expression', 'RPAREN']], ['factor', ['.', 'ID']], ['term', ['.', 'term', 'TIMES', 'factor']], ['term', ['.', 'factor']]], [['factor', ['ID', '.']]], [['term', ['factor', '.']]], [['expression', ['expression', 'PLUS', '.', 'term']], ['factor', ['.', 'LPAREN', 'expression', 
-'RPAREN']], ['factor', ['.', 'ID']], ['term', ['.', 'term', 'TIMES', 'factor']], ['term', ['.', 'factor']]], [['factor', ['.', 'LPAREN', 'expression', 'RPAREN']], ['factor', ['.', 'ID']], ['term', ['term', 'TIMES', '.', 'factor']]], [['expression', ['expression', '.', 'PLUS', 'term']], ['factor', ['LPAREN', 'expression', '.', 'RPAREN']]], [['expression', ['expression', 'PLUS', 'term', '.']], ['term', ['term', '.', 'TIMES', 'factor']]], [['term', ['term', 'TIMES', 'factor', '.']]], [['factor', ['LPAREN', 'expression', 'RPAREN', '.']]]]
-
-[[['E', ['.', 'E', '+', 'T']], ['E', ['.', 'T']], ["E'", ['.', 'E']], ['F', ['.', '(', 'E', ')']], ['F', ['.', 'id']], ['T', ['.', 'T', '*', 'F']], ['T', ['.', 'F']]], [['E', ['E', '.', '+', 'T']], ["E'", ['E', '.']]], [['E', ['T', '.']], ['T', ['T', '.', '*', 'F']]], [['E', ['.', 'E', '+', 'T']], ['E', ['.', 'T']], ['F', ['(', '.', 'E', ')']], ['F', ['.', '(', 'E', ')']], ['F', ['.', 'id']], ['T', ['.', 'T', '*', 'F']], ['T', ['.', 'F']]], [['F', ['id', '.']]], [['T', ['F', '.']]], [['E', ['E', '+', '.', 'T']], ['F', ['.', '(', 'E', ')']], ['F', ['.', 'id']], ['T', ['.', 'T', '*', 'F']], ['T', ['.', 'F']]], [['F', ['.', '(', 'E', ')']], ['F', ['.', 'id']], ['T', ['T', '*', '.', 'F']]], [['E', ['E', '.', '+', 'T']], ['F', ['(', 'E', '.', ')']]], [['E', ['E', '+', 'T', '.']], ['T', ['T', '.', '*', 'F']]], [['T', ['T', '*', 'F', '.']]], [['F', ['(', 'E', ')', '.']]]]
-
-"""
-
-"""
-    self.action:  [[0, 'LPAREN', 's3'], [0, 'ID', 's4'], [1, 'PLUS', 's6'], [1, '$', 'acc'], [2, 'TIMES', 's7'], [3, 'LPAREN', 's3'], [3, 'ID', 's4'], [6, 'LPAREN', 's3'], [6, 'ID', 's4'], [7, 'LPAREN', 's3'], [7, 'ID', 's4'], [8, 'RPAREN', 's11'], [8, 'PLUS', 's6'], [9, 'TIMES', 's7']]
-
-    self.action:  [[0, 'id', 's4'], [0, '(', 's3'], [1, '+', 's6'], [1, '$', 'acc'], [2, '*', 's7'], [3, 'id', 's4'], [3, '(', 's3'], [6, 'id', 's4'], [6, '(', 's3'], [7, 'id', 's4'], [7, '(', 's3'], [8, '+', 's6'], [8, ')', 's11'], [9, '*', 's7'], [2, '+', 'r2'], [2, ')', 'r2'], [2, '$', 'r2'], [4, '*', 'r6'], [4, '+', 'r6'], [4, ')', 'r6'], [4, '$', 'r6'], [5, '*', 'r4'], [5, '+', 'r4'], [5, ')', 'r4'], [5, '$', 'r4'], [9, '+', 'r1'], [9, ')', 'r1'], [9, '$', 'r1'], [10, '*', 'r3'], [10, '+', 'r3'], [10, ')', 'r3'], [10, '$', 'r3'], [11, '*', 'r5'], [11, '+', 'r5'], [11, ')', 'r5'], [11, '$', 'r5']]
-    
-"""
-
-
