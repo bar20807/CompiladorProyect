@@ -113,43 +113,25 @@ class ALR0 (FA):
 
         
     def goto(self, iteraciones):
-        #obtener los token o elementos con el cual probar
-        # print("sorted_items: ",ciclo)
-        elements = []
-        for x in iteraciones:
-            indice = x[1].index(".")
-            if indice + 1 < len(x[1]):
-                if x[1][indice+1] not in elements: 
-                    elements.append(x[1][indice+1])
-        # print("elements: ", elements)
-        #encontrar todos los que son .elements y apartir de esos mover el . una casilla 
-        for x in elements:
-            # print("x: ", x)
-            temporal = []
-            for y in iteraciones:
-                indice = y[1].index(".")
-                if indice + 1 < len(y[1]):
-                    # print("y[1]: ", y[1])
-                    if y[1][indice+1] == x: 
-                        temporal.append(copy.deepcopy(y))
-            # print("self.conjuntos antes de mover el .:", self.conjuntos)
-            # print("self.productions antes de mover el .: ",self.productions)
-            # print("temporal antes de mover el .: ", temporal)
-            # print()
-            #mover el . una casilla a la derech
-            for z in temporal:
-                indice = z[1].index(".")
-                if indice + 1 < len(z[1]):
-                    a = z[1][indice]
-                    b = z[1][indice+1]
-                    z[1][indice] = b
-                    z[1][indice+1]=a
-            # print("self.conjuntos: ", self.conjuntos)
-            # print("self.productions: ",self.productions)
-            # print("temporal: ",temporal)
-            #envairlo al closure
-            self.closure(temporal, x, iteraciones)
-            # input()
+        # Obtener los elementos a los que se puede transicionar
+        elementos = {x[1][x[1].index(".") + 1] for x in iteraciones if x[1].index(".") + 1 < len(x[1])}
+        # Crear nuevos items transicionando a los elementos encontrados
+        nuevos_elementos_iteraciones = []
+        for x in elementos:
+            items_temporales = [
+                [y[0], y[1][:posicion_punto] + [y[1][posicion_punto + 1], '.'] + y[1][posicion_punto + 2:]]
+                for y in iteraciones
+                if (
+                    (posicion_punto := y[1].index(".")) + 1 < len(y[1])
+                    and y[1][posicion_punto + 1] == x
+                )
+            ]
+            # Agregar nuevos items a la lista
+            nuevos_elementos_iteraciones.extend(
+                item for item in items_temporales if item not in nuevos_elementos_iteraciones
+            )
+            # Obtener la cerradura de los nuevos items y agregar las transiciones
+            self.closure(items_temporales, x, iteraciones)
         
 
     def output_image(self, filename):

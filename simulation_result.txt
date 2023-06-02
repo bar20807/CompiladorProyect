@@ -12,7 +12,8 @@
 ' ' #ws
 'para' #minusword
 ' ' #ws
-'gram' #minusword
+'G' #mayusword
+'ram' #minusword
 'Ã' Error Lexico
 '¡' Error Lexico
 'tica' #minusword
@@ -20,7 +21,7 @@
 'N' #mayusword
 'o' #minusword
 '.' Error Lexico
-'1' Error Lexico
+'3' Error Lexico
 ' ' #ws
 '*/' #*/
 '\n' #ws
@@ -49,11 +50,11 @@
 '†' Error Lexico
 '’' Error Lexico
 ' ' #ws
-'E' #mayusword
+'T' #mayusword
 ' ' #ws
 '+' Error Lexico
 ' ' #ws
-'T' #mayusword
+'E' #mayusword
 ' ' #ws
 '|' #|
 ' ' #ws
@@ -69,27 +70,17 @@
 '†' Error Lexico
 '’' Error Lexico
 ' ' #ws
+'number' #minusword
+' ' #ws
+'*' #characters
+' ' #ws
 'T' #mayusword
-' ' #ws
-'â' Error Lexico
-'ˆ' Error Lexico
-'—' Error Lexico
-' ' #ws
-'F' #mayusword
 ' ' #ws
 '|' #|
 ' ' #ws
-'F' #mayusword
+'number' #minusword
 ' ' #ws
-'*/' #*/
-'\n' #ws
-'/*' #/*
-' ' #ws
-'F' #mayusword
-' ' #ws
-'â' Error Lexico
-'†' Error Lexico
-'’' Error Lexico
+'|' #|
 ' ' #ws
 '(' Error Lexico
 ' ' #ws
@@ -97,15 +88,11 @@
 ' ' #ws
 ')' Error Lexico
 ' ' #ws
-'|' #|
-' ' #ws
-'id' #minusword
-' ' #ws
 '*/' #*/
 '\n\n' #ws
 '%token' #%token
 ' ' #ws
-'ID' #mayusword
+'NUMBER' #mayusword
 '\n' #ws
 '%token' #%token
 ' ' #ws
@@ -120,16 +107,16 @@
 'LPAREN' #mayusword
 ' ' #ws
 'RPAREN' #mayusword
-'\n\n\n' #ws
+'\n\n' #ws
 '%%' #%%
 '\n\n' #ws
 'expression:' #production
 '\n    ' #ws
-'expression' #minusword
+'term' #minusword
 ' ' #ws
 'PLUS' #mayusword
 ' ' #ws
-'term' #minusword
+'expression' #minusword
 '\n  ' #ws
 '|' #|
 ' ' #ws
@@ -139,27 +126,21 @@
 '\n' #ws
 'term:' #production
 '\n    ' #ws
-'term' #minusword
+'number' #minusword
 ' ' #ws
 'TIMES' #mayusword
 ' ' #ws
-'factor' #minusword
+'term' #minusword
 '\n  ' #ws
 '|' #|
 ' ' #ws
-'factor' #minusword
-'\n' #ws
-';' #;
-'\n' #ws
-'factor:' #production
-'\n    ' #ws
+'number' #minusword
+'\n  ' #ws
+'|' #|
+' ' #ws
 'LPAREN' #mayusword
 ' ' #ws
 'expression' #minusword
 ' ' #ws
 'RPAREN' #mayusword
-'\n  ' #ws
-'|' #|
-' ' #ws
-'ID' #mayusword
 '\n' #ws
